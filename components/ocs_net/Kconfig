@@ -12,6 +12,30 @@ menu "OCS Network Configuration"
                 default "your-password"
                 help
                     Password for the WiFi access point, to which ESP32 is connected.
+
+            config OCS_NETWORK_WIFI_STA_RETRY_COUNT
+                int "WiFi Retry Count"
+                default 5
+                help
+                    Maximum number of attempts to establish a WiFi connection.
         endmenu
+    endmenu
+
+    menu "HTTP Configuration"
+        config OCS_NETWORK_HTTP_SERVER_PORT
+            int "Server Port"
+            default 80
+            help
+                TCP port to accept incoming connections.
+    endmenu
+
+    menu "mDNS Configuration"
+            config OCS_NETWORK_MDNS_HOSTNAME
+                string "mDNS Hostname"
+                default "ocs-mdns-hostname"
+
+            config OCS_NETWORK_MDNS_INSTANCE_NAME
+                string "mDNS Instance Name"
+                default "ocs-mdns-instance-name"
     endmenu
 endmenu
