@@ -1,0 +1,17 @@
+menu "OCS Network Configuration"
+    menu "WiFi Configuration"
+        menu "STA Configuration"
+            config OCS_NETWORK_WIFI_STA_SSID
+                string "WiFi STA SSID"
+                default "your-ssid"
+                help
+                    SSID for the WiFi access point, to which ESP32 is connected.
+
+            config OCS_NETWORK_WIFI_STA_PASSWORD
+                string "WiFi STA Password"
+                default "your-password"
+                help
+                    Password for the WiFi access point, to which ESP32 is connected.
+        endmenu
+    endmenu
+endmenu
