@@ -16,6 +16,19 @@ namespace {
 
 const char* log_tag = "wifi-network";
 
+int8_t get_rssi() {
+    wifi_ap_record_t record;
+    memset(&record, 0, sizeof(record));
+
+    const auto err = esp_wifi_sta_get_ap_info(&record);
+    if (err != ESP_OK) {
+        ESP_LOGE(log_tag, "esp_wifi_sta_get_ap_info(): %s", esp_err_to_name(err));
+        return 0;
+    }
+
+    return record.rssi;
+}
+
 } // namespace
 
 WiFiNetwork::WiFiNetwork(const Params& params)
@@ -83,7 +96,8 @@ status::StatusCode WiFiNetwork::wait() {
                             pdFALSE, pdFALSE, portMAX_DELAY);
 
     if (bits & EVENT_BIT_CONNECTED) {
-        ESP_LOGI(log_tag, "connected to AP: SSID:%s", CONFIG_OCS_NETWORK_WIFI_STA_SSID);
+        ESP_LOGI(log_tag, "connected to AP: SSID:%s RSSI=%d",
+                 CONFIG_OCS_NETWORK_WIFI_STA_SSID, get_rssi());
         return status::StatusCode::OK;
     }
 
