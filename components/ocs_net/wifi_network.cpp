@@ -96,13 +96,13 @@ status::StatusCode WiFiNetwork::wait() {
                             pdFALSE, pdFALSE, portMAX_DELAY);
 
     if (bits & EVENT_BIT_CONNECTED) {
-        ESP_LOGI(log_tag, "connected to AP: SSID:%s RSSI=%d",
+        ESP_LOGI(log_tag, "connected to AP: SSID=%s RSSI=%d",
                  CONFIG_OCS_NETWORK_WIFI_STA_SSID, get_rssi());
         return status::StatusCode::OK;
     }
 
     if (bits & EVENT_BIT_FAILED) {
-        ESP_LOGI(log_tag, "failed to connect to AP: SSID:%s",
+        ESP_LOGI(log_tag, "failed to connect to AP: SSID=%s",
                  CONFIG_OCS_NETWORK_WIFI_STA_SSID);
         return status::StatusCode::Error;
     }
