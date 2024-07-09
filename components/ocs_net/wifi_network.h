@@ -8,6 +8,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_event_group.h"
 #include "ocs_net/inetwork_handler.h"
+#include "ocs_net/netif_builder.h"
 #include "ocs_status/code.h"
 
 namespace ocs {
@@ -68,6 +69,8 @@ private:
     void handle_disconnected_();
 
     const Params params_;
+
+    NetifSharedPtr netif_;
 
     core::StaticEventGroup event_group_;
 
