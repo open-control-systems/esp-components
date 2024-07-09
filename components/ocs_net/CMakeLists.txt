@@ -3,6 +3,7 @@ idf_component_register(
     "wifi_network.cpp"
     "mdns_provider.cpp"
     "http_server.cpp"
+    "netif_builder.cpp"
 
     REQUIRES
     "esp_netif"

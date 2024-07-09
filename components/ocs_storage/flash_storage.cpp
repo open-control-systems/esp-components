@@ -15,5 +15,9 @@ FlashStorage::FlashStorage() {
     ESP_ERROR_CHECK(ret);
 }
 
+FlashStorage::~FlashStorage() {
+    ESP_ERROR_CHECK(nvs_flash_deinit());
+}
+
 } // namespace storage
 } // namespace ocs

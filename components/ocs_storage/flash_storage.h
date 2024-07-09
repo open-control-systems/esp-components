@@ -9,6 +9,9 @@ class FlashStorage : public core::NonCopyable<> {
 public:
     //! Initialize NVS.
     FlashStorage();
+
+    //! Deinitialize NVS.
+    ~FlashStorage();
 };
 
 } // namespace storage
