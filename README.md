@@ -29,3 +29,7 @@ set(EXTRA_COMPONENT_DIRS
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(main)
 ```
+
+## License
+
+This project is licensed under the MPL 2.0 License - see the LICENSE file for details.
