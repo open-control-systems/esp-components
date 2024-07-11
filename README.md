@@ -6,7 +6,7 @@
 
 All components are located in the `components` directory. It's a default directory name where the ESP-IDF build system looks up for the project libraries, or components in terms of the ESP-IDF SDK. See the build system [documentation](https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/build-system.html#component-cmakelists-files) for more details.
 
-These components can be manually copied into the project `components` directory, or added as a git submodule.
+These components can be manually copied into the project `components` directory, or added as a git submodule:
 
 ```bash
 git submodule add git@github.com:open-control-systems/esp-components.git ocs-esp-components
