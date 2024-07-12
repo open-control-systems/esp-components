@@ -4,6 +4,7 @@ idf_component_register(
     "mdns_provider.cpp"
     "http_server.cpp"
     "netif_builder.cpp"
+    "ip_addr_to_str.cpp"
 
     REQUIRES
     "esp_netif"

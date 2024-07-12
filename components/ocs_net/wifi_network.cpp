@@ -126,6 +126,25 @@ status::StatusCode WiFiNetwork::wait() {
     configASSERT(false);
 }
 
+std::optional<ip_addr_t> WiFiNetwork::get_ip_addr() const {
+    const EventBits_t bits = xEventGroupGetBits(event_group_.get());
+    if (!(bits & EVENT_BIT_CONNECTED)) {
+        return std::nullopt;
+    }
+
+    esp_netif_ip_info_t ip_info;
+    memset(&ip_info, 0, sizeof(ip_info));
+
+    const auto err = esp_netif_get_ip_info(netif_.get(), &ip_info);
+    if (err != ESP_OK) {
+        ESP_LOGE(log_tag, "esp_netif_get_ip_info(): %s", esp_err_to_name(err));
+        return std::nullopt;
+    }
+
+    const ip_addr_t addr = IPADDR4_INIT(ip_info.ip.addr);
+    return addr;
+}
+
 void WiFiNetwork::add(INetworkHandler& handler) {
     handlers_.emplace_back(&handler);
 }

@@ -8,10 +8,12 @@
 
 #pragma once
 
+#include <optional>
 #include <string>
 #include <vector>
 
 #include "esp_wifi.h"
+#include "lwip/ip_addr.h"
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_event_group.h"
@@ -53,6 +55,9 @@ public:
 
     //! Wait for the WiFi connection to be established.
     status::StatusCode wait();
+
+    //! Return received IP address.
+    std::optional<ip_addr_t> get_ip_addr() const;
 
     //! Add handler to be notified about the WiFi network connection status.
     //!
