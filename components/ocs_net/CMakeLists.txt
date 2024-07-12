@@ -4,6 +4,8 @@ idf_component_register(
     "mdns_provider.cpp"
     "http_server.cpp"
     "netif_builder.cpp"
+    "http_client_builder.cpp"
+    "http_client_reader.cpp"
     "ip_addr_to_str.cpp"
 
     REQUIRES
@@ -11,6 +13,7 @@ idf_component_register(
     "esp_wifi"
     "mdns"
     "esp_http_server"
+    "esp_http_client"
     "ocs_core"
 
     INCLUDE_DIRS
