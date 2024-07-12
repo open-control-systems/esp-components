@@ -8,9 +8,9 @@
 
 #pragma once
 
-#include "esp_netif.h"
-
 #include <memory>
+
+#include "esp_netif.h"
 
 namespace ocs {
 namespace net {
