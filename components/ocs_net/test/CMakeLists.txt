@@ -1,6 +1,7 @@
 idf_component_register(
     SRCS
     "test_wifi_network.cpp"
+    "test_ip_addr_to_str.cpp"
 
     REQUIRES
     "unity"
