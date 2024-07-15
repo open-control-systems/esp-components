@@ -42,7 +42,7 @@ public:
     //!    while (!condition()) {
     //!        cond.wait()
     //!    }
-    [[nodiscard]] bool wait(TickType_t wait = portMAX_DELAY);
+    bool wait(TickType_t wait = portMAX_DELAY);
 
     //! Signal wakes a task waiting on a condition variable, if there is one.
     //!
