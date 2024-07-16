@@ -10,7 +10,6 @@
 
 #include "esp_log.h"
 #include "esp_netif.h"
-#include "esp_wifi.h"
 
 #include "ocs_net/wifi_network.h"
 
@@ -145,10 +144,6 @@ std::optional<ip_addr_t> WiFiNetwork::get_ip_addr() const {
     return addr;
 }
 
-void WiFiNetwork::add(INetworkHandler& handler) {
-    handlers_.emplace_back(&handler);
-}
-
 void WiFiNetwork::handle_event_(void* event_arg,
                                 esp_event_base_t event_base,
                                 int32_t event_id,
@@ -237,18 +232,6 @@ void WiFiNetwork::handle_ip_event_sta_got_ip_(void* event_data) {
     xEventGroupSetBits(event_group_.get(), EVENT_BIT_CONNECTED);
 
     handle_connected_();
-}
-
-void WiFiNetwork::handle_connected_() {
-    for (auto& handler : handlers_) {
-        handler->handle_connected();
-    }
-}
-
-void WiFiNetwork::handle_disconnected_() {
-    for (auto& handler : handlers_) {
-        handler->handle_disconnected();
-    }
 }
 
 } // namespace net

@@ -8,16 +8,13 @@
 
 #pragma once
 
-#include <optional>
 #include <string>
-#include <vector>
 
 #include "esp_wifi.h"
-#include "lwip/ip_addr.h"
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_event_group.h"
-#include "ocs_net/inetwork_handler.h"
+#include "ocs_net/basic_network.h"
 #include "ocs_net/netif_builder.h"
 #include "ocs_status/code.h"
 
@@ -25,7 +22,7 @@ namespace ocs {
 namespace net {
 
 //! Handle WiFi network operations.
-class WiFiNetwork : public core::NonCopyable<> {
+class WiFiNetwork : public BasicNetwork, public core::NonCopyable<> {
 public:
     struct Params {
         //! Maximum number of attempts to establish a WiFi connection.
@@ -48,22 +45,16 @@ public:
     ~WiFiNetwork();
 
     //! Start the WiFi connection process.
-    status::StatusCode start();
+    status::StatusCode start() override;
 
     //! Stop the WiFi connection process.
-    status::StatusCode stop();
+    status::StatusCode stop() override;
 
     //! Wait for the WiFi connection to be established.
-    status::StatusCode wait();
+    status::StatusCode wait() override;
 
     //! Return received IP address.
-    std::optional<ip_addr_t> get_ip_addr() const;
-
-    //! Add handler to be notified about the WiFi network connection status.
-    //!
-    //! @remarks
-    //!  All handlers should be added before the network is started.
-    void add(INetworkHandler& handler);
+    std::optional<ip_addr_t> get_ip_addr() const override;
 
 private:
     static void handle_event_(void* event_arg,
@@ -78,9 +69,6 @@ private:
     void handle_ip_event_(int32_t event_id, void* event_data);
     void handle_ip_event_sta_got_ip_(void* event_data);
 
-    void handle_connected_();
-    void handle_disconnected_();
-
     const Params params_;
 
     NetifSharedPtr netif_;
@@ -89,8 +77,6 @@ private:
 
     esp_event_handler_instance_t instance_any_id_ { nullptr };
     esp_event_handler_instance_t instance_got_ip_ { nullptr };
-
-    std::vector<INetworkHandler*> handlers_;
 
     unsigned retry_count_ { 0 };
 };
