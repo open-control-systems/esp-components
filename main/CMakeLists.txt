@@ -7,6 +7,7 @@ idf_component_register(
     "ocs_status"
     "ocs_net"
     "ocs_storage"
+    "ocs_iot"
 
     INCLUDE_DIRS
     "."

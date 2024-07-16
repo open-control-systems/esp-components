@@ -8,11 +8,11 @@
 
 #include <cassert>
 
-#include "ocs_core/cjson_array_formatter.h"
-#include "ocs_core/cjson_builder.h"
+#include "ocs_iot/cjson_array_formatter.h"
+#include "ocs_iot/cjson_builder.h"
 
 namespace ocs {
-namespace core {
+namespace iot {
 
 cJSONArrayFormatter::cJSONArrayFormatter(cJSON* json)
     : json_(json) {
@@ -33,5 +33,5 @@ bool cJSONArrayFormatter::append_uint16(uint16_t value) {
     return true;
 }
 
-} // namespace core
+} // namespace iot
 } // namespace ocs

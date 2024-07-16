@@ -13,7 +13,7 @@
 #include "cJSON.h"
 
 namespace ocs {
-namespace core {
+namespace iot {
 
 template <typename T> struct cJSONBuilder {
     using Ptr = T;
@@ -62,5 +62,5 @@ template <typename T> struct cJSONBuilder {
 using cJSONUniqueBuilder = cJSONBuilder<std::unique_ptr<cJSON, decltype(&cJSON_Delete)>>;
 using cJSONSharedBuilder = cJSONBuilder<std::shared_ptr<cJSON>>;
 
-} // namespace core
+} // namespace iot
 } // namespace ocs

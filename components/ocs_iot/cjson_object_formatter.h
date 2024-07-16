@@ -15,9 +15,9 @@
 #include "ocs_core/noncopyable.h"
 
 namespace ocs {
-namespace core {
+namespace iot {
 
-class cJSONObjectFormatter : public NonCopyable<> {
+class cJSONObjectFormatter : public core::NonCopyable<> {
 public:
     //! Initialize.
     explicit cJSONObjectFormatter(cJSON* json);
@@ -47,5 +47,5 @@ private:
     cJSON* json_ { nullptr };
 };
 
-} // namespace core
+} // namespace iot
 } // namespace ocs
