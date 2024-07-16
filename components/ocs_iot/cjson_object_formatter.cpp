@@ -6,11 +6,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_core/cjson_object_formatter.h"
-#include "ocs_core/cjson_builder.h"
+#include "ocs_iot/cjson_object_formatter.h"
+#include "ocs_iot/cjson_builder.h"
 
 namespace ocs {
-namespace core {
+namespace iot {
 
 cJSONObjectFormatter::cJSONObjectFormatter(cJSON* json)
     : json_(json) {
@@ -94,5 +94,5 @@ bool cJSONObjectFormatter::add_null_cs(const char* key) {
     return true;
 }
 
-} // namespace core
+} // namespace iot
 } // namespace ocs
