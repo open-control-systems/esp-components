@@ -5,6 +5,8 @@ idf_component_register(
     "network_json_formatter.cpp"
     "fanout_json_formatter.cpp"
     "system_json_formatter.cpp"
+    "string_json_formatter.cpp"
+    "version_json_formatter.cpp"
 
     REQUIRES
     "ocs_net"
