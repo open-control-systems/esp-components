@@ -3,6 +3,8 @@ idf_component_register(
     "static_mutex.cpp"
     "static_event_group.cpp"
     "cond.cpp"
+    "version.cpp"
+    "version_to_str.cpp"
 
     REQUIRES
     "json"

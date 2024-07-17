@@ -1,0 +1,7 @@
+menu "OCS Core Configuration"
+    config OCS_CORE_FW_VERSION
+        string "Firmware Version"
+        default "0.0.0"
+        help
+            Firmware version in SemVer format.
+endmenu
