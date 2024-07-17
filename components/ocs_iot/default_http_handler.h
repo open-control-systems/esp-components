@@ -15,6 +15,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_iot/cjson_builder.h"
 #include "ocs_iot/default_json_formatter.h"
+#include "ocs_iot/fanout_json_formatter.h"
 #include "ocs_net/http_server.h"
 
 namespace ocs {
@@ -34,11 +35,15 @@ public:
                        IJSONFormatter& formatter,
                        const char* path,
                        const char* log_tag) {
-        json_formatter_.reset(new (std::nothrow) JSONFormatter(formatter));
+        fanout_formatter_.reset(new (std::nothrow) FanoutJSONFormatter());
+        fanout_formatter_->add(formatter);
+
+        json_formatter_.reset(new (std::nothrow) JSONFormatter());
+        fanout_formatter_->add(*json_formatter_);
 
         server.add_GET(path, [this, path, log_tag](httpd_req_t* req) {
             auto json = cJSONUniqueBuilder::make_json();
-            json_formatter_->format(json.get());
+            fanout_formatter_->format(json.get());
 
             const auto err =
                 httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
@@ -54,6 +59,7 @@ public:
 private:
     using JSONFormatter = DefaultJSONFormatter<Size>;
 
+    std::unique_ptr<FanoutJSONFormatter> fanout_formatter_;
     std::unique_ptr<JSONFormatter> json_formatter_;
 };
 
