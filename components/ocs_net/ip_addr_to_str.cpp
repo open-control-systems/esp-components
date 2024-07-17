@@ -17,7 +17,7 @@ namespace net {
 
 ip_addr_to_str::ip_addr_to_str(ip_addr_t addr) {
     if (!inet_ntoa_r(addr, buf_, sizeof(buf_))) {
-        strcpy(buf_, "undefined");
+        strcpy(buf_, "<none>");
     }
 }
 
