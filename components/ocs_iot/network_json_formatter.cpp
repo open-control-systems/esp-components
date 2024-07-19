@@ -14,6 +14,7 @@
 #include "ocs_iot/cjson_object_formatter.h"
 #include "ocs_iot/network_json_formatter.h"
 #include "ocs_net/ip_addr_to_str.h"
+#include "ocs_net/rssi_to_str.h"
 
 namespace ocs {
 namespace iot {
@@ -45,11 +46,13 @@ void NetworkJSONFormatter::format_ap_info_(cJSON* json) {
                                 reinterpret_cast<const char*>(record.ssid));
 
         formatter.add_number_cs("network_rssi", record.rssi);
+        formatter.add_string_ref_cs("network_rssi_str", net::rssi_to_str(record.rssi));
     } else {
         ESP_LOGE(log_tag, "esp_wifi_sta_get_ap_info(): %s", esp_err_to_name(err));
 
         formatter.add_string_ref_cs("network_ssid", "<none>");
         formatter.add_number_cs("network_rssi", 0);
+        formatter.add_string_ref_cs("network_rssi_str", "<none>");
     }
 }
 

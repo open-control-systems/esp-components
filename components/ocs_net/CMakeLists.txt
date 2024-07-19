@@ -8,6 +8,7 @@ idf_component_register(
     "http_client_reader.cpp"
     "ip_addr_to_str.cpp"
     "basic_network.cpp"
+    "rssi_to_str.cpp"
 
     REQUIRES
     "esp_netif"
