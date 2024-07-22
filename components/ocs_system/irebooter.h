@@ -9,19 +9,16 @@
 #pragma once
 
 namespace ocs {
-namespace status {
+namespace system {
 
-//! Status code.
-enum class StatusCode {
-    //! Status indicating a success of an operation.
-    OK,
+class IRebooter {
+public:
+    //! Destroy.
+    virtual ~IRebooter() = default;
 
-    //! Status indicating a failure of an operation.
-    Error,
-
-    //! There is no enough data to perform an operation.
-    NoData,
+    //! Restart the system.
+    virtual void reboot() = 0;
 };
 
-} // namespace status
+} // namespace system
 } // namespace ocs

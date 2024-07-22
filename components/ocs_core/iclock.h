@@ -8,20 +8,19 @@
 
 #pragma once
 
+#include "ocs_core/time.h"
+
 namespace ocs {
-namespace status {
+namespace core {
 
-//! Status code.
-enum class StatusCode {
-    //! Status indicating a success of an operation.
-    OK,
+class IClock {
+public:
+    //! Destroy.
+    virtual ~IClock() = default;
 
-    //! Status indicating a failure of an operation.
-    Error,
-
-    //! There is no enough data to perform an operation.
-    NoData,
+    //! Get time in microseconds since boot.
+    virtual microseconds_t now() = 0;
 };
 
-} // namespace status
+} // namespace core
 } // namespace ocs

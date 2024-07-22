@@ -7,10 +7,14 @@ idf_component_register(
     "system_json_formatter.cpp"
     "string_json_formatter.cpp"
     "version_json_formatter.cpp"
+    "system_counter_pipeline.cpp"
+    "counter_json_formatter.cpp"
 
     REQUIRES
     "ocs_net"
     "ocs_core"
+    "ocs_diagnostic"
+    "ocs_storage"
     "json"
     "freertos"
 

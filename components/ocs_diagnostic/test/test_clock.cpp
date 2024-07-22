@@ -6,22 +6,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#pragma once
+#include "test_clock.h"
 
 namespace ocs {
-namespace status {
+namespace diagnostic {
 
-//! Status code.
-enum class StatusCode {
-    //! Status indicating a success of an operation.
-    OK,
+core::microseconds_t TestClock::now() {
+    return value;
+}
 
-    //! Status indicating a failure of an operation.
-    Error,
-
-    //! There is no enough data to perform an operation.
-    NoData,
-};
-
-} // namespace status
+} // namespace diagnostic
 } // namespace ocs

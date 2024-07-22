@@ -1,6 +1,8 @@
 idf_component_register(
     SRCS
-    "flash_storage.cpp"
+    "flash_initializer.cpp"
+    "ns_storage.cpp"
+    "storage_builder.cpp"
 
     REQUIRES
     "nvs_flash"

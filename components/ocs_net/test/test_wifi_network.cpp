@@ -11,14 +11,14 @@
 #include "unity.h"
 
 #include "ocs_net/wifi_network.h"
-#include "ocs_storage/flash_storage.h"
+#include "ocs_storage/flash_initializer.h"
 
 namespace ocs {
 namespace net {
 
 TEST_CASE("Connect to WiFi AP: invalid credentials", "[ocs_net], [wifi_network]") {
     { // Invalid SSID
-        storage::FlashStorage storage;
+        storage::FlashInitializer flash_initializer;
 
         WiFiNetwork network(WiFiNetwork::Params {
             .max_retry_count = 1,
@@ -31,7 +31,7 @@ TEST_CASE("Connect to WiFi AP: invalid credentials", "[ocs_net], [wifi_network]"
         TEST_ASSERT_EQUAL(status::StatusCode::OK, network.stop());
     }
     { // Invalid password
-        storage::FlashStorage storage;
+        storage::FlashInitializer flash_initializer;
 
         WiFiNetwork network(WiFiNetwork::Params {
             .max_retry_count = 1,
@@ -44,7 +44,7 @@ TEST_CASE("Connect to WiFi AP: invalid credentials", "[ocs_net], [wifi_network]"
         TEST_ASSERT_EQUAL(status::StatusCode::OK, network.stop());
     }
     { // Invalid SSID and password
-        storage::FlashStorage storage;
+        storage::FlashInitializer flash_initializer;
 
         WiFiNetwork network(WiFiNetwork::Params {
             .max_retry_count = 1,
@@ -60,7 +60,7 @@ TEST_CASE("Connect to WiFi AP: invalid credentials", "[ocs_net], [wifi_network]"
 
 #ifdef CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
 TEST_CASE("Connect to WiFi AP: valid credentials", "[ocs_net], [wifi_network]") {
-    storage::FlashStorage storage;
+    storage::FlashInitializer flash_initializer;
 
     WiFiNetwork network(WiFiNetwork::Params {
         .max_retry_count = 3,

@@ -6,22 +6,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#pragma once
+#include "test_counter.h"
 
 namespace ocs {
-namespace status {
+namespace diagnostic {
 
-//! Status code.
-enum class StatusCode {
-    //! Status indicating a success of an operation.
-    OK,
+TestCounter::TestCounter(const char* id)
+    : BasicCounter(id) {
+}
 
-    //! Status indicating a failure of an operation.
-    Error,
+ICounter::Value TestCounter::get() {
+    return value;
+}
 
-    //! There is no enough data to perform an operation.
-    NoData,
-};
-
-} // namespace status
+} // namespace diagnostic
 } // namespace ocs
