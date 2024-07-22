@@ -16,7 +16,7 @@
 #include "ocs_net/http_server.h"
 #include "ocs_net/ip_addr_to_str.h"
 #include "ocs_net/wifi_network.h"
-#include "ocs_storage/flash_storage.h"
+#include "ocs_storage/flash_initializer.h"
 
 namespace ocs {
 namespace net {
@@ -33,7 +33,7 @@ TEST_CASE("Start HTTP server: no WiFi", "[ocs_net], [http_server]") {
 }
 
 TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_net], [http_server]") {
-    storage::FlashStorage storage;
+    storage::FlashInitializer flash_initializer;
 
     WiFiNetwork wifi_network(WiFiNetwork::Params {
         .max_retry_count = 1,
@@ -70,7 +70,7 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_net], [http_server]
         return status::StatusCode::OK;
     });
 
-    storage::FlashStorage storage;
+    storage::FlashInitializer flash_initializer;
 
     WiFiNetwork wifi_network(WiFiNetwork::Params {
         .max_retry_count = 1,

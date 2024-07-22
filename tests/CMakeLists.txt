@@ -9,6 +9,8 @@ list(APPEND EXTRA_COMPONENT_DIRS "../components")
 set(TEST_COMPONENTS
     ocs_net
     ocs_core
+    ocs_storage
+    ocs_diagnostic
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)

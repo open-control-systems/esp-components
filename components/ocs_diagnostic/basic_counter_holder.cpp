@@ -6,22 +6,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#pragma once
-
-#include "ocs_core/noncopyable.h"
+#include "ocs_diagnostic/basic_counter_holder.h"
 
 namespace ocs {
-namespace storage {
+namespace diagnostic {
 
-class FlashStorage : public core::NonCopyable<> {
-public:
-    //! Initialize NVS.
-    FlashStorage();
+const BasicCounterHolder::CounterList& BasicCounterHolder::get_counters() const {
+    return counters_;
+}
 
-    //! Deinitialize NVS.
-    ~FlashStorage();
-};
+void BasicCounterHolder::add(ICounter& counter) {
+    counters_.emplace_back(&counter);
+}
 
-} // namespace storage
+} // namespace diagnostic
 } // namespace ocs
-

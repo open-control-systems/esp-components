@@ -8,20 +8,17 @@
 
 #pragma once
 
+#include "ocs_core/iclock.h"
+#include "ocs_core/noncopyable.h"
+
 namespace ocs {
-namespace status {
+namespace diagnostic {
 
-//! Status code.
-enum class StatusCode {
-    //! Status indicating a success of an operation.
-    OK,
+struct TestClock : public core::IClock, public core::NonCopyable<> {
+    core::microseconds_t now() override;
 
-    //! Status indicating a failure of an operation.
-    Error,
-
-    //! There is no enough data to perform an operation.
-    NoData,
+    core::microseconds_t value { 0 };
 };
 
-} // namespace status
+} // namespace diagnostic
 } // namespace ocs

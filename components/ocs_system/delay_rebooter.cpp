@@ -6,22 +6,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#pragma once
+#include "ocs_system/delay_rebooter.h"
 
 namespace ocs {
-namespace status {
+namespace system {
 
-//! Status code.
-enum class StatusCode {
-    //! Status indicating a success of an operation.
-    OK,
+DelayRebooter::DelayRebooter(TickType_t delay, IRebooter& rebooter)
+    : delay_(delay)
+    , rebooter_(rebooter) {
+}
 
-    //! Status indicating a failure of an operation.
-    Error,
+void DelayRebooter::reboot() {
+    vTaskDelay(delay_);
+    rebooter_.reboot();
+}
 
-    //! There is no enough data to perform an operation.
-    NoData,
-};
-
-} // namespace status
+} // namespace system
 } // namespace ocs
