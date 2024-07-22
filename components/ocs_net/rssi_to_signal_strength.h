@@ -6,30 +6,15 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_net/rssi_to_str.h"
+#include <cstdint>
+
+#pragma once
 
 namespace ocs {
 namespace net {
 
-const char* rssi_to_str(int rssi) {
-    if (rssi > -50) {
-        return "excellent";
-    }
-
-    if (rssi > -60) {
-        return "good";
-    }
-
-    if (rssi > -70) {
-        return "fair";
-    }
-
-    if (rssi > -80) {
-        return "poor";
-    }
-
-    return "unreliable";
-}
+//! Conver RSSI value into human-readable signal strength.
+const char* rssi_to_signal_strength(int rssi);
 
 } // namespace net
 } // namespace ocs

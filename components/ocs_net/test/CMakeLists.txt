@@ -3,7 +3,7 @@ idf_component_register(
     "test_wifi_network.cpp"
     "test_http_server.cpp"
     "test_ip_addr_to_str.cpp"
-    "test_rssi_to_str.cpp"
+    "test_rssi_to_signal_strength.cpp"
 
     REQUIRES
     "unity"
