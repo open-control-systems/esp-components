@@ -4,6 +4,7 @@ idf_component_register(
     "test_http_server.cpp"
     "test_ip_addr_to_str.cpp"
     "test_rssi_to_signal_strength.cpp"
+    "test_mdns_provider.cpp"
 
     REQUIRES
     "unity"

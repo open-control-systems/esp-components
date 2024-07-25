@@ -25,6 +25,11 @@ status::StatusCode MDNSProvider::start() {
     return status::StatusCode::OK;
 }
 
+status::StatusCode MDNSProvider::stop() {
+    mdns_free();
+    return status::StatusCode::OK;
+}
+
 status::StatusCode
 MDNSProvider::add_service(const char* service, const char* proto, unsigned port) {
     ESP_ERROR_CHECK(mdns_service_add(nullptr, service, proto, port, nullptr, 0));

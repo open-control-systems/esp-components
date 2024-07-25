@@ -33,8 +33,11 @@ public:
     //! Initialize.
     explicit MDNSProvider(const Params& params);
 
-    //! Start MDNS service.
+    //! Start mDNS service.
     status::StatusCode start();
+
+    //! Stop mDNS service.
+    status::StatusCode stop();
 
     //! Add mDNS service.
     //!
