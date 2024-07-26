@@ -8,6 +8,8 @@ idf_component_register(
 
     REQUIRES
     "ocs_core"
+    "ocs_system"
+    "ocs_status"
     "ocs_diagnostic"
 
     INCLUDE_DIRS
