@@ -11,13 +11,13 @@
 #include "unity.h"
 
 #include "ocs_diagnostic/basic_counter.h"
-#include "test_counter.h"
+#include "ocs_test/test_counter.h"
 
 namespace ocs {
 namespace diagnostic {
 
 TEST_CASE("Basic counter: ID length in a range", "[ocs_diagnostic], [basic_counter]") {
-    TestCounter counter("foo");
+    test::TestCounter counter("foo");
     TEST_ASSERT_EQUAL_STRING("foo", counter.id());
 }
 
@@ -36,7 +36,7 @@ TEST_CASE("Basic counter: ID length overflow", "[ocs_diagnostic], [basic_counter
 
     TEST_ASSERT_TRUE(actual_id != expected_id);
 
-    TestCounter counter(actual_id.c_str());
+    test::TestCounter counter(actual_id.c_str());
     TEST_ASSERT_EQUAL_STRING(expected_id.c_str(), counter.id());
 }
 

@@ -19,19 +19,19 @@
 #include "ocs_storage/istorage.h"
 
 namespace ocs {
-namespace diagnostic {
+namespace test {
 
 struct TestCounterStorage : public storage::IStorage, public core::NonCopyable<> {
     status::StatusCode read(const char* id, void* value, size_t size) override;
     status::StatusCode write(const char* id, const void* value, size_t size) override;
     status::StatusCode erase(const char* id) override;
 
-    void set(const char* key, ICounter::Value value);
-    std::optional<ICounter::Value> get(const char* key);
+    void set(const char* key, diagnostic::ICounter::Value value);
+    std::optional<diagnostic::ICounter::Value> get(const char* key);
 
 private:
-    std::unordered_map<std::string, ICounter::Value> values_;
+    std::unordered_map<std::string, diagnostic::ICounter::Value> values_;
 };
 
-} // namespace diagnostic
+} // namespace test
 } // namespace ocs
