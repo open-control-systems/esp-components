@@ -27,7 +27,7 @@ public:
     TimeCounter(core::IClock& clock, const char* id, core::microseconds_t resolution);
 
     //! Return time since boot with the configured resolution.
-    ICounter::Value get() override;
+    ICounter::Value get() const override;
 
 private:
     const core::microseconds_t resolution_ = core::Microsecond;
