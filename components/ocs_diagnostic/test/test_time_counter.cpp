@@ -9,14 +9,14 @@
 #include "unity.h"
 
 #include "ocs_diagnostic/time_counter.h"
-#include "test_clock.h"
+#include "ocs_test/test_clock.h"
 
 namespace ocs {
 namespace diagnostic {
 
 TEST_CASE("Time counter: gradually reach resolution",
           "[ocs_diagnostic], [time_counter]") {
-    TestClock clock;
+    test::TestClock clock;
     clock.value = core::Millisecond * 500;
 
     TimeCounter counter(clock, "counter", core::Second);

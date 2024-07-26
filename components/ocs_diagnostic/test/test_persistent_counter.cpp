@@ -9,8 +9,8 @@
 #include "unity.h"
 
 #include "ocs_diagnostic/persistent_counter.h"
-#include "test_counter.h"
-#include "test_counter_storage.h"
+#include "ocs_test/test_counter.h"
+#include "ocs_test/test_counter_storage.h"
 
 namespace ocs {
 namespace diagnostic {
@@ -19,9 +19,9 @@ TEST_CASE("Persistent counter: without initial value",
           "[ocs_diagnostic], [persistent_counter]") {
     const unsigned counter_value = 42;
 
-    TestCounterStorage storage;
+    test::TestCounterStorage storage;
 
-    TestCounter counter("foo");
+    test::TestCounter counter("foo");
     counter.value = counter_value;
 
     PersistentCounter persistent_counter(storage, counter);
@@ -33,9 +33,9 @@ TEST_CASE("Persistent counter: with initial value",
     const unsigned counter_value = 42;
     const unsigned persisted_value = 43;
 
-    TestCounterStorage storage;
+    test::TestCounterStorage storage;
 
-    TestCounter counter("foo");
+    test::TestCounter counter("foo");
     counter.value = counter_value;
 
     storage.set(counter.id(), persisted_value);
@@ -48,9 +48,9 @@ TEST_CASE("Persistent counter: handle reboot: without initial value",
           "[ocs_diagnostic], [persistent_counter]") {
     const unsigned counter_value = 42;
 
-    TestCounterStorage storage;
+    test::TestCounterStorage storage;
 
-    TestCounter counter("foo");
+    test::TestCounter counter("foo");
     counter.value = counter_value;
 
     PersistentCounter persistent_counter(storage, counter);
@@ -69,9 +69,9 @@ TEST_CASE("Persistent counter: handle reboot: with initial value",
     const unsigned counter_value = 42;
     const unsigned persisted_value = 43;
 
-    TestCounterStorage storage;
+    test::TestCounterStorage storage;
 
-    TestCounter counter("foo");
+    test::TestCounter counter("foo");
     counter.value = counter_value;
 
     storage.set(counter.id(), persisted_value);

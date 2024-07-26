@@ -6,18 +6,19 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "test_counter.h"
+#pragma once
+
+#include "ocs_core/iclock.h"
+#include "ocs_core/noncopyable.h"
 
 namespace ocs {
-namespace diagnostic {
+namespace test {
 
-TestCounter::TestCounter(const char* id)
-    : BasicCounter(id) {
-}
+struct TestClock : public core::IClock, public core::NonCopyable<> {
+    core::microseconds_t now() override;
 
-ICounter::Value TestCounter::get() {
-    return value;
-}
+    core::microseconds_t value { 0 };
+};
 
-} // namespace diagnostic
+} // namespace test
 } // namespace ocs

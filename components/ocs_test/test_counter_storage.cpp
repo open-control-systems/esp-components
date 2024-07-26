@@ -8,29 +8,29 @@
 
 #include "unity.h"
 
-#include "test_counter_storage.h"
+#include "ocs_test/test_counter_storage.h"
 
 namespace ocs {
-namespace diagnostic {
+namespace test {
 
 status::StatusCode TestCounterStorage::read(const char* id, void* value, size_t size) {
-    TEST_ASSERT_EQUAL(sizeof(ICounter::Value), size);
+    TEST_ASSERT_EQUAL(sizeof(diagnostic::ICounter::Value), size);
 
     const auto read_value = get(id);
     if (!read_value) {
         return status::StatusCode::NoData;
     }
 
-    *static_cast<ICounter::Value*>(value) = *read_value;
+    *static_cast<diagnostic::ICounter::Value*>(value) = *read_value;
 
     return status::StatusCode::OK;
 }
 
 status::StatusCode
 TestCounterStorage::write(const char* id, const void* value, size_t size) {
-    TEST_ASSERT_EQUAL(sizeof(ICounter::Value), size);
+    TEST_ASSERT_EQUAL(sizeof(diagnostic::ICounter::Value), size);
 
-    values_[id] = *static_cast<const ICounter::Value*>(value);
+    values_[id] = *static_cast<const diagnostic::ICounter::Value*>(value);
 
     return status::StatusCode::OK;
 }
@@ -42,11 +42,11 @@ status::StatusCode TestCounterStorage::erase(const char* id) {
     return num == 1 ? status::StatusCode::OK : status::StatusCode::NoData;
 }
 
-void TestCounterStorage::set(const char* key, ICounter::Value value) {
+void TestCounterStorage::set(const char* key, diagnostic::ICounter::Value value) {
     values_[key] = value;
 }
 
-std::optional<ICounter::Value> TestCounterStorage::get(const char* key) {
+std::optional<diagnostic::ICounter::Value> TestCounterStorage::get(const char* key) {
     const auto it = values_.find(key);
     if (it == values_.end()) {
         return std::nullopt;
@@ -55,5 +55,5 @@ std::optional<ICounter::Value> TestCounterStorage::get(const char* key) {
     return it->second;
 }
 
-} // namespace diagnostic
+} // namespace test
 } // namespace ocs

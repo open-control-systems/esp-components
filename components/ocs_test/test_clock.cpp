@@ -6,14 +6,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "test_clock.h"
+#include "ocs_test/test_clock.h"
 
 namespace ocs {
-namespace diagnostic {
+namespace test {
 
 core::microseconds_t TestClock::now() {
     return value;
 }
 
-} // namespace diagnostic
+} // namespace test
 } // namespace ocs

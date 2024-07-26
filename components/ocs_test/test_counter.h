@@ -8,17 +8,19 @@
 
 #pragma once
 
-#include "ocs_core/iclock.h"
 #include "ocs_core/noncopyable.h"
+#include "ocs_diagnostic/basic_counter.h"
 
 namespace ocs {
-namespace diagnostic {
+namespace test {
 
-struct TestClock : public core::IClock, public core::NonCopyable<> {
-    core::microseconds_t now() override;
+struct TestCounter : public diagnostic::BasicCounter, public core::NonCopyable<> {
+    explicit TestCounter(const char* id);
 
-    core::microseconds_t value { 0 };
+    diagnostic::ICounter::Value get() override;
+
+    diagnostic::ICounter::Value value { 0 };
 };
 
-} // namespace diagnostic
+} // namespace test
 } // namespace ocs

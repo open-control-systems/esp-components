@@ -9,8 +9,8 @@
 #include "unity.h"
 
 #include "ocs_diagnostic/live_counter.h"
-#include "test_counter.h"
-#include "test_counter_storage.h"
+#include "ocs_test/test_counter.h"
+#include "ocs_test/test_counter_storage.h"
 
 namespace ocs {
 namespace diagnostic {
@@ -18,12 +18,12 @@ namespace diagnostic {
 TEST_CASE("Live counter: erase on initialization", "[ocs_diagnostic], [live_counter]") {
     const unsigned counter_value = 7;
 
-    TestCounter counter("foo");
+    test::TestCounter counter("foo");
     counter.value = counter_value;
 
     const unsigned persisted_value = 42;
 
-    TestCounterStorage storage;
+    test::TestCounterStorage storage;
     storage.set(counter.id(), persisted_value);
 
     TEST_ASSERT_TRUE(persisted_value != counter_value);
