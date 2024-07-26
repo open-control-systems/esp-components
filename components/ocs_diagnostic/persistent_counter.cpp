@@ -34,7 +34,7 @@ const char* PersistentCounter::id() const {
     return counter_.id();
 }
 
-ICounter::Value PersistentCounter::get() {
+ICounter::Value PersistentCounter::get() const {
     return value_ + counter_.get();
 }
 

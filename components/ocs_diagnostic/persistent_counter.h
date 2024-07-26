@@ -34,7 +34,7 @@ public:
     const char* id() const override;
 
     //! Return the current counter value, taking into account previously stored value.
-    ICounter::Value get() override;
+    ICounter::Value get() const override;
 
     //! Persist the counter value on reboot.
     void handle_reboot() override;

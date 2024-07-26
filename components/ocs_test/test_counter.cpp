@@ -15,7 +15,7 @@ TestCounter::TestCounter(const char* id)
     : diagnostic::BasicCounter(id) {
 }
 
-diagnostic::ICounter::Value TestCounter::get() {
+diagnostic::ICounter::Value TestCounter::get() const {
     return value;
 }
 

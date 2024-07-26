@@ -24,7 +24,7 @@ public:
     virtual const char* id() const = 0;
 
     //! Return the current counter value.
-    virtual Value get() = 0;
+    virtual Value get() const = 0;
 };
 
 } // namespace diagnostic

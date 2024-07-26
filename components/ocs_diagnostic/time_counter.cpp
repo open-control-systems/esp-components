@@ -19,7 +19,7 @@ TimeCounter::TimeCounter(core::IClock& clock,
     , clock_(clock) {
 }
 
-ICounter::Value TimeCounter::get() {
+ICounter::Value TimeCounter::get() const {
     return clock_.now() / resolution_;
 }
 
