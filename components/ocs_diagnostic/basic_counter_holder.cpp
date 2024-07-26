@@ -11,12 +11,12 @@
 namespace ocs {
 namespace diagnostic {
 
-const BasicCounterHolder::CounterList& BasicCounterHolder::get_counters() const {
-    return counters_;
-}
-
 void BasicCounterHolder::add(ICounter& counter) {
     counters_.emplace_back(&counter);
+}
+
+const BasicCounterHolder::CounterList& BasicCounterHolder::get_counters_() const {
+    return counters_;
 }
 
 } // namespace diagnostic

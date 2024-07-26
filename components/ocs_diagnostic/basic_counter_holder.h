@@ -23,11 +23,12 @@ public:
     //! Destroy.
     virtual ~BasicCounterHolder() = default;
 
-    //! Return the underlying counters.
-    const CounterList& get_counters() const;
-
     //! Add a new counter.
     void add(ICounter& counter);
+
+protected:
+    //! Return the underlying counters.
+    const CounterList& get_counters_() const;
 
 private:
     CounterList counters_;

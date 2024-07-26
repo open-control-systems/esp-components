@@ -15,7 +15,7 @@ namespace iot {
 void CounterJSONFormatter::format(cJSON* json) {
     cJSONObjectFormatter formatter(json);
 
-    for (auto& counter : get_counters()) {
+    for (auto& counter : get_counters_()) {
         formatter.add_number_cs(counter->id(), counter->get());
     }
 }
