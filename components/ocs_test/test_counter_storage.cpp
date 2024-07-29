@@ -30,7 +30,7 @@ status::StatusCode
 TestCounterStorage::write(const char* id, const void* value, size_t size) {
     TEST_ASSERT_EQUAL(sizeof(diagnostic::ICounter::Value), size);
 
-    values_[id] = *static_cast<const diagnostic::ICounter::Value*>(value);
+    set(id, *static_cast<const diagnostic::ICounter::Value*>(value));
 
     return status::StatusCode::OK;
 }
