@@ -39,6 +39,12 @@ public:
     //! Persist the counter value on reboot.
     void handle_reboot() override;
 
+    //! Persist the counter value.
+    status::StatusCode save();
+
+    //! Invalidate the current counter state.
+    status::StatusCode invalidate();
+
 private:
     storage::IStorage& storage_;
     ICounter& counter_;

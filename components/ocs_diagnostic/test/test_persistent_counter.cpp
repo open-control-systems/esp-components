@@ -90,5 +90,110 @@ TEST_CASE("Persistent counter: handle reboot: with initial value",
     TEST_ASSERT_EQUAL(counter_value + persisted_value, *read_value);
 }
 
+TEST_CASE("Persistent counter: invalidate value: with previous value",
+          "[ocs_diagnostic], [persistent_counter]") {
+    const unsigned current_value = 42;
+    const unsigned persisted_value = 43;
+
+    const char* id = "foo";
+
+    test::TestCounterStorage storage;
+
+    test::TestCounter counter(id);
+    counter.value = current_value;
+
+    storage.set(counter.id(), persisted_value);
+
+    PersistentCounter persistent_counter(storage, counter);
+    TEST_ASSERT_EQUAL(current_value + persisted_value, persistent_counter.get());
+
+    auto read_value = storage.get(counter.id());
+    TEST_ASSERT_TRUE(read_value);
+    TEST_ASSERT_EQUAL(persisted_value, *read_value);
+
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, persistent_counter.invalidate());
+
+    TEST_ASSERT_FALSE(storage.get(id));
+    TEST_ASSERT_EQUAL(current_value, persistent_counter.get());
+}
+
+TEST_CASE("Persistent counter: invalidate value: without previous value",
+          "[ocs_diagnostic], [persistent_counter]") {
+    const unsigned current_value = 42;
+    const char* id = "foo";
+
+    test::TestCounterStorage storage;
+
+    test::TestCounter counter(id);
+    counter.value = current_value;
+
+    PersistentCounter persistent_counter(storage, counter);
+    TEST_ASSERT_EQUAL(current_value, persistent_counter.get());
+
+    TEST_ASSERT_FALSE(storage.get(counter.id()));
+    TEST_ASSERT_EQUAL(status::StatusCode::NoData, persistent_counter.invalidate());
+
+    TEST_ASSERT_FALSE(storage.get(id));
+    TEST_ASSERT_EQUAL(current_value, persistent_counter.get());
+}
+
+TEST_CASE("Persistent counter: save value: without previous value",
+          "[ocs_diagnostic], [persistent_counter]") {
+    const unsigned current_value = 42;
+    const char* id = "foo";
+
+    test::TestCounterStorage storage;
+
+    test::TestCounter counter(id);
+    counter.value = current_value;
+
+    PersistentCounter persistent_counter(storage, counter);
+    TEST_ASSERT_EQUAL(current_value, persistent_counter.get());
+
+    TEST_ASSERT_FALSE(storage.get(counter.id()));
+
+    const unsigned new_value = current_value * 3;
+    counter.value = new_value;
+
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, persistent_counter.save());
+
+    const auto read_value = storage.get(id);
+    TEST_ASSERT_TRUE(read_value);
+    TEST_ASSERT_EQUAL(new_value, *read_value);
+
+    TEST_ASSERT_EQUAL(new_value, persistent_counter.get());
+}
+
+TEST_CASE("Persistent counter: save value: with previous value",
+          "[ocs_diagnostic], [persistent_counter]") {
+    const unsigned current_value = 42;
+    const unsigned persisted_value = 43;
+
+    const char* id = "foo";
+
+    test::TestCounterStorage storage;
+
+    test::TestCounter counter(id);
+    counter.value = current_value;
+
+    storage.set(counter.id(), persisted_value);
+
+    PersistentCounter persistent_counter(storage, counter);
+    TEST_ASSERT_EQUAL(current_value + persisted_value, persistent_counter.get());
+
+    TEST_ASSERT_TRUE(storage.get(counter.id()));
+
+    const unsigned new_value = current_value * 3;
+    counter.value = new_value;
+
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, persistent_counter.save());
+
+    const auto read_value = storage.get(id);
+    TEST_ASSERT_TRUE(read_value);
+    TEST_ASSERT_EQUAL(persisted_value + new_value, *read_value);
+
+    TEST_ASSERT_EQUAL(new_value + persisted_value, persistent_counter.get());
+}
+
 } // namespace diagnostic
 } // namespace ocs

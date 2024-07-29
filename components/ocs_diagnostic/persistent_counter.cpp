@@ -39,13 +39,21 @@ ICounter::Value PersistentCounter::get() const {
 }
 
 void PersistentCounter::handle_reboot() {
-    const auto value = get();
-
-    const auto code = storage_.write(counter_.id(), &value, sizeof(value));
+    const auto code = save();
     if (code != status::StatusCode::OK) {
         ESP_LOGE(log_tag, "failed to persist counter value on reboot: id=%s code=%s",
                  counter_.id(), status::code_to_str(code));
     }
+}
+
+status::StatusCode PersistentCounter::save() {
+    const auto value = get();
+    return storage_.write(counter_.id(), &value, sizeof(value));
+}
+
+status::StatusCode PersistentCounter::invalidate() {
+    value_ = 0;
+    return storage_.erase(id());
 }
 
 } // namespace diagnostic
