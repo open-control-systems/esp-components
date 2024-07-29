@@ -18,17 +18,14 @@ namespace iot {
 
 SystemCounterPipeline::SystemCounterPipeline(
     core::IClock& clock,
-    storage::StorageBuilder& storage_builder,
+    storage::IStorage& storage,
     system::FanoutRebootHandler& reboot_handler,
     diagnostic::BasicCounterHolder& counter_holder) {
-    storage_ = storage_builder.make("system_counter");
-    configASSERT(storage_);
-
     uptime_counter_.reset(
         new (std::nothrow) diagnostic::TimeCounter(clock, "c_sys_uptime", core::Second));
 
     uptime_persistent_counter_.reset(
-        new (std::nothrow) diagnostic::LiveCounter(*storage_, *uptime_counter_));
+        new (std::nothrow) diagnostic::LiveCounter(storage, *uptime_counter_));
 
     reboot_handler.add(*uptime_persistent_counter_);
     counter_holder.add(*uptime_persistent_counter_);
@@ -37,7 +34,7 @@ SystemCounterPipeline::SystemCounterPipeline(
         clock, "c_sys_lifetime", core::Second));
 
     lifetime_persistent_counter_.reset(
-        new (std::nothrow) diagnostic::PersistentCounter(*storage_, *lifetime_counter_));
+        new (std::nothrow) diagnostic::PersistentCounter(storage, *lifetime_counter_));
 
     reboot_handler.add(*lifetime_persistent_counter_);
     counter_holder.add(*lifetime_persistent_counter_);
