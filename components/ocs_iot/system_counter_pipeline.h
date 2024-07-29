@@ -14,7 +14,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_diagnostic/basic_counter_holder.h"
 #include "ocs_diagnostic/persistent_counter.h"
-#include "ocs_storage/storage_builder.h"
+#include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
 namespace ocs {
@@ -25,13 +25,11 @@ class SystemCounterPipeline : public core::NonCopyable<> {
 public:
     //! Initilize counters.
     SystemCounterPipeline(core::IClock& clock,
-                          storage::StorageBuilder& storage_builder,
+                          storage::IStorage& storage,
                           system::FanoutRebootHandler& reboot_handler,
                           diagnostic::BasicCounterHolder& counter_holder);
 
 private:
-    std::unique_ptr<storage::IStorage> storage_;
-
     std::unique_ptr<diagnostic::ICounter> uptime_counter_;
     std::unique_ptr<diagnostic::PersistentCounter> uptime_persistent_counter_;
 
