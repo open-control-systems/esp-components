@@ -73,17 +73,15 @@ void StateCounter::update(StateCounter::State state) {
 }
 
 void StateCounter::handle_state_set_() {
-    const auto code = persistent_counter_->invalidate();
-    if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
-        ESP_LOGE(log_tag, "failed to invalidate counter value: id=%s code=%s",
-                 counter_->id(), status::code_to_str(code));
+    if (current_state_) {
+        const auto code = persistent_counter_->invalidate();
+        if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
+            ESP_LOGE(log_tag, "failed to invalidate counter value: id=%s code=%s",
+                     counter_->id(), status::code_to_str(code));
+        }
     }
 
-    ICounter::Value reset_value = 0;
-    if (current_state_) {
-        reset_value = last_value_ * resolution_;
-    }
-    time_counter_->reset(reset_value);
+    time_counter_->reset(last_value_ * resolution_);
 
     last_value_ = 0;
     alive_ = true;
