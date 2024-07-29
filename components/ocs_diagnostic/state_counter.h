@@ -68,7 +68,7 @@ private:
     const State required_state_ { 0 };
     const core::microseconds_t resolution_ { 0 };
 
-    bool alive_ { true };
+    bool alive_ { false };
     State current_state_ { 0 };
     ICounter::Value last_value_ { 0 };
 

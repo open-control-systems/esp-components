@@ -15,8 +15,7 @@
 namespace ocs {
 namespace diagnostic {
 
-TEST_CASE("State counter: state is set: without previous state",
-          "[ocs_diagnostic], [state_counter]") {
+TEST_CASE("State counter: state is set", "[ocs_diagnostic], [state_counter]") {
     const char* id = "foo";
     const core::microseconds_t resolution = core::Second;
 
@@ -36,9 +35,9 @@ TEST_CASE("State counter: state is set: without previous state",
     StateCounter counter(storage, clock, id, resolution, required_state);
 
     TEST_ASSERT_TRUE(storage.get(id));
-    TEST_ASSERT_EQUAL(persisted_value + new_value, counter.get());
 
     // There was no previous state, ensure previously saved data is invalided.
+    TEST_ASSERT_EQUAL(0, counter.get());
     counter.update(new_state);
 
     TEST_ASSERT_FALSE(storage.get(id));
@@ -48,8 +47,7 @@ TEST_CASE("State counter: state is set: without previous state",
     TEST_ASSERT_EQUAL(2 * new_value, counter.get());
 }
 
-TEST_CASE("State counter: state is lost: without previous state",
-          "[ocs_diagnostic], [state_counter]") {
+TEST_CASE("State counter: state is lost", "[ocs_diagnostic], [state_counter]") {
     const char* id = "foo";
 
     const core::microseconds_t resolution = core::Second;
@@ -68,18 +66,16 @@ TEST_CASE("State counter: state is lost: without previous state",
     StateCounter counter(storage, clock, id, resolution, required_state);
 
     TEST_ASSERT_FALSE(storage.get(id));
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_EQUAL(0, counter.get());
 
-    // There was no previous state, ensure previously saved data is saved.
+    // There was no previous state, ensure no data.
     counter.update(new_state);
 
-    const auto read_value = storage.get(id);
-    TEST_ASSERT_TRUE(read_value);
-    TEST_ASSERT_EQUAL(current_value, *read_value);
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_FALSE(storage.get(id));
+    TEST_ASSERT_EQUAL(0, counter.get());
 
     clock.value += current_value * resolution;
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_EQUAL(0, counter.get());
 }
 
 TEST_CASE("State counter: state changed multiple times",
@@ -103,9 +99,9 @@ TEST_CASE("State counter: state changed multiple times",
 
     StateCounter counter(storage, clock, id, resolution, required_state);
 
+    // There is no previous state.
     TEST_ASSERT_TRUE(storage.get(id));
-    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
-
+    TEST_ASSERT_EQUAL(0, counter.get());
     counter.update(state_set);
 
     TEST_ASSERT_FALSE(storage.get(id));
