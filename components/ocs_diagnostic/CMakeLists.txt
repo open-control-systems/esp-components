@@ -5,6 +5,7 @@ idf_component_register(
     "persistent_counter.cpp"
     "live_counter.cpp"
     "basic_counter_holder.cpp"
+    "state_counter.cpp"
 
     REQUIRES
     "ocs_core"

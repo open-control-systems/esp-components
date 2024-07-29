@@ -29,10 +29,15 @@ public:
     //! Return time since boot with the configured resolution.
     ICounter::Value get() const override;
 
+    //! Start counting time from @p now.
+    void reset(core::microseconds_t now);
+
 private:
     const core::microseconds_t resolution_ = core::Microsecond;
 
     core::IClock& clock_;
+
+    core::microseconds_t offset_ { 0 };
 };
 
 } // namespace diagnostic

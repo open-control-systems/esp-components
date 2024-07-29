@@ -29,5 +29,27 @@ TEST_CASE("Time counter: gradually reach resolution",
     TEST_ASSERT_EQUAL(1, counter.get());
 }
 
+TEST_CASE("Time counter: reach resolution after reset",
+          "[ocs_diagnostic], [time_counter]") {
+    test::TestClock clock;
+    clock.value = core::Millisecond * 500;
+
+    TimeCounter counter(clock, "counter", core::Second);
+
+    TEST_ASSERT_EQUAL(0, counter.get());
+
+    clock.value += core::Millisecond * 499;
+    TEST_ASSERT_EQUAL(0, counter.get());
+
+    counter.reset(core::Millisecond * 499);
+    TEST_ASSERT_EQUAL(0, counter.get());
+
+    clock.value += core::Millisecond * 499;
+    TEST_ASSERT_EQUAL(0, counter.get());
+
+    clock.value += core::Millisecond;
+    TEST_ASSERT_EQUAL(1, counter.get());
+}
+
 } // namespace diagnostic
 } // namespace ocs

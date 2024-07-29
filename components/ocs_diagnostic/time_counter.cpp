@@ -6,6 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include "freertos/FreeRTOSConfig.h"
+
 #include "ocs_diagnostic/time_counter.h"
 
 namespace ocs {
@@ -20,7 +22,12 @@ TimeCounter::TimeCounter(core::IClock& clock,
 }
 
 ICounter::Value TimeCounter::get() const {
-    return clock_.now() / resolution_;
+    return (clock_.now() - offset_) / resolution_;
+}
+
+void TimeCounter::reset(core::microseconds_t now) {
+    configASSERT(clock_.now() >= now);
+    offset_ = now;
 }
 
 } // namespace diagnostic

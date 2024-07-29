@@ -4,6 +4,7 @@ idf_component_register(
     "test_persistent_counter.cpp"
     "test_time_counter.cpp"
     "test_live_counter.cpp"
+    "test_state_counter.cpp"
 
     REQUIRES
     "unity"
