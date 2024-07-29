@@ -36,15 +36,15 @@ TEST_CASE("State counter: state is set", "[ocs_diagnostic], [state_counter]") {
 
     TEST_ASSERT_TRUE(storage.get(id));
 
-    // There was no previous state, ensure previously saved data is invalided.
+    // There was no previous state, ensure previously saved data is kept.
     TEST_ASSERT_EQUAL(0, counter.get());
     counter.update(new_state);
 
-    TEST_ASSERT_FALSE(storage.get(id));
-    TEST_ASSERT_EQUAL(new_value, counter.get());
+    TEST_ASSERT_TRUE(storage.get(id));
+    TEST_ASSERT_EQUAL(persisted_value + new_value, counter.get());
 
     clock.value += new_value * resolution;
-    TEST_ASSERT_EQUAL(2 * new_value, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value + (2 * new_value), counter.get());
 }
 
 TEST_CASE("State counter: state is lost", "[ocs_diagnostic], [state_counter]") {
@@ -104,29 +104,29 @@ TEST_CASE("State counter: state changed multiple times",
     TEST_ASSERT_EQUAL(0, counter.get());
     counter.update(state_set);
 
-    TEST_ASSERT_FALSE(storage.get(id));
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_TRUE(storage.get(id));
+    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
 
     current_value *= 2;
 
     clock.value = current_value * resolution;
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
 
     counter.update(state_lost);
 
     const auto read_value = storage.get(id);
     TEST_ASSERT_TRUE(read_value);
-    TEST_ASSERT_EQUAL(current_value, *read_value);
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value + current_value, *read_value);
+    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
 
     const unsigned new_value = 10 * current_value;
 
     clock.value = new_value * resolution;
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
 
     counter.update(state_set);
     TEST_ASSERT_FALSE(storage.get(id));
-    TEST_ASSERT_EQUAL(new_value - current_value, counter.get());
+    TEST_ASSERT_EQUAL(new_value - current_value - persisted_value, counter.get());
 }
 
 } // namespace diagnostic
