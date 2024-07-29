@@ -9,6 +9,8 @@
 #include <algorithm>
 #include <cstring>
 
+#include "freertos/FreeRTOSConfig.h"
+
 #include "ocs_diagnostic/basic_counter.h"
 
 namespace ocs {
