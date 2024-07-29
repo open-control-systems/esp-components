@@ -15,6 +15,9 @@ namespace ocs {
 namespace diagnostic {
 
 BasicCounter::BasicCounter(const char* id) {
+    configASSERT(id);
+    configASSERT(strlen(id));
+
     memset(buf_, 0, sizeof(buf_));
     strncpy(buf_, id, std::min(bufsize_, strlen(id)));
 }

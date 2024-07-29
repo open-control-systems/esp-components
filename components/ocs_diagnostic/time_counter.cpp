@@ -19,6 +19,7 @@ TimeCounter::TimeCounter(core::IClock& clock,
     : BasicCounter(id)
     , resolution_(resolution)
     , clock_(clock) {
+    configASSERT(resolution_);
 }
 
 ICounter::Value TimeCounter::get() const {
