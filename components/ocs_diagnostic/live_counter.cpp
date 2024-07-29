@@ -22,9 +22,9 @@ const char* log_tag = "live-counter";
 
 LiveCounter::LiveCounter(storage::IStorage& storage, ICounter& counter)
     : PersistentCounter(storage, counter) {
-    const auto code = storage.erase(counter.id());
+    const auto code = storage.erase(id());
     if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
-        ESP_LOGE(log_tag, "failed to erase counter value: id=%s code=%s", counter.id(),
+        ESP_LOGE(log_tag, "failed to erase counter value: id=%s code=%s", id(),
                  status::code_to_str(code));
     }
 }
