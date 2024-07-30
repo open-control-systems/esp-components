@@ -26,6 +26,9 @@ public:
     //! Append 16-bit number stored to json.
     bool append_uint16(uint16_t value);
 
+    //! Append a constant string to json.
+    bool append_string_ref(const char* str);
+
 private:
     cJSON* json_ { nullptr };
 };
