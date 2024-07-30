@@ -38,7 +38,7 @@ public:
         fanout_formatter_.reset(new (std::nothrow) FanoutJsonFormatter());
         fanout_formatter_->add(formatter);
 
-        json_formatter_.reset(new (std::nothrow) JSONFormatter());
+        json_formatter_.reset(new (std::nothrow) JsonFormatter());
         fanout_formatter_->add(*json_formatter_);
 
         server.add_GET(path, [this, path, log_tag](httpd_req_t* req) {
@@ -57,10 +57,10 @@ public:
     }
 
 private:
-    using JSONFormatter = DefaultJsonFormatter<Size>;
+    using JsonFormatter = DefaultJsonFormatter<Size>;
 
     std::unique_ptr<FanoutJsonFormatter> fanout_formatter_;
-    std::unique_ptr<JSONFormatter> json_formatter_;
+    std::unique_ptr<JsonFormatter> json_formatter_;
 };
 
 } // namespace iot

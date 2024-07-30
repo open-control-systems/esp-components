@@ -12,7 +12,7 @@
 namespace ocs {
 namespace iot {
 
-void CounterJSONFormatter::format(cJSON* json) {
+void CounterJsonFormatter::format(cJSON* json) {
     CjsonObjectFormatter formatter(json);
 
     for (auto& counter : get_counters_()) {

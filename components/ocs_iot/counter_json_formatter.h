@@ -15,7 +15,7 @@
 namespace ocs {
 namespace iot {
 
-class CounterJSONFormatter : public IJsonFormatter,
+class CounterJsonFormatter : public IJsonFormatter,
                              public diagnostic::BasicCounterHolder,
                              public core::NonCopyable<> {
 public:
