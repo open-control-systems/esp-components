@@ -57,6 +57,14 @@ void StateCounter::handle_reboot() {
     persistent_counter_->handle_reboot();
 }
 
+status::StatusCode StateCounter::run() {
+    if (alive_) {
+        return persistent_counter_->run();
+    }
+
+    return status::StatusCode::OK;
+}
+
 void StateCounter::update(StateCounter::State state) {
     if (current_state_ == state) {
         return;

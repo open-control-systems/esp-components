@@ -15,6 +15,7 @@
 #include "ocs_diagnostic/icounter.h"
 #include "ocs_diagnostic/persistent_counter.h"
 #include "ocs_diagnostic/time_counter.h"
+#include "ocs_scheduler/itask.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/ireboot_handler.h"
 
@@ -23,6 +24,7 @@ namespace diagnostic {
 
 class StateCounter : public ICounter,
                      public system::IRebootHandler,
+                     public scheduler::ITask,
                      public core::NonCopyable<> {
 public:
     using State = uint8_t;
@@ -60,6 +62,9 @@ public:
 
     //! Persist counter values on reboot.
     void handle_reboot() override;
+
+    //! Save counter value in a persistent storage if the required state is set.
+    status::StatusCode run() override;
 
 private:
     void handle_state_set_();

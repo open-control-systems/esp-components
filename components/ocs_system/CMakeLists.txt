@@ -4,6 +4,7 @@ idf_component_register(
     "default_clock.cpp"
     "default_rebooter.cpp"
     "delay_rebooter.cpp"
+    "reboot_task.cpp"
 
     REQUIRES
     "esp_timer"

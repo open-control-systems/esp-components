@@ -195,5 +195,26 @@ TEST_CASE("Persistent counter: save value: with previous value",
     TEST_ASSERT_EQUAL(new_value + persisted_value, persistent_counter.get());
 }
 
+TEST_CASE("Persistent counter: save value on task run",
+          "[ocs_diagnostic], [persistent_counter]") {
+    const unsigned counter_value = 42;
+
+    test::TestCounterStorage storage;
+
+    test::TestCounter counter("foo");
+    counter.value = counter_value;
+
+    PersistentCounter persistent_counter(storage, counter);
+    TEST_ASSERT_EQUAL(counter_value, persistent_counter.get());
+
+    TEST_ASSERT_FALSE(storage.get(counter.id()));
+
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, persistent_counter.run());
+
+    const auto read_value = storage.get(counter.id());
+    TEST_ASSERT_TRUE(read_value);
+    TEST_ASSERT_EQUAL(counter_value, *read_value);
+}
+
 } // namespace diagnostic
 } // namespace ocs
