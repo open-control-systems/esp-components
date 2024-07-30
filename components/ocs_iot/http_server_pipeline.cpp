@@ -27,16 +27,20 @@ HttpServerPipeline::HttpServerPipeline() {
         .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
         .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
     }));
+    configASSERT(wifi_network_);
+
     wifi_network_->add(*this);
 
     http_server_.reset(new (std::nothrow) net::HttpServer(net::HttpServer::Params {
         .server_port = CONFIG_OCS_NETWORK_HTTP_SERVER_PORT,
     }));
+    configASSERT(http_server_);
 
     mdns_provider_.reset(new (std::nothrow) net::MdnsProvider(net::MdnsProvider::Params {
         .hostname = CONFIG_OCS_NETWORK_MDNS_HOSTNAME,
         .instance_name = CONFIG_OCS_NETWORK_MDNS_INSTANCE_NAME,
     }));
+    configASSERT(mdns_provider_);
 }
 
 void HttpServerPipeline::handle_connected() {

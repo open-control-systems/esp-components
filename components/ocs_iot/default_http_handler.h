@@ -36,9 +36,13 @@ public:
                        const char* path,
                        const char* log_tag) {
         fanout_formatter_.reset(new (std::nothrow) FanoutJsonFormatter());
+        configASSERT(fanout_formatter_);
+
         fanout_formatter_->add(formatter);
 
         json_formatter_.reset(new (std::nothrow) JsonFormatter());
+        configASSERT(json_formatter_);
+
         fanout_formatter_->add(*json_formatter_);
 
         server.add_GET(path, [this, path, log_tag](httpd_req_t* req) {
