@@ -21,7 +21,7 @@ const char* log_tag = "http-reader";
 
 } // namespace
 
-HTTPClientReader::HTTPClientReader(const Params& params)
+HttpClientReader::HttpClientReader(const Params& params)
     : params_(params)
     , cond_(mu_) {
     memset(&config_, 0, sizeof(config_));
@@ -36,11 +36,11 @@ HTTPClientReader::HTTPClientReader(const Params& params)
     buf_.reset(new (std::nothrow) char[params_.bufsize]);
 }
 
-esp_http_client_handle_t HTTPClientReader::client() const {
+esp_http_client_handle_t HttpClientReader::client() const {
     return client_.get();
 }
 
-bool HTTPClientReader::wait(TickType_t wait) {
+bool HttpClientReader::wait(TickType_t wait) {
     core::StaticMutex::Lock lock(mu_);
 
     bool ret = true;
@@ -52,7 +52,7 @@ bool HTTPClientReader::wait(TickType_t wait) {
     return ret;
 }
 
-unsigned HTTPClientReader::read(char* buf, unsigned size) {
+unsigned HttpClientReader::read(char* buf, unsigned size) {
     core::StaticMutex::Lock lock(mu_);
 
     const unsigned len = std::min(size, strlen(buf_.get()));
@@ -61,9 +61,9 @@ unsigned HTTPClientReader::read(char* buf, unsigned size) {
     return len;
 }
 
-esp_err_t HTTPClientReader::handle_event_(esp_http_client_event_t* event) {
+esp_err_t HttpClientReader::handle_event_(esp_http_client_event_t* event) {
     configASSERT(event->user_data);
-    HTTPClientReader& self = *static_cast<HTTPClientReader*>(event->user_data);
+    HttpClientReader& self = *static_cast<HttpClientReader*>(event->user_data);
 
     switch (event->event_id) {
     case HTTP_EVENT_ERROR:
@@ -105,14 +105,14 @@ esp_err_t HTTPClientReader::handle_event_(esp_http_client_event_t* event) {
     return ESP_OK;
 }
 
-void HTTPClientReader::handle_event_on_data_(esp_http_client_event_t* event) {
+void HttpClientReader::handle_event_on_data_(esp_http_client_event_t* event) {
     core::StaticMutex::Lock lock(mu_);
 
     memcpy(buf_.get(), event->data,
            std::min(event->data_len, static_cast<int>(params_.bufsize)));
 }
 
-void HTTPClientReader::handle_event_on_finish_() {
+void HttpClientReader::handle_event_on_finish_() {
     core::StaticMutex::Lock lock(mu_);
 
     data_received_ = true;

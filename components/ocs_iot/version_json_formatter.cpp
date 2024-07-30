@@ -13,7 +13,7 @@
 namespace ocs {
 namespace iot {
 
-VersionJSONFormatter::VersionJSONFormatter() {
+VersionJsonFormatter::VersionJsonFormatter() {
     add("version_esp_idf", esp_get_idf_version());
 }
 

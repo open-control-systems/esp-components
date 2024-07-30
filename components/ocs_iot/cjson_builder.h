@@ -59,8 +59,8 @@ template <typename T> struct cJSONBuilder {
     }
 };
 
-using cJSONUniqueBuilder = cJSONBuilder<std::unique_ptr<cJSON, decltype(&cJSON_Delete)>>;
-using cJSONSharedBuilder = cJSONBuilder<std::shared_ptr<cJSON>>;
+using CjsonUniqueBuilder = cJSONBuilder<std::unique_ptr<cJSON, decltype(&cJSON_Delete)>>;
+using CjsonSharedBuilder = cJSONBuilder<std::shared_ptr<cJSON>>;
 
 } // namespace iot
 } // namespace ocs

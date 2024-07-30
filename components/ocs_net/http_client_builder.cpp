@@ -11,8 +11,8 @@
 namespace ocs {
 namespace net {
 
-HTTPClientSharedPtr make_http_client_shared(esp_http_client_config_t& config) {
-    return HTTPClientSharedPtr(esp_http_client_init(&config),
+HttpClientSharedPtr make_http_client_shared(esp_http_client_config_t& config) {
+    return HttpClientSharedPtr(esp_http_client_init(&config),
                                [](esp_http_client_handle_t client) {
                                    if (client) {
                                        ESP_ERROR_CHECK(esp_http_client_close(client));

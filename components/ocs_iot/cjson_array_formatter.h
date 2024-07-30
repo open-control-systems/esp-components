@@ -15,13 +15,13 @@
 namespace ocs {
 namespace iot {
 
-class cJSONArrayFormatter : public core::NonCopyable<> {
+class CjsonArrayFormatter : public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
     //! @remarks
     //!  - @p json should be an array.
-    explicit cJSONArrayFormatter(cJSON* json);
+    explicit CjsonArrayFormatter(cJSON* json);
 
     //! Append 16-bit number stored to json.
     bool append_uint16(uint16_t value);

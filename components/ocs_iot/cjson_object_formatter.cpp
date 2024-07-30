@@ -12,12 +12,12 @@
 namespace ocs {
 namespace iot {
 
-cJSONObjectFormatter::cJSONObjectFormatter(cJSON* json)
+CjsonObjectFormatter::CjsonObjectFormatter(cJSON* json)
     : json_(json) {
 }
 
-bool cJSONObjectFormatter::add_string_ref_cs(const char* key, const char* value) {
-    auto item = cJSONUniqueBuilder::make_json_string_ref(value);
+bool CjsonObjectFormatter::add_string_ref_cs(const char* key, const char* value) {
+    auto item = CjsonUniqueBuilder::make_json_string_ref(value);
     if (!item) {
         return false;
     }
@@ -30,8 +30,8 @@ bool cJSONObjectFormatter::add_string_ref_cs(const char* key, const char* value)
     return true;
 }
 
-bool cJSONObjectFormatter::add_string_cs(const char* key, const char* value) {
-    auto item = cJSONUniqueBuilder::make_json_string(value);
+bool CjsonObjectFormatter::add_string_cs(const char* key, const char* value) {
+    auto item = CjsonUniqueBuilder::make_json_string(value);
     if (!item) {
         return false;
     }
@@ -44,8 +44,8 @@ bool cJSONObjectFormatter::add_string_cs(const char* key, const char* value) {
     return true;
 }
 
-bool cJSONObjectFormatter::add_number_cs(const char* key, double value) {
-    auto item = cJSONUniqueBuilder::make_json_number(value);
+bool CjsonObjectFormatter::add_number_cs(const char* key, double value) {
+    auto item = CjsonUniqueBuilder::make_json_number(value);
     if (!item) {
         return false;
     }
@@ -58,8 +58,8 @@ bool cJSONObjectFormatter::add_number_cs(const char* key, double value) {
     return true;
 }
 
-bool cJSONObjectFormatter::add_bool_cs(const char* key, bool value) {
-    auto item = cJSONUniqueBuilder::make_json_bool(value);
+bool CjsonObjectFormatter::add_bool_cs(const char* key, bool value) {
+    auto item = CjsonUniqueBuilder::make_json_bool(value);
     if (!item) {
         return false;
     }
@@ -72,16 +72,16 @@ bool cJSONObjectFormatter::add_bool_cs(const char* key, bool value) {
     return true;
 }
 
-bool cJSONObjectFormatter::add_true_cs(const char* key) {
+bool CjsonObjectFormatter::add_true_cs(const char* key) {
     return add_bool_cs(key, true);
 }
 
-bool cJSONObjectFormatter::add_false_cs(const char* key) {
+bool CjsonObjectFormatter::add_false_cs(const char* key) {
     return add_bool_cs(key, false);
 }
 
-bool cJSONObjectFormatter::add_null_cs(const char* key) {
-    auto item = cJSONUniqueBuilder::make_json_null();
+bool CjsonObjectFormatter::add_null_cs(const char* key) {
+    auto item = CjsonUniqueBuilder::make_json_null();
     if (!item) {
         return false;
     }

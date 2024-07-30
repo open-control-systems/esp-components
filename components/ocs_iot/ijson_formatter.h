@@ -13,10 +13,10 @@
 namespace ocs {
 namespace iot {
 
-class IJSONFormatter {
+class IJsonFormatter {
 public:
     //! Destroy.
-    virtual ~IJSONFormatter() = default;
+    virtual ~IJsonFormatter() = default;
 
     //! Format JSON.
     virtual void format(cJSON* json) = 0;

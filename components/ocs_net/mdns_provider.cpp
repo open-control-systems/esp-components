@@ -13,11 +13,11 @@
 namespace ocs {
 namespace net {
 
-MDNSProvider::MDNSProvider(const Params& params)
+MdnsProvider::MdnsProvider(const Params& params)
     : params_(params) {
 }
 
-status::StatusCode MDNSProvider::start() {
+status::StatusCode MdnsProvider::start() {
     ESP_ERROR_CHECK(mdns_init());
     ESP_ERROR_CHECK(mdns_hostname_set(params_.hostname.c_str()));
     ESP_ERROR_CHECK(mdns_instance_name_set(params_.instance_name.c_str()));
@@ -25,19 +25,19 @@ status::StatusCode MDNSProvider::start() {
     return status::StatusCode::OK;
 }
 
-status::StatusCode MDNSProvider::stop() {
+status::StatusCode MdnsProvider::stop() {
     mdns_free();
     return status::StatusCode::OK;
 }
 
 status::StatusCode
-MDNSProvider::add_service(const char* service, const char* proto, unsigned port) {
+MdnsProvider::add_service(const char* service, const char* proto, unsigned port) {
     ESP_ERROR_CHECK(mdns_service_add(nullptr, service, proto, port, nullptr, 0));
 
     return status::StatusCode::OK;
 }
 
-status::StatusCode MDNSProvider::add_service_txt_records(const char* service,
+status::StatusCode MdnsProvider::add_service_txt_records(const char* service,
                                                          const char* proto,
                                                          const TxtRecordList& records) {
     auto& existing_records = services_[service][proto];

@@ -18,11 +18,11 @@
 namespace ocs {
 namespace iot {
 
-class StringJSONFormatter : public IJSONFormatter,
-                            public core::NonCopyable<StringJSONFormatter> {
+class StringJsonFormatter : public IJsonFormatter,
+                            public core::NonCopyable<StringJsonFormatter> {
 public:
     //! Destroy.
-    virtual ~StringJSONFormatter() = default;
+    virtual ~StringJsonFormatter() = default;
 
     //! Format key-value pairs into @p json.
     void format(cJSON* json) override;

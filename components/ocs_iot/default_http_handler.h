@@ -22,7 +22,7 @@ namespace ocs {
 namespace iot {
 
 template <unsigned Size>
-class DefaultHTTPHandler : public core::NonCopyable<DefaultHTTPHandler<Size>> {
+class DefaultHttpHandler : public core::NonCopyable<DefaultHttpHandler<Size>> {
 public:
     //! Initialize.
     //!
@@ -31,18 +31,18 @@ public:
     //!  - @p formatter to format the data.
     //!  - @p path - URI path.
     //!  - @p log_tag - ESP-IDF log tag.
-    DefaultHTTPHandler(net::HTTPServer& server,
-                       IJSONFormatter& formatter,
+    DefaultHttpHandler(net::HttpServer& server,
+                       IJsonFormatter& formatter,
                        const char* path,
                        const char* log_tag) {
-        fanout_formatter_.reset(new (std::nothrow) FanoutJSONFormatter());
+        fanout_formatter_.reset(new (std::nothrow) FanoutJsonFormatter());
         fanout_formatter_->add(formatter);
 
         json_formatter_.reset(new (std::nothrow) JSONFormatter());
         fanout_formatter_->add(*json_formatter_);
 
         server.add_GET(path, [this, path, log_tag](httpd_req_t* req) {
-            auto json = cJSONUniqueBuilder::make_json();
+            auto json = CjsonUniqueBuilder::make_json();
             fanout_formatter_->format(json.get());
 
             const auto err =
@@ -57,9 +57,9 @@ public:
     }
 
 private:
-    using JSONFormatter = DefaultJSONFormatter<Size>;
+    using JSONFormatter = DefaultJsonFormatter<Size>;
 
-    std::unique_ptr<FanoutJSONFormatter> fanout_formatter_;
+    std::unique_ptr<FanoutJsonFormatter> fanout_formatter_;
     std::unique_ptr<JSONFormatter> json_formatter_;
 };
 

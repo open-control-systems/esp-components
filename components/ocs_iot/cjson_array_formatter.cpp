@@ -14,13 +14,13 @@
 namespace ocs {
 namespace iot {
 
-cJSONArrayFormatter::cJSONArrayFormatter(cJSON* json)
+CjsonArrayFormatter::CjsonArrayFormatter(cJSON* json)
     : json_(json) {
     assert(cJSON_IsArray(json_));
 }
 
-bool cJSONArrayFormatter::append_uint16(uint16_t value) {
-    auto item = cJSONUniqueBuilder::make_json_number(value);
+bool CjsonArrayFormatter::append_uint16(uint16_t value) {
+    auto item = CjsonUniqueBuilder::make_json_number(value);
     if (!item) {
         return false;
     }

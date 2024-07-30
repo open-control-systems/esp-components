@@ -15,10 +15,10 @@
 namespace ocs {
 namespace net {
 
-using HTTPClientSharedPtr =
+using HttpClientSharedPtr =
     std::shared_ptr<std::remove_pointer<esp_http_client_handle_t>::type>;
 
-HTTPClientSharedPtr make_http_client_shared(esp_http_client_config_t& config);
+HttpClientSharedPtr make_http_client_shared(esp_http_client_config_t& config);
 
 } // namespace net
 } // namespace ocs

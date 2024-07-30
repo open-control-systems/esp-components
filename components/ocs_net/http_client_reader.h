@@ -19,7 +19,7 @@
 namespace ocs {
 namespace net {
 
-class HTTPClientReader : public core::NonCopyable<> {
+class HttpClientReader : public core::NonCopyable<> {
 public:
     struct Params {
         //! Domain or IP as string.
@@ -33,7 +33,7 @@ public:
     };
 
     //! Initialize.
-    explicit HTTPClientReader(const Params& params);
+    explicit HttpClientReader(const Params& params);
 
     //! Return the underlying HTTP client handle.
     esp_http_client_handle_t client() const;
@@ -59,7 +59,7 @@ private:
     const Params params_;
 
     esp_http_client_config_t config_;
-    HTTPClientSharedPtr client_;
+    HttpClientSharedPtr client_;
 
     core::StaticMutex mu_;
     core::Cond cond_;

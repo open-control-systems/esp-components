@@ -24,7 +24,7 @@ TEST_CASE("mDNS start/stop", "[ocs_net], [mdns_provider]") {
         .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
     });
 
-    MDNSProvider provider(MDNSProvider::Params {
+    MdnsProvider provider(MdnsProvider::Params {
         .hostname = "host",
         .instance_name = "instance",
     });
