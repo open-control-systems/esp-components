@@ -32,9 +32,11 @@ StateCounter::StateCounter(storage::IStorage& storage,
     configASSERT(required_state_);
 
     time_counter_.reset(new (std::nothrow) TimeCounter(clock, id, resolution_));
+    configASSERT(time_counter_);
 
     persistent_counter_.reset(new (std::nothrow)
                                   PersistentCounter(storage, *time_counter_));
+    configASSERT(persistent_counter_);
 
     counter_ = persistent_counter_.get();
 }

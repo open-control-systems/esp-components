@@ -34,6 +34,7 @@ HttpClientReader::HttpClientReader(const Params& params)
     client_ = make_http_client_shared(config_);
 
     buf_.reset(new (std::nothrow) char[params_.bufsize]);
+    configASSERT(buf_);
 }
 
 esp_http_client_handle_t HttpClientReader::client() const {
