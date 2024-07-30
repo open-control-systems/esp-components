@@ -129,5 +129,42 @@ TEST_CASE("State counter: state changed multiple times",
     TEST_ASSERT_EQUAL(new_value - current_value - persisted_value, counter.get());
 }
 
+TEST_CASE("State counter: persist state on task run",
+          "[ocs_diagnostic], [state_counter]") {
+    const char* id = "foo";
+
+    const core::microseconds_t resolution = core::Second;
+
+    const StateCounter::State required_state = 1;
+    const StateCounter::State new_state = 2;
+
+    const unsigned current_value = 25;
+
+    test::TestClock clock;
+    clock.value = current_value * resolution;
+
+    test::TestCounterStorage storage;
+    TEST_ASSERT_FALSE(storage.get(id));
+
+    StateCounter counter(storage, clock, id, resolution, required_state);
+
+    // Counter is inactive.
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, counter.run());
+    TEST_ASSERT_FALSE(storage.get(id));
+
+    // Counter is stil inactive.
+    counter.update(new_state);
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, counter.run());
+    TEST_ASSERT_FALSE(storage.get(id));
+
+    // Counter has become active.
+    counter.update(required_state);
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, counter.run());
+
+    const auto read_value = storage.get(id);
+    TEST_ASSERT_TRUE(read_value);
+    TEST_ASSERT_EQUAL(current_value, *read_value);
+}
+
 } // namespace diagnostic
 } // namespace ocs

@@ -14,6 +14,8 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_diagnostic/basic_counter_holder.h"
 #include "ocs_diagnostic/persistent_counter.h"
+#include "ocs_scheduler/async_task_scheduler.h"
+#include "ocs_scheduler/timer_store.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
@@ -27,6 +29,8 @@ public:
     SystemCounterPipeline(core::IClock& clock,
                           storage::IStorage& storage,
                           system::FanoutRebootHandler& reboot_handler,
+                          scheduler::AsyncTaskScheduler& task_scheduler,
+                          scheduler::TimerStore& timer_store,
                           diagnostic::BasicCounterHolder& counter_holder);
 
 private:
@@ -35,6 +39,8 @@ private:
 
     std::unique_ptr<diagnostic::ICounter> lifetime_counter_;
     std::unique_ptr<diagnostic::PersistentCounter> lifetime_persistent_counter_;
+    scheduler::AsyncTaskScheduler::TaskPtr lifetime_counter_task_async_;
+    std::unique_ptr<scheduler::ITimer> lifetime_counter_timer_;
 };
 
 } // namespace iot

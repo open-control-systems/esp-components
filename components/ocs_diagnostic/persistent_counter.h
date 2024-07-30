@@ -10,6 +10,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_diagnostic/icounter.h"
+#include "ocs_scheduler/itask.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/ireboot_handler.h"
 
@@ -18,6 +19,7 @@ namespace diagnostic {
 
 class PersistentCounter : public ICounter,
                           public system::IRebootHandler,
+                          public scheduler::ITask,
                           public core::NonCopyable<PersistentCounter> {
 public:
     //! Initialize.
@@ -38,6 +40,9 @@ public:
 
     //! Persist the counter value on reboot.
     void handle_reboot() override;
+
+    //! Save counter value in a persistent storage.
+    status::StatusCode run() override;
 
     //! Persist the counter value.
     status::StatusCode save();

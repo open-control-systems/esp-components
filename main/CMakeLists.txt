@@ -11,6 +11,7 @@ idf_component_register(
     "ocs_system"
     "ocs_diagnostic"
     "ocs_test"
+    "ocs_scheduler"
 
     INCLUDE_DIRS
     "."

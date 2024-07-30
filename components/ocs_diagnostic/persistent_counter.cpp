@@ -46,6 +46,10 @@ void PersistentCounter::handle_reboot() {
     }
 }
 
+status::StatusCode PersistentCounter::run() {
+    return save();
+}
+
 status::StatusCode PersistentCounter::save() {
     const auto value = get();
     return storage_.write(counter_.id(), &value, sizeof(value));
