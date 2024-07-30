@@ -20,7 +20,7 @@ namespace ocs {
 namespace net {
 
 //! Provides local network service.
-class MDNSProvider : public core::NonCopyable<> {
+class MdnsProvider : public core::NonCopyable<> {
 public:
     struct Params {
         std::string hostname;
@@ -31,7 +31,7 @@ public:
     using TxtRecordList = std::vector<TxtRecord>;
 
     //! Initialize.
-    explicit MDNSProvider(const Params& params);
+    explicit MdnsProvider(const Params& params);
 
     //! Start mDNS service.
     status::StatusCode start();

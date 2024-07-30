@@ -22,12 +22,12 @@ namespace ocs {
 namespace net {
 
 TEST_CASE("Stop HTTP server: no start", "[ocs_net], [http_server]") {
-    HTTPServer server(HTTPServer::Params {});
+    HttpServer server(HttpServer::Params {});
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
 }
 
 TEST_CASE("Start HTTP server: no WiFi", "[ocs_net], [http_server]") {
-    HTTPServer server(HTTPServer::Params {});
+    HttpServer server(HttpServer::Params {});
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
 }
@@ -43,7 +43,7 @@ TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_net], [http_serve
     TEST_ASSERT_EQUAL(status::StatusCode::OK, wifi_network.start());
     TEST_ASSERT_EQUAL(status::StatusCode::Error, wifi_network.wait());
 
-    HTTPServer server(HTTPServer::Params {});
+    HttpServer server(HttpServer::Params {});
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
 
@@ -54,7 +54,7 @@ TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_net], [http_serve
 TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_net], [http_server]") {
     const unsigned server_port = 80;
 
-    HTTPServer server(HTTPServer::Params {
+    HttpServer server(HttpServer::Params {
         .server_port = server_port,
     });
 
@@ -86,7 +86,7 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_net], [http_server]
 
     ip_addr_to_str ip_addr_str(*ip_addr);
 
-    HTTPClientReader reader(HTTPClientReader::Params {
+    HttpClientReader reader(HttpClientReader::Params {
         .host = ip_addr_str.c_str(),
         .path = path,
         .bufsize = 128,

@@ -19,13 +19,13 @@
 namespace ocs {
 namespace iot {
 
-class HTTPServerPipeline : public net::INetworkHandler, public core::NonCopyable<> {
+class HttpServerPipeline : public net::INetworkHandler, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
     //! @remarks
     //!  NVS should be initialized.
-    HTTPServerPipeline();
+    HttpServerPipeline();
 
     //! Start HTTP server.
     void handle_connected() override;
@@ -40,10 +40,10 @@ public:
     net::BasicNetwork& network();
 
     //! Return HTTP server.
-    net::HTTPServer& server();
+    net::HttpServer& server();
 
     //! Return mDNS instance.
-    net::MDNSProvider& mdns();
+    net::MdnsProvider& mdns();
 
 private:
     status::StatusCode try_start_wifi_();
@@ -53,8 +53,8 @@ private:
     void stop_mdns_();
 
     std::unique_ptr<net::BasicNetwork> wifi_network_;
-    std::unique_ptr<net::HTTPServer> http_server_;
-    std::unique_ptr<net::MDNSProvider> mdns_provider_;
+    std::unique_ptr<net::HttpServer> http_server_;
+    std::unique_ptr<net::MdnsProvider> mdns_provider_;
 };
 
 } // namespace iot

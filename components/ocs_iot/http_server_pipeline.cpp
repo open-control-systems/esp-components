@@ -21,7 +21,7 @@ const char* log_tag = "http-server-pipeline";
 
 } // namespace
 
-HTTPServerPipeline::HTTPServerPipeline() {
+HttpServerPipeline::HttpServerPipeline() {
     wifi_network_.reset(new (std::nothrow) net::WiFiNetwork(net::WiFiNetwork::Params {
         .max_retry_count = CONFIG_OCS_NETWORK_WIFI_STA_RETRY_COUNT,
         .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
@@ -29,25 +29,25 @@ HTTPServerPipeline::HTTPServerPipeline() {
     }));
     wifi_network_->add(*this);
 
-    http_server_.reset(new (std::nothrow) net::HTTPServer(net::HTTPServer::Params {
+    http_server_.reset(new (std::nothrow) net::HttpServer(net::HttpServer::Params {
         .server_port = CONFIG_OCS_NETWORK_HTTP_SERVER_PORT,
     }));
 
-    mdns_provider_.reset(new (std::nothrow) net::MDNSProvider(net::MDNSProvider::Params {
+    mdns_provider_.reset(new (std::nothrow) net::MdnsProvider(net::MdnsProvider::Params {
         .hostname = CONFIG_OCS_NETWORK_MDNS_HOSTNAME,
         .instance_name = CONFIG_OCS_NETWORK_MDNS_INSTANCE_NAME,
     }));
 }
 
-void HTTPServerPipeline::handle_connected() {
+void HttpServerPipeline::handle_connected() {
     http_server_->start();
 }
 
-void HTTPServerPipeline::handle_disconnected() {
+void HttpServerPipeline::handle_disconnected() {
     http_server_->stop();
 }
 
-status::StatusCode HTTPServerPipeline::start() {
+status::StatusCode HttpServerPipeline::start() {
     auto code = try_start_wifi_();
     if (code != status::StatusCode::OK) {
         stop_wifi_();
@@ -63,19 +63,19 @@ status::StatusCode HTTPServerPipeline::start() {
     return status::StatusCode::OK;
 }
 
-net::BasicNetwork& HTTPServerPipeline::network() {
+net::BasicNetwork& HttpServerPipeline::network() {
     return *wifi_network_;
 }
 
-net::HTTPServer& HTTPServerPipeline::server() {
+net::HttpServer& HttpServerPipeline::server() {
     return *http_server_;
 }
 
-net::MDNSProvider& HTTPServerPipeline::mdns() {
+net::MdnsProvider& HttpServerPipeline::mdns() {
     return *mdns_provider_;
 }
 
-status::StatusCode HTTPServerPipeline::try_start_wifi_() {
+status::StatusCode HttpServerPipeline::try_start_wifi_() {
     auto code = wifi_network_->start();
     if (code != status::StatusCode::OK) {
         ESP_LOGE(log_tag, "failed to start the WiFi connection process: code=%s",
@@ -92,7 +92,7 @@ status::StatusCode HTTPServerPipeline::try_start_wifi_() {
     return status::StatusCode::OK;
 }
 
-status::StatusCode HTTPServerPipeline::try_start_mdns_() {
+status::StatusCode HttpServerPipeline::try_start_mdns_() {
     auto code = mdns_provider_->start();
     if (code != status::StatusCode::OK) {
         ESP_LOGE(log_tag, "failed to start the mDNS service: code=%s",
@@ -110,7 +110,7 @@ status::StatusCode HTTPServerPipeline::try_start_mdns_() {
     return status::StatusCode::OK;
 }
 
-void HTTPServerPipeline::stop_wifi_() {
+void HttpServerPipeline::stop_wifi_() {
     const auto code = wifi_network_->stop();
     if (code != status::StatusCode::OK) {
         ESP_LOGE(log_tag, "failed to stop the WiFi connection process: code=%s",
@@ -120,7 +120,7 @@ void HTTPServerPipeline::stop_wifi_() {
     wifi_network_ = nullptr;
 }
 
-void HTTPServerPipeline::stop_mdns_() {
+void HttpServerPipeline::stop_mdns_() {
     const auto code = mdns_provider_->stop();
     if (code != status::StatusCode::OK) {
         ESP_LOGE(log_tag, "failed to stop the mDNS service: code=%s",

@@ -20,7 +20,7 @@
 namespace ocs {
 namespace net {
 
-class HTTPServer : public core::NonCopyable<> {
+class HttpServer : public core::NonCopyable<> {
 public:
     //! Handler to process an HTTP request.
     using HandlerFunc = std::function<status::StatusCode(httpd_req_t* req)>;
@@ -31,10 +31,10 @@ public:
     };
 
     //! Initialize.
-    explicit HTTPServer(const Params& params);
+    explicit HttpServer(const Params& params);
 
     //! Destroy.
-    ~HTTPServer();
+    ~HttpServer();
 
     //! Start HTTP server.
     status::StatusCode start();

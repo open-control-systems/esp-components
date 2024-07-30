@@ -16,16 +16,16 @@
 namespace ocs {
 namespace iot {
 
-class FanoutJSONFormatter : public IJSONFormatter, public core::NonCopyable<> {
+class FanoutJsonFormatter : public IJsonFormatter, public core::NonCopyable<> {
 public:
     //! Propogate the call to the underlying formatters.
     void format(cJSON* json) override;
 
     //! Add @p formatter to be notified when format is called.
-    void add(IJSONFormatter& formatter);
+    void add(IJsonFormatter& formatter);
 
 private:
-    std::vector<IJSONFormatter*> formatters_;
+    std::vector<IJsonFormatter*> formatters_;
 };
 
 } // namespace iot

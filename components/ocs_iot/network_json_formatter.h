@@ -15,13 +15,13 @@
 namespace ocs {
 namespace iot {
 
-class NetworkJSONFormatter : public iot::IJSONFormatter, public core::NonCopyable<> {
+class NetworkJsonFormatter : public iot::IJsonFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
     //! @params
     //!  - @p network to read the network data.
-    explicit NetworkJSONFormatter(net::BasicNetwork& network);
+    explicit NetworkJsonFormatter(net::BasicNetwork& network);
 
     //! Format the network data in @p json.
     void format(cJSON* json) override;

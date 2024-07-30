@@ -79,8 +79,8 @@ const char* reset_reason_to_str(esp_reset_reason_t reason) {
 
 } // namespace
 
-void SystemJSONFormatter::format(cJSON* json) {
-    cJSONObjectFormatter formatter(json);
+void SystemJsonFormatter::format(cJSON* json) {
+    CjsonObjectFormatter formatter(json);
 
     formatter.add_number_cs("system_memory_heap", esp_get_free_heap_size());
     formatter.add_number_cs("system_memory_heap_min", esp_get_minimum_free_heap_size());

@@ -11,13 +11,13 @@
 namespace ocs {
 namespace iot {
 
-void FanoutJSONFormatter::format(cJSON* json) {
+void FanoutJsonFormatter::format(cJSON* json) {
     for (auto& formatter : formatters_) {
         formatter->format(json);
     }
 }
 
-void FanoutJSONFormatter::add(IJSONFormatter& formatter) {
+void FanoutJsonFormatter::add(IJsonFormatter& formatter) {
     formatters_.emplace_back(&formatter);
 }
 

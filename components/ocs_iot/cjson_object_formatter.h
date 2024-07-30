@@ -17,10 +17,10 @@
 namespace ocs {
 namespace iot {
 
-class cJSONObjectFormatter : public core::NonCopyable<> {
+class CjsonObjectFormatter : public core::NonCopyable<> {
 public:
     //! Initialize.
-    explicit cJSONObjectFormatter(cJSON* json);
+    explicit CjsonObjectFormatter(cJSON* json);
 
     //! Add constant string @p value with constant @p key to @p json.
     bool add_string_ref_cs(const char* key, const char* value);

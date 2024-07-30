@@ -14,10 +14,10 @@
 namespace ocs {
 namespace iot {
 
-class VersionJSONFormatter : public StringJSONFormatter, public core::NonCopyable<> {
+class VersionJsonFormatter : public StringJsonFormatter, public core::NonCopyable<> {
 public:
     //! Add ESP-IDF version on initialization.
-    VersionJSONFormatter();
+    VersionJsonFormatter();
 };
 
 } // namespace iot

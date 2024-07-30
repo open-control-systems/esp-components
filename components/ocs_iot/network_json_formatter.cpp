@@ -25,20 +25,20 @@ const char* log_tag = "network-json-formatter";
 
 } // namespace
 
-NetworkJSONFormatter::NetworkJSONFormatter(net::BasicNetwork& network)
+NetworkJsonFormatter::NetworkJsonFormatter(net::BasicNetwork& network)
     : network_(network) {
 }
 
-void NetworkJSONFormatter::format(cJSON* json) {
+void NetworkJsonFormatter::format(cJSON* json) {
     format_ap_info_(json);
     format_ip_addr_(json);
 }
 
-void NetworkJSONFormatter::format_ap_info_(cJSON* json) {
+void NetworkJsonFormatter::format_ap_info_(cJSON* json) {
     wifi_ap_record_t record;
     memset(&record, 0, sizeof(record));
 
-    cJSONObjectFormatter formatter(json);
+    CjsonObjectFormatter formatter(json);
 
     const auto err = esp_wifi_sta_get_ap_info(&record);
     if (err == ESP_OK) {
@@ -57,8 +57,8 @@ void NetworkJSONFormatter::format_ap_info_(cJSON* json) {
     }
 }
 
-void NetworkJSONFormatter::format_ip_addr_(cJSON* json) {
-    cJSONObjectFormatter formatter(json);
+void NetworkJsonFormatter::format_ip_addr_(cJSON* json) {
+    CjsonObjectFormatter formatter(json);
 
     const auto addr = network_.get_ip_addr();
     if (addr) {
