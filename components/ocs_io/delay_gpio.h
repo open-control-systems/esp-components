@@ -19,14 +19,14 @@ namespace io {
 class DelayGpio : public IGpio, public core::NonCopyable<> {
 public:
     struct Params {
+        //! Interval to wait after the GPIO is flipped.
+        TickType_t flip_delay_interval { pdMS_TO_TICKS(0) };
+
         //! Interval to wait after the GPIO is turned on.
         TickType_t turn_on_delay_interval { pdMS_TO_TICKS(0) };
 
         //! Interval to wait after the GPIO is turned off.
         TickType_t turn_off_delay_interval { pdMS_TO_TICKS(0) };
-
-        //! Interval to wait after the GPIO is flipped.
-        TickType_t flip_delay_interval { pdMS_TO_TICKS(0) };
     };
 
     //! Initialize.
