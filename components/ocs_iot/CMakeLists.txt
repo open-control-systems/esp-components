@@ -10,6 +10,7 @@ idf_component_register(
     "system_counter_pipeline.cpp"
     "counter_json_formatter.cpp"
     "http_server_pipeline.cpp"
+    "system_pipeline.cpp"
 
     REQUIRES
     "ocs_net"

@@ -22,7 +22,7 @@ namespace ocs {
 namespace iot {
 
 template <unsigned Size>
-class DefaultHttpHandler : public core::NonCopyable<DefaultHttpHandler<Size>> {
+class HttpDataHandler : public core::NonCopyable<HttpDataHandler<Size>> {
 public:
     //! Initialize.
     //!
@@ -31,10 +31,10 @@ public:
     //!  - @p formatter to format the data.
     //!  - @p path - URI path.
     //!  - @p log_tag - ESP-IDF log tag.
-    DefaultHttpHandler(net::HttpServer& server,
-                       IJsonFormatter& formatter,
-                       const char* path,
-                       const char* log_tag) {
+    HttpDataHandler(net::HttpServer& server,
+                    IJsonFormatter& formatter,
+                    const char* path,
+                    const char* log_tag) {
         fanout_formatter_.reset(new (std::nothrow) FanoutJsonFormatter());
         configASSERT(fanout_formatter_);
 
