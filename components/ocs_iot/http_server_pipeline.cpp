@@ -44,11 +44,19 @@ HttpServerPipeline::HttpServerPipeline() {
 }
 
 void HttpServerPipeline::handle_connected() {
-    http_server_->start();
+    const auto code = http_server_->start();
+    if (code != status::StatusCode::OK) {
+        ESP_LOGE(log_tag, "failed to start HTTP server when WiFi is connected: code=%s",
+                 status::code_to_str(code));
+    }
 }
 
 void HttpServerPipeline::handle_disconnected() {
-    http_server_->stop();
+    const auto code = http_server_->stop();
+    if (code != status::StatusCode::OK) {
+        ESP_LOGE(log_tag, "failed to stop HTTP server when WiFi is disconnected: code=%s",
+                 status::code_to_str(code));
+    }
 }
 
 status::StatusCode HttpServerPipeline::start() {
