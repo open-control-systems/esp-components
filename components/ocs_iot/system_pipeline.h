@@ -49,7 +49,7 @@ private:
     std::unique_ptr<system::IRebooter> delay_rebooter_;
 
     std::unique_ptr<scheduler::ITask> reboot_task_;
-    scheduler::AsyncTaskScheduler::TaskPtr reboot_task_async_;
+    scheduler::ITask* reboot_task_async_ { nullptr };
 };
 
 } // namespace iot

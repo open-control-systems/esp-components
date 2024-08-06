@@ -23,28 +23,36 @@ const char* log_tag = "async-task-scheduler";
 
 } // namespace
 
-AsyncTaskScheduler::TaskPtr AsyncTaskScheduler::add(ITask& task) {
-    if (tasks_.size() == max_task_count) {
+AsyncTaskScheduler::AsyncTaskScheduler() {
+    // Ensure memory won't be reallocated, otherwise pointers, returned by
+    // add() function, will point to the invalid memory region.
+    nodes_.reserve(max_task_count);
+}
+
+ITask* AsyncTaskScheduler::add(ITask& task) {
+    if (nodes_.size() == max_task_count) {
         return nullptr;
     }
 
-    for (const auto& [e, t] : tasks_) {
-        if (t == &task) {
-            ESP_LOGE(log_tag, "task already exists: event=%lu", e);
+    for (const auto& node : nodes_) {
+        if (node.task == &task) {
+            ESP_LOGE(log_tag, "task already exists: event=%lu", node.event);
             return nullptr;
         }
     }
 
-    const ITask::Event event = BIT(tasks_.size());
-    tasks_.emplace_back(std::pair<ITask::Event, ITask*>(event, &task));
+    const ITask::Event event = BIT(nodes_.size());
+
+    TaskNode node(&task, event_group_.get(), event);
+    nodes_.emplace_back(node);
 
     bits_all_ |= event;
 
-    return TaskPtr(new (std::nothrow) AsyncTask(event_group_.get(), event));
+    return &nodes_.back().async_task;
 }
 
 void AsyncTaskScheduler::run() {
-    ESP_LOGI(log_tag, "start handling tasks: count=%u max=%u", tasks_.size(),
+    ESP_LOGI(log_tag, "start handling tasks: count=%u max=%u", nodes_.size(),
              max_task_count);
 
     while (true) {
@@ -53,16 +61,16 @@ void AsyncTaskScheduler::run() {
 }
 
 void AsyncTaskScheduler::wait(TickType_t wait) {
-    configASSERT(tasks_.size());
+    configASSERT(nodes_.size());
 
     const EventBits_t bits =
         xEventGroupWaitBits(event_group_.get(), bits_all_, pdTRUE, pdFALSE, wait);
 
-    for (auto& [event, task] : tasks_) {
-        if (bits & event) {
-            const auto code = task->run();
+    for (auto& node : nodes_) {
+        if (bits & node.event) {
+            const auto code = node.task->run();
             if (code != status::StatusCode::OK) {
-                ESP_LOGE(log_tag, "failed to run task: event=%lu code=%s", event,
+                ESP_LOGE(log_tag, "failed to run task: event=%lu code=%s", node.event,
                          status::code_to_str(code));
             }
         }

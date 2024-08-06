@@ -39,7 +39,7 @@ private:
 
     std::unique_ptr<diagnostic::ICounter> lifetime_counter_;
     std::unique_ptr<diagnostic::PersistentCounter> lifetime_persistent_counter_;
-    scheduler::AsyncTaskScheduler::TaskPtr lifetime_counter_task_async_;
+    scheduler::ITask* lifetime_counter_task_async_ { nullptr };
     std::unique_ptr<scheduler::ITimer> lifetime_counter_timer_;
 };
 

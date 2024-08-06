@@ -56,11 +56,10 @@ TEST_CASE("Async task scheduler: register maximum tasks",
         tasks.push_back(task);
     }
 
-    using AsyncTaskPtr = std::shared_ptr<ITask>;
-    std::vector<AsyncTaskPtr> async_tasks;
+    std::vector<ITask*> async_tasks;
 
     for (auto& task : tasks) {
-        auto async_task = AsyncTaskPtr(scheduler.add(*task));
+        auto async_task = scheduler.add(*task);
         TEST_ASSERT_NOT_NULL(async_task);
 
         async_tasks.push_back(async_task);
@@ -96,11 +95,10 @@ TEST_CASE("Async task scheduler: register maximum tasks: some failed",
         tasks.push_back(task);
     }
 
-    using AsyncTaskPtr = std::shared_ptr<ITask>;
-    std::vector<AsyncTaskPtr> async_tasks;
+    std::vector<ITask*> async_tasks;
 
     for (auto& task : tasks) {
-        auto async_task = AsyncTaskPtr(scheduler.add(*task));
+        auto async_task = scheduler.add(*task);
         TEST_ASSERT_NOT_NULL(async_task);
 
         async_tasks.push_back(async_task);

@@ -11,13 +11,12 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/event_groups.h"
 
-#include "ocs_core/noncopyable.h"
 #include "ocs_scheduler/itask.h"
 
 namespace ocs {
 namespace scheduler {
 
-class AsyncTask : public ITask, public core::NonCopyable<> {
+class AsyncTask : public ITask {
 public:
     //! Initialize.
     //!

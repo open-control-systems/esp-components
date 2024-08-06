@@ -8,20 +8,19 @@
 
 #pragma once
 
-#include <memory>
-#include <utility>
 #include <vector>
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_event_group.h"
-#include "ocs_scheduler/itask.h"
+#include "ocs_scheduler/async_task.h"
 
 namespace ocs {
 namespace scheduler {
 
 class AsyncTaskScheduler : public core::NonCopyable<> {
 public:
-    using TaskPtr = std::unique_ptr<ITask>;
+    //! Initialize.
+    AsyncTaskScheduler();
 
     //! Maximum number of tasks to which a scheduler can deliver asynchronous events.
     //!
@@ -35,7 +34,7 @@ public:
     //!  A valid pointer if the task was registered properly,
     //!  nullptr if task was already registered,
     //!  nullptr if maximum number of tasks were already registered.
-    TaskPtr add(ITask& task);
+    ITask* add(ITask& task);
 
     //! Handle asynchronous events.
     //!
@@ -47,11 +46,23 @@ public:
     void wait(TickType_t wait = portMAX_DELAY);
 
 private:
+    struct TaskNode {
+        TaskNode(ITask* task, EventGroupHandle_t event_group, ITask::Event event)
+            : task(task)
+            , event(event)
+            , async_task(event_group, event) {
+        }
+
+        ITask* task { nullptr };
+        ITask::Event event { 0 };
+        AsyncTask async_task;
+    };
+
     core::StaticEventGroup event_group_;
 
     ITask::Event bits_all_ { 0 };
 
-    std::vector<std::pair<ITask::Event, ITask*>> tasks_;
+    std::vector<TaskNode> nodes_;
 };
 
 } // namespace scheduler
