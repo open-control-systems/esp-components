@@ -20,8 +20,8 @@
 namespace ocs {
 namespace iot {
 
-template <unsigned RegistrationBufferSize,
-          unsigned TelemetryBufferSize,
+template <unsigned TelemetryBufferSize,
+          unsigned RegistrationBufferSize,
           unsigned CommandBufferSize>
 class HttpPipeline : public core::NonCopyable<> {
 public:
@@ -103,8 +103,8 @@ private:
             });
     }
 
-    using RegistrationHandler = HttpDataHandler<RegistrationBufferSize>;
     using TelemetryHandler = HttpDataHandler<TelemetryBufferSize>;
+    using RegistrationHandler = HttpDataHandler<RegistrationBufferSize>;
     using CommandHandler = HttpCommandHandler<CommandBufferSize>;
 
     static const constexpr char* log_tag_ = "http-pipeline";
