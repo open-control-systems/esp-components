@@ -56,7 +56,9 @@ ICounter::Value StateCounter::get() const {
 }
 
 void StateCounter::handle_reboot() {
-    persistent_counter_->handle_reboot();
+    if (alive_) {
+        persistent_counter_->handle_reboot();
+    }
 }
 
 status::StatusCode StateCounter::run() {

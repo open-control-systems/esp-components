@@ -166,5 +166,50 @@ TEST_CASE("State counter: persist state on task run",
     TEST_ASSERT_EQUAL(current_value, *read_value);
 }
 
+TEST_CASE("State counter: save counter when reboot is happened",
+          "[ocs_diagnostic], [state_counter]") {
+    const char* id = "foo";
+
+    const core::microseconds_t resolution = core::Second;
+
+    const StateCounter::State required_state = 1;
+    const StateCounter::State new_state = 2;
+
+    const unsigned current_value = 25;
+
+    test::TestClock clock;
+    clock.value = current_value * resolution;
+
+    test::TestCounterStorage storage;
+    TEST_ASSERT_FALSE(storage.get(id));
+
+    StateCounter counter(storage, clock, id, resolution, required_state);
+
+    TEST_ASSERT_FALSE(storage.get(id));
+    TEST_ASSERT_EQUAL(0, counter.get());
+
+    // There was no previous state, ensure no data.
+    counter.update(new_state);
+    TEST_ASSERT_FALSE(storage.get(id));
+    TEST_ASSERT_EQUAL(0, counter.get());
+
+    // There was no previous state, ensure no data.
+    counter.handle_reboot();
+    TEST_ASSERT_FALSE(storage.get(id));
+    TEST_ASSERT_EQUAL(0, counter.get());
+
+    // Required state is set.
+    counter.update(required_state);
+    TEST_ASSERT_TRUE(storage.get(id));
+    TEST_ASSERT_EQUAL(current_value, counter.get());
+
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, storage.erase(id));
+    TEST_ASSERT_FALSE(storage.get(id));
+
+    counter.handle_reboot();
+    TEST_ASSERT_TRUE(storage.get(id));
+    TEST_ASSERT_EQUAL(current_value, counter.get());
+}
+
 } // namespace diagnostic
 } // namespace ocs
