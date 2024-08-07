@@ -39,6 +39,8 @@ StateCounter::StateCounter(storage::IStorage& storage,
     configASSERT(persistent_counter_);
 
     counter_ = persistent_counter_.get();
+
+    last_value_ = persistent_counter_->get() - time_counter_->get();
 }
 
 const char* StateCounter::id() const {
@@ -89,9 +91,11 @@ void StateCounter::handle_state_set_() {
             ESP_LOGE(log_tag, "failed to invalidate counter value: id=%s code=%s",
                      counter_->id(), status::code_to_str(code));
         }
-    }
 
-    time_counter_->reset(last_value_ * resolution_);
+        time_counter_->reset(last_value_ * resolution_);
+    } else {
+        time_counter_->reset(0);
+    }
 
     last_value_ = 0;
     alive_ = true;
