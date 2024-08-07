@@ -13,6 +13,7 @@ idf_component_register(
     "ocs_test"
     "ocs_scheduler"
     "ocs_io"
+    "ocs_sensor"
 
     INCLUDE_DIRS
     "."
