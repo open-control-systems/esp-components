@@ -11,6 +11,9 @@ idf_component_register(
     "counter_json_formatter.cpp"
     "http_server_pipeline.cpp"
     "system_pipeline.cpp"
+    "telemetry_json_formatter.cpp"
+    "registration_json_formatter.cpp"
+    "json_data_pipeline.cpp"
 
     REQUIRES
     "ocs_net"
