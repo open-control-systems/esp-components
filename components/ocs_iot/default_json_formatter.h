@@ -21,12 +21,14 @@ template <unsigned Size>
 class DefaultJsonFormatter : public IJsonFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    explicit DefaultJsonFormatter() {
-        memset(buf_, 0, sizeof(buf_));
+    DefaultJsonFormatter() {
+        clear_();
     }
 
     //! Format @p json to the underlying buffer.
     void format(cJSON* json) override {
+        clear_();
+
         cJSON_PrintPreallocated(json, buf_, sizeof(buf_), false);
     }
 
@@ -36,6 +38,10 @@ public:
     }
 
 private:
+    void clear_() {
+        memset(buf_, 0, sizeof(buf_));
+    }
+
     char buf_[Size];
 };
 
