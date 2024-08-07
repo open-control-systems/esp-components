@@ -37,7 +37,7 @@ TEST_CASE("State counter: state is set", "[ocs_diagnostic], [state_counter]") {
     TEST_ASSERT_TRUE(storage.get(id));
 
     // There was no previous state, ensure previously saved data is kept.
-    TEST_ASSERT_EQUAL(0, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value, counter.get());
     counter.update(new_state);
 
     TEST_ASSERT_TRUE(storage.get(id));
@@ -101,7 +101,7 @@ TEST_CASE("State counter: state changed multiple times",
 
     // There is no previous state.
     TEST_ASSERT_TRUE(storage.get(id));
-    TEST_ASSERT_EQUAL(0, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value, counter.get());
     counter.update(state_set);
 
     TEST_ASSERT_TRUE(storage.get(id));
