@@ -42,6 +42,9 @@ public:
 
     status::StatusCode run() override {
         auto json = CjsonUniqueBuilder::make_json();
+        if (!json) {
+            return status::StatusCode::NoMem;
+        }
 
         formatter_.format(json.get());
         json_formatter_->format(json.get());
