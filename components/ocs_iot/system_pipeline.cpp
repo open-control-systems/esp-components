@@ -20,6 +20,9 @@ SystemPipeline::SystemPipeline() {
     flash_initializer_.reset(new (std::nothrow) storage::FlashInitializer());
     configASSERT(flash_initializer_);
 
+    storage_builder_.reset(new (std::nothrow) storage::StorageBuilder());
+    configASSERT(storage_builder_);
+
     default_clock_.reset(new (std::nothrow) system::DefaultClock());
     configASSERT(default_clock_);
 
@@ -60,6 +63,10 @@ status::StatusCode SystemPipeline::start() {
 
 core::IClock& SystemPipeline::get_clock() {
     return *default_clock_;
+}
+
+storage::StorageBuilder& SystemPipeline::get_storage_builder() {
+    return *storage_builder_;
 }
 
 scheduler::AsyncTaskScheduler& SystemPipeline::get_task_scheduler() {

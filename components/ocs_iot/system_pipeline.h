@@ -16,6 +16,7 @@
 #include "ocs_scheduler/timer_store.h"
 #include "ocs_status/code.h"
 #include "ocs_storage/flash_initializer.h"
+#include "ocs_storage/storage_builder.h"
 #include "ocs_system/fanout_reboot_handler.h"
 #include "ocs_system/irebooter.h"
 
@@ -31,6 +32,7 @@ public:
     status::StatusCode start();
 
     core::IClock& get_clock();
+    storage::StorageBuilder& get_storage_builder();
     scheduler::AsyncTaskScheduler& get_task_scheduler();
     scheduler::TimerStore& get_timer_store();
     scheduler::ITask& get_reboot_task();
@@ -38,6 +40,7 @@ public:
 
 private:
     std::unique_ptr<storage::FlashInitializer> flash_initializer_;
+    std::unique_ptr<storage::StorageBuilder> storage_builder_;
 
     std::unique_ptr<core::IClock> default_clock_;
 
