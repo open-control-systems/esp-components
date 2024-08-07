@@ -14,14 +14,16 @@ idf_component_register(
     "telemetry_json_formatter.cpp"
     "registration_json_formatter.cpp"
     "json_data_pipeline.cpp"
+    "yl69_sensor_json_formatter.cpp"
 
     REQUIRES
+    "json"
+    "freertos"
     "ocs_net"
     "ocs_core"
     "ocs_diagnostic"
     "ocs_storage"
-    "json"
-    "freertos"
+    "ocs_sensor"
 
     INCLUDE_DIRS
     ".."

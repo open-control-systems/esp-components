@@ -1,0 +1,33 @@
+menu "OCS Sensor Configuration"
+    menu "YL-69 Sensor Configuration"
+        config OCS_SENSOR_YL69_ADC_CHANNEL
+            int "YL-69 sensor ADC channel"
+            default 6
+            help
+                ADC channel to read the soil moisture values.
+
+        config OCS_SENSOR_YL69_DRY_THRESHOLD
+            int "YL-69 sensor soil dryness threshold"
+            default 800
+            help
+                Soil moisture threshold to determine if the soil is dry.
+
+        config OCS_SENSOR_YL69_RELAY_GPIO
+            int "YL-69 sensor relay control GPIO"
+            default 26
+            help
+                GPIO to control the relay.
+
+        config OCS_SENSOR_YL69_READ_INTERVAL
+            int "YL-69 sensor read interval, in seconds"
+            default 1800
+            help
+                How often to read data from the sensor.
+
+        config OCS_SENSOR_YL69_POWER_ON_DELAY_INTERVAL
+            int "YL-69 sensor power on delay interval, in seconds"
+            default 1
+            help
+                How long to wait after the relay is energized.
+    endmenu
+endmenu
