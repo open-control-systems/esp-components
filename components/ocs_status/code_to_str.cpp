@@ -19,6 +19,8 @@ const char* code_to_str(StatusCode status) {
         return "Error";
     case StatusCode::NoData:
         return "NoData";
+    case StatusCode::NoMem:
+        return "NoMem";
 
     default:
         break;

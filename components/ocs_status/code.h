@@ -21,6 +21,9 @@ enum class StatusCode {
 
     //! There is no enough data to perform an operation.
     NoData,
+
+    //! There is no enough memory to perform an operation.
+    NoMem,
 };
 
 } // namespace status

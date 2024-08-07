@@ -47,6 +47,10 @@ public:
 
         server.add_GET(path, [this, path, log_tag](httpd_req_t* req) {
             auto json = CjsonUniqueBuilder::make_json();
+            if (!json) {
+                return status::StatusCode::NoMem;
+            }
+
             fanout_formatter_->format(json.get());
 
             const auto err =
