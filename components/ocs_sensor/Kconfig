@@ -8,7 +8,7 @@ menu "OCS Sensor Configuration"
 
         config OCS_SENSOR_YL69_DRY_THRESHOLD
             int "YL-69 sensor soil dryness threshold"
-            default 800
+            default 700
             help
                 Soil moisture threshold to determine if the soil is dry.
 
@@ -20,7 +20,7 @@ menu "OCS Sensor Configuration"
 
         config OCS_SENSOR_YL69_READ_INTERVAL
             int "YL-69 sensor read interval, in seconds"
-            default 1800
+            default 86400
             help
                 How often to read data from the sensor.
 
