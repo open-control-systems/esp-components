@@ -30,6 +30,16 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 project(main)
 ```
 
+## Configuration
+
+The firmware can be configured using the following command:
+
+```bash
+idf.py menuconfig
+```
+
+There are many configuration options. Each of them contains the prefix "OCS_".
+
 ## License
 
 This project is licensed under the MPL 2.0 License - see the LICENSE file for details.
