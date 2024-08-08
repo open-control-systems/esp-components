@@ -46,6 +46,7 @@ public:
     struct Data {
         int raw { 0 };
         int voltage { 0 };
+        int moisture { 0 };
         SoilStatus status { SoilStatus::None };
     };
 
@@ -65,9 +66,12 @@ public:
     Data get_data() const;
 
 private:
+    int calculate_moisture_(int raw) const;
+
     void update_data_(int raw, int voltage, SoilStatus status);
 
     const int threshold_dry_ { 0 };
+    const int threshold_wet_ { 0 };
 
     io::IAdc* adc_ { nullptr };
 

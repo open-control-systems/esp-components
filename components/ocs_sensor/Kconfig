@@ -12,6 +12,12 @@ menu "OCS Sensor Configuration"
             help
                 Soil moisture threshold to determine if the soil is dry.
 
+        config OCS_SENSOR_YL69_WET_THRESHOLD
+            int "YL-69 sensor soil wetness threshold"
+            default 300
+            help
+                Soil moisture threshold to determine if the soil is completely wet.
+
         config OCS_SENSOR_YL69_RELAY_GPIO
             int "YL-69 sensor relay control GPIO"
             default 26

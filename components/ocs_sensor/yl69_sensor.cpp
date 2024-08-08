@@ -37,7 +37,10 @@ YL69Sensor::YL69Sensor(core::IClock& clock,
                        scheduler::AsyncTaskScheduler& task_scheduler,
                        scheduler::TimerStore& timer_store,
                        diagnostic::BasicCounterHolder& counter_holder)
-    : threshold_dry_(CONFIG_OCS_SENSOR_YL69_DRY_THRESHOLD) {
+    : threshold_dry_(CONFIG_OCS_SENSOR_YL69_DRY_THRESHOLD)
+    , threshold_wet_(CONFIG_OCS_SENSOR_YL69_WET_THRESHOLD) {
+    configASSERT(threshold_dry_ > threshold_wet_);
+
     adc_ = adc_store.add(static_cast<adc_channel_t>(CONFIG_OCS_SENSOR_YL69_ADC_CHANNEL));
     configASSERT(adc_);
 
@@ -99,10 +102,26 @@ YL69Sensor::Data YL69Sensor::get_data() const {
     return data_;
 }
 
+int YL69Sensor::calculate_moisture_(int raw) const {
+    if (raw >= threshold_dry_) {
+        return 0;
+    }
+
+    if (raw <= threshold_wet_) {
+        return 100;
+    }
+
+    const int max_value = threshold_dry_ - threshold_wet_;
+    const float current_value = static_cast<float>(threshold_dry_ - raw);
+
+    return 100 * (current_value / max_value);
+}
+
 void YL69Sensor::update_data_(int raw, int voltage, SoilStatus status) {
     Data data;
     data.raw = raw;
     data.voltage = voltage;
+    data.moisture = calculate_moisture_(raw);
     data.status = status;
 
     data_ = data;
