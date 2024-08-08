@@ -128,8 +128,6 @@ void HttpServerPipeline::stop_wifi_() {
         ESP_LOGE(log_tag, "failed to stop the WiFi connection process: code=%s",
                  status::code_to_str(code));
     }
-
-    wifi_network_ = nullptr;
 }
 
 void HttpServerPipeline::stop_mdns_() {
