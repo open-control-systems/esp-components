@@ -23,6 +23,7 @@ void YL69SensorJsonFormatter::format(cJSON* json) {
 
     formatter.add_number_cs("sensor_yl69_raw", data.raw);
     formatter.add_number_cs("sensor_yl69_voltage", data.voltage);
+    formatter.add_number_cs("sensor_yl69_moisture", data.moisture);
 
     formatter.add_string_ref_cs("sensor_yl69_status",
                                 sensor::YL69Sensor::soil_status_to_str(data.status));
