@@ -109,9 +109,11 @@ int YL69Sensor::calculate_moisture_(int raw) const {
     }
 
     const int range = value_max_ - value_min_;
-    const float current_value = static_cast<float>(value_max_ - raw);
+    const int offset = raw - value_min_;
+    const float loss = static_cast<float>(offset) / range;
+    const float remain = 1 - loss;
 
-    return 100 * (current_value / range);
+    return 100 * remain;
 }
 
 YL69Sensor::SoilStatus YL69Sensor::calculate_status_(int raw) const {
