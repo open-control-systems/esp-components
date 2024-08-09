@@ -121,11 +121,7 @@ YL69Sensor::SoilStatus YL69Sensor::calculate_status_(int raw) const {
         return YL69Sensor::SoilStatus::Dry;
     }
 
-    if (raw <= value_min_) {
-        return YL69Sensor::SoilStatus::Wet;
-    }
-
-    return YL69Sensor::SoilStatus::None;
+    return YL69Sensor::SoilStatus::Wet;
 }
 
 YL69Sensor::SoilStatus YL69Sensor::update_data_(int raw, int voltage) {
