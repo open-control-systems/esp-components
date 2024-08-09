@@ -87,13 +87,10 @@ status::StatusCode YL69Sensor::run() {
         return conv_result.code;
     }
 
-    const auto status =
-        read_result.value > value_max_ ? SoilStatus::Dry : SoilStatus::Wet;
+    const auto status = update_data_(read_result.value, conv_result.value);
 
     dry_state_task_->update(static_cast<diagnostic::StateCounter::State>(status));
     wet_state_task_->update(static_cast<diagnostic::StateCounter::State>(status));
-
-    update_data_(read_result.value, conv_result.value, status);
 
     return status::StatusCode::OK;
 }
@@ -117,14 +114,28 @@ int YL69Sensor::calculate_moisture_(int raw) const {
     return 100 * (current_value / range);
 }
 
-void YL69Sensor::update_data_(int raw, int voltage, SoilStatus status) {
+YL69Sensor::SoilStatus YL69Sensor::calculate_status_(int raw) const {
+    if (raw >= value_max_) {
+        return YL69Sensor::SoilStatus::Dry;
+    }
+
+    if (raw <= value_min_) {
+        return YL69Sensor::SoilStatus::Wet;
+    }
+
+    return YL69Sensor::SoilStatus::None;
+}
+
+YL69Sensor::SoilStatus YL69Sensor::update_data_(int raw, int voltage) {
     Data data;
     data.raw = raw;
     data.voltage = voltage;
     data.moisture = calculate_moisture_(raw);
-    data.status = status;
+    data.status = calculate_status_(raw);
 
     data_ = data;
+
+    return data.status;
 }
 
 } // namespace sensor

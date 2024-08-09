@@ -67,8 +67,9 @@ public:
 
 private:
     int calculate_moisture_(int raw) const;
+    SoilStatus calculate_status_(int raw) const;
 
-    void update_data_(int raw, int voltage, SoilStatus status);
+    SoilStatus update_data_(int raw, int voltage);
 
     const int value_max_ { 0 };
     const int value_min_ { 0 };
