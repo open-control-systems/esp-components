@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "ocs_core/noncopyable.h"
 #include "ocs_scheduler/itask.h"
 
