@@ -21,8 +21,8 @@ DefaultYL69SensorTask::DefaultYL69SensorTask(
     scheduler::TimerStore& timer_store,
     diagnostic::BasicCounterHolder& counter_holder) {
     sensor_.reset(new (std::nothrow)
-                      sensor::YL69Sensor(clock, adc_store, storage, reboot_handler,
-                                         task_scheduler, timer_store, counter_holder));
+                      YL69Sensor(clock, adc_store, storage, reboot_handler,
+                                 task_scheduler, timer_store, counter_holder));
     configASSERT(sensor_);
 
     async_task_ = task_scheduler.add(*sensor_);

@@ -21,11 +21,11 @@ SafeYL69SensorTask::SafeYL69SensorTask(core::IClock& clock,
                                        scheduler::TimerStore& timer_store,
                                        diagnostic::BasicCounterHolder& counter_holder) {
     sensor_.reset(new (std::nothrow)
-                      sensor::YL69Sensor(clock, adc_store, storage, reboot_handler,
-                                         task_scheduler, timer_store, counter_holder));
+                      YL69Sensor(clock, adc_store, storage, reboot_handler,
+                                 task_scheduler, timer_store, counter_holder));
     configASSERT(sensor_);
 
-    relay_sensor_.reset(new (std::nothrow) sensor::RelaySensor(
+    relay_sensor_.reset(new (std::nothrow) RelaySensor(
         *sensor_, static_cast<gpio_num_t>(CONFIG_OCS_SENSOR_YL69_RELAY_GPIO),
         (1000 * CONFIG_OCS_SENSOR_YL69_POWER_ON_DELAY_INTERVAL) / portTICK_PERIOD_MS));
     configASSERT(relay_sensor_);
