@@ -4,6 +4,8 @@ idf_component_register(
     "relay_sensor.cpp"
     "default_yl69_sensor_task.cpp"
     "safe_yl69_sensor_task.cpp"
+    "ldr_sensor.cpp"
+    "ldr_sensor_task.cpp"
 
     REQUIRES
     "ocs_io"

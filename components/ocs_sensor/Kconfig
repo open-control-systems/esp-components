@@ -36,4 +36,30 @@ menu "OCS Sensor Configuration"
             help
                 How long to wait after the relay is energized.
     endmenu
+
+    menu "LDR Sensor Configuration"
+        config OCS_SENSOR_LDR_ADC_CHANNEL
+            int "LDR sensor ADC channel"
+            default 5
+            help
+                ADC channel to read the LDR value.
+
+        config OCS_SENSOR_LDR_VALUE_MAX
+            int "LDR sensor complete lightness value"
+            default 950
+            help
+                Value of complete lightness.
+
+        config OCS_SENSOR_LDR_VALUE_MIN
+            int "LDR sensor complete darkness value"
+            default 50
+            help
+                Value of complete darkness.
+
+        config OCS_SENSOR_LDR_READ_INTERVAL
+            int "LDR sensor read interval, in seconds"
+            default 5
+            help
+                How often to read the lightness value.
+    endmenu
 endmenu
