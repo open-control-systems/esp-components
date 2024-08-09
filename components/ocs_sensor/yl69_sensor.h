@@ -70,8 +70,8 @@ private:
 
     void update_data_(int raw, int voltage, SoilStatus status);
 
-    const int threshold_dry_ { 0 };
-    const int threshold_wet_ { 0 };
+    const int value_max_ { 0 };
+    const int value_min_ { 0 };
 
     io::IAdc* adc_ { nullptr };
 

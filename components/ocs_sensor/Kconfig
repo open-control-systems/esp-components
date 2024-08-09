@@ -6,17 +6,17 @@ menu "OCS Sensor Configuration"
             help
                 ADC channel to read the soil moisture values.
 
-        config OCS_SENSOR_YL69_DRY_THRESHOLD
+        config OCS_SENSOR_YL69_VALUE_MAX
             int "YL-69 sensor soil dryness threshold"
             default 700
             help
-                Soil moisture threshold to determine if the soil is dry.
+                Value of completely dry soil.
 
-        config OCS_SENSOR_YL69_WET_THRESHOLD
+        config OCS_SENSOR_YL69_VALUE_MIN
             int "YL-69 sensor soil wetness threshold"
             default 300
             help
-                Soil moisture threshold to determine if the soil is completely wet.
+                Value of completely wet soil.
 
         config OCS_SENSOR_YL69_RELAY_GPIO
             int "YL-69 sensor relay control GPIO"
