@@ -59,7 +59,7 @@ public:
                scheduler::TimerStore& timer_store,
                diagnostic::BasicCounterHolder& counter_holder);
 
-    //! Read soil moisture data.
+    //! Read sensor data.
     status::StatusCode run() override;
 
     //! Return the underlying sensor data.
@@ -71,8 +71,8 @@ private:
 
     SoilStatus update_data_(int raw, int voltage);
 
-    const int value_max_ { 0 };
     const int value_min_ { 0 };
+    const int value_max_ { 0 };
 
     io::IAdc* adc_ { nullptr };
 
