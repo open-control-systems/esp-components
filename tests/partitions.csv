@@ -1,0 +1,32 @@
+# The partition table length is 0xC00 bytes, as we allow a maximum of 95 entries.
+# An MD5 checksum, used for checking the integrity of the partition table at runtime,
+# is appended after the table data. Thus, the partition table occupies an entire flash
+# sector, which size is 0x1000 (4 KB). As a result, any partition following it must be
+# at least located at (default offset) + 0x1000.
+#
+# See the reference: https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/partition-tables.html#overview
+
+# Default address selection.
+#
+# By default the address of the partition table is 0x8000. It's been decided to use 0x10000
+# as the default partition table address. This gives more space for the bootloader which may
+# grow with new ESP-IDF versions.
+#
+# See the reference: https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/kconfig.html#config-partition-table-offset
+
+# Offset and size selection.
+#
+# Partition with "app" type must be aligned to the 0x10000.
+#
+# See the reference:
+#  - https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/partition-tables.html#offset-size
+
+# Name,   Type,     SubType,    Offset,    Size,     Flags
+nvs,      data,     nvs,        ,          0x1C000,
+otadata,  data,     ota,        ,          0x2000,
+phy_init, data,     phy,        ,          0x1000,
+factory,  app,      factory,    ,          0x140000,
+ota_0,    app,      ota_0,      ,          0x140000,
+ota_1,    app,      ota_1,      ,          0x140000,
+nvs_key,  data,     nvs_keys,   ,          0x1000,
+reserved, data,     nvs,        ,          0xF000,
