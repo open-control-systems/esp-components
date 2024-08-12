@@ -37,9 +37,9 @@ YL69Sensor::YL69Sensor(core::IClock& clock,
                        scheduler::AsyncTaskScheduler& task_scheduler,
                        scheduler::TimerStore& timer_store,
                        diagnostic::BasicCounterHolder& counter_holder)
-    : value_max_(CONFIG_OCS_SENSOR_YL69_VALUE_MAX)
-    , value_min_(CONFIG_OCS_SENSOR_YL69_VALUE_MIN) {
-    configASSERT(value_max_ > value_min_);
+    : value_min_(CONFIG_OCS_SENSOR_YL69_VALUE_MIN)
+    , value_max_(CONFIG_OCS_SENSOR_YL69_VALUE_MAX) {
+    configASSERT(value_min_ < value_max_);
 
     adc_ = adc_store.add(static_cast<adc_channel_t>(CONFIG_OCS_SENSOR_YL69_ADC_CHANNEL));
     configASSERT(adc_);
@@ -126,6 +126,7 @@ YL69Sensor::SoilStatus YL69Sensor::calculate_status_(int raw) const {
 
 YL69Sensor::SoilStatus YL69Sensor::update_data_(int raw, int voltage) {
     Data data;
+
     data.raw = raw;
     data.voltage = voltage;
     data.moisture = calculate_moisture_(raw);
