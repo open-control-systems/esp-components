@@ -200,11 +200,8 @@ TEST_CASE("State counter: save counter when reboot is happened",
 
     // Required state is set.
     counter.update(required_state);
-    TEST_ASSERT_TRUE(storage.get(id));
-    TEST_ASSERT_EQUAL(current_value, counter.get());
-
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, storage.erase(id));
     TEST_ASSERT_FALSE(storage.get(id));
+    TEST_ASSERT_EQUAL(current_value, counter.get());
 
     counter.handle_reboot();
     TEST_ASSERT_TRUE(storage.get(id));
