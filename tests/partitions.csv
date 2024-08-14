@@ -8,7 +8,7 @@
 
 # Default address selection.
 #
-# By default the address of the partition table is 0x8000. It's been decided to use 0x10000
+# By default the address of the partition table is 0x8000. It's been decided to use 0xF000
 # as the default partition table address. This gives more space for the bootloader which may
 # grow with new ESP-IDF versions.
 #
@@ -22,11 +22,12 @@
 #  - https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-guides/partition-tables.html#offset-size
 
 # Name,   Type,     SubType,    Offset,    Size,     Flags
-nvs,      data,     nvs,        ,          0x1C000,
-otadata,  data,     ota,        ,          0x2000,
-phy_init, data,     phy,        ,          0x1000,
 factory,  app,      factory,    ,          0x140000,
 ota_0,    app,      ota_0,      ,          0x140000,
 ota_1,    app,      ota_1,      ,          0x140000,
+nvs,      data,     nvs,        ,          0x10000,
+coredump, data,     coredump,   ,          0x10000,
+reserved, data,     nvs,        ,          0xC000,
+otadata,  data,     ota,        ,          0x2000,
+phy_init, data,     phy,        ,          0x1000,
 nvs_key,  data,     nvs_keys,   ,          0x1000,
-reserved, data,     nvs,        ,          0xF000,
