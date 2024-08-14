@@ -94,6 +94,7 @@ dkms.conf
 sdkconfig.old
 sdkconfig
 managed_components
+*.bin
 
 # Kicad
 *.000
