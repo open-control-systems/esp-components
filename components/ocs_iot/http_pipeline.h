@@ -13,9 +13,7 @@
 #include "ocs_iot/http_command_handler.h"
 #include "ocs_iot/http_data_handler.h"
 #include "ocs_iot/http_server_pipeline.h"
-#include "ocs_iot/network_json_formatter.h"
 #include "ocs_scheduler/itask.h"
-#include "ocs_status/code_to_str.h"
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
 #include "ocs_iot/http_system_state_handler.h"
@@ -24,111 +22,36 @@
 namespace ocs {
 namespace iot {
 
-template <unsigned TelemetryBufferSize,
-          unsigned RegistrationBufferSize,
-          unsigned CommandBufferSize>
 class HttpPipeline : public core::NonCopyable<> {
 public:
+    struct DataParams {
+        //! Buffer size to hold the formatted JSON data, in bytes.
+        unsigned buffer_size { 0 };
+    };
+
+    struct Params {
+        DataParams telemetry;
+        DataParams registration;
+        DataParams commands;
+    };
+
     //! Initialize.
     HttpPipeline(scheduler::ITask& reboot_task,
                  scheduler::ITask& control_task,
                  IJsonFormatter& telemetry_formatter,
-                 FanoutJsonFormatter& registration_formatter) {
-        http_server_pipeline_.reset(new (std::nothrow) HttpServerPipeline());
-        configASSERT(http_server_pipeline_);
-
-        http_telemetry_handler_.reset(new (std::nothrow) TelemetryHandler(
-            http_server_pipeline_->server(), telemetry_formatter, "/telemetry",
-            "http-telemetry-handler"));
-        configASSERT(http_telemetry_handler_);
-
-        http_registration_handler_.reset(new (std::nothrow) RegistrationHandler(
-            http_server_pipeline_->server(), registration_formatter, "/registration",
-            "http-registration-handler"));
-        configASSERT(http_registration_handler_);
-
-        http_command_handler_.reset(new (std::nothrow) CommandHandler(
-            http_server_pipeline_->server(), reboot_task, control_task));
-        configASSERT(http_command_handler_);
-
-        network_formatter_.reset(
-            new (std::nothrow) NetworkJsonFormatter(http_server_pipeline_->network()));
-        configASSERT(network_formatter_);
-
-        registration_formatter.add(*network_formatter_);
-
-#ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
-        http_system_state_handler_.reset(new (std::nothrow) HttpSystemStateHandler(
-            http_server_pipeline_->server(), 1024 * 2));
-        configASSERT(http_system_state_handler_);
-#endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
-    }
+                 FanoutJsonFormatter& registration_formatter,
+                 Params params);
 
     //! Start the pipeline.
-    status::StatusCode start() {
-        auto code = http_server_pipeline_->start();
-        if (code != status::StatusCode::OK) {
-            ESP_LOGE(log_tag_, "failed to start HTTP server pipeline: code=%s",
-                     status::code_to_str(code));
-
-            return code;
-        }
-
-        code = register_mdns_endpoints_();
-        if (code != status::StatusCode::OK) {
-            ESP_LOGE(log_tag_, "failed to register mDNS endpoints: code=%s",
-                     status::code_to_str(code));
-
-            return code;
-        }
-
-        return status::StatusCode::OK;
-    }
+    status::StatusCode start();
 
 private:
-    status::StatusCode register_mdns_endpoints_() {
-        return http_server_pipeline_->mdns().add_service_txt_records(
-            "_http", "_tcp",
-            net::MdnsProvider::TxtRecordList {
-                {
-                    "telemetry",
-                    "/telemetry",
-                },
-                {
-                    "registration",
-                    "/registration",
-                },
-                {
-                    "command_reboot",
-                    "/commands/reboot",
-                },
-                {
-                    "command_reload",
-                    "/commands/reload",
-                },
-                {
-                    "commands",
-                    "/commands",
-                },
-#ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
-                {
-                    "report_system",
-                    "/report/system",
-                },
-#endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
-            });
-    }
-
-    using TelemetryHandler = HttpDataHandler<TelemetryBufferSize>;
-    using RegistrationHandler = HttpDataHandler<RegistrationBufferSize>;
-    using CommandHandler = HttpCommandHandler<CommandBufferSize>;
-
-    static const constexpr char* log_tag_ = "http-pipeline";
+    status::StatusCode register_mdns_endpoints_();
 
     std::unique_ptr<HttpServerPipeline> http_server_pipeline_;
-    std::unique_ptr<TelemetryHandler> http_telemetry_handler_;
-    std::unique_ptr<RegistrationHandler> http_registration_handler_;
-    std::unique_ptr<CommandHandler> http_command_handler_;
+    std::unique_ptr<HttpDataHandler> http_telemetry_handler_;
+    std::unique_ptr<HttpDataHandler> http_registration_handler_;
+    std::unique_ptr<HttpCommandHandler> http_command_handler_;
     std::unique_ptr<IJsonFormatter> network_formatter_;
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
