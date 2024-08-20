@@ -21,7 +21,7 @@ public:
     explicit YL69SensorJsonFormatter(sensor::YL69Sensor& sensor);
 
     //! Format YL69 sensor data into @p json.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 
 private:
     sensor::YL69Sensor& sensor_;

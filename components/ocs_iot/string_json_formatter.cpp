@@ -12,12 +12,16 @@
 namespace ocs {
 namespace iot {
 
-void StringJsonFormatter::format(cJSON* json) {
+status::StatusCode StringJsonFormatter::format(cJSON* json) {
     CjsonObjectFormatter formatter(json);
 
     for (const auto& [key, val] : values_) {
-        formatter.add_string_ref_cs(key.c_str(), val.c_str());
+        if (!formatter.add_string_ref_cs(key.c_str(), val.c_str())) {
+            return status::StatusCode::NoMem;
+        }
     }
+
+    return status::StatusCode::OK;
 }
 
 void StringJsonFormatter::add(const char* key, const char* val) {

@@ -46,8 +46,15 @@ public:
             return status::StatusCode::NoMem;
         }
 
-        formatter_.format(json.get());
-        json_formatter_->format(json.get());
+        auto code = formatter_.format(json.get());
+        if (code != status::StatusCode::OK) {
+            return code;
+        }
+
+        code = json_formatter_->format(json.get());
+        if (code != status::StatusCode::OK) {
+            return code;
+        }
 
         ESP_LOGI(log_tag_.c_str(), "%s", json_formatter_->c_str());
 

@@ -21,7 +21,7 @@ public:
     explicit LdrSensorJsonFormatter(sensor::LdrSensor& sensor);
 
     //! Format LDR sensor data into @p json.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 
 private:
     sensor::LdrSensor& sensor_;

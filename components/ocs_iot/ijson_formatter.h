@@ -10,6 +10,8 @@
 
 #include "cJSON.h"
 
+#include "ocs_status/code.h"
+
 namespace ocs {
 namespace iot {
 
@@ -19,7 +21,7 @@ public:
     virtual ~IJsonFormatter() = default;
 
     //! Format JSON.
-    virtual void format(cJSON* json) = 0;
+    virtual status::StatusCode format(cJSON* json) = 0;
 };
 
 } // namespace iot

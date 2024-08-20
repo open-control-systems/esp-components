@@ -12,12 +12,16 @@
 namespace ocs {
 namespace iot {
 
-void CounterJsonFormatter::format(cJSON* json) {
+status::StatusCode CounterJsonFormatter::format(cJSON* json) {
     CjsonObjectFormatter formatter(json);
 
     for (auto& counter : get_counters_()) {
-        formatter.add_number_cs(counter->id(), counter->get());
+        if (!formatter.add_number_cs(counter->id(), counter->get())) {
+            return status::StatusCode::NoMem;
+        }
     }
+
+    return status::StatusCode::OK;
 }
 
 } // namespace iot

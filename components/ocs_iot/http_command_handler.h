@@ -58,7 +58,7 @@ private:
         configASSERT(formatter.append_string_ref("reboot"));
         configASSERT(formatter.append_string_ref("reload"));
 
-        commands_response_->format(json.get());
+        configASSERT(commands_response_->format(json.get()) == status::StatusCode::OK);
     }
 
     void register_routes_(net::HttpServer& server,

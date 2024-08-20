@@ -26,10 +26,14 @@ public:
     }
 
     //! Format @p json to the underlying buffer.
-    void format(cJSON* json) override {
+    status::StatusCode format(cJSON* json) override {
         clear_();
 
-        cJSON_PrintPreallocated(json, buf_, sizeof(buf_), false);
+        if (!cJSON_PrintPreallocated(json, buf_, sizeof(buf_), false)) {
+            return status::StatusCode::NoMem;
+        }
+
+        return status::StatusCode::OK;
     }
 
     //! Return the underlying buffer.

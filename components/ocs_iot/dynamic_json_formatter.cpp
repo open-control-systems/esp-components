@@ -23,9 +23,14 @@ DynamicJsonFormatter::DynamicJsonFormatter(unsigned size)
     configASSERT(buf_);
 }
 
-void DynamicJsonFormatter::format(cJSON* json) {
+status::StatusCode DynamicJsonFormatter::format(cJSON* json) {
     clear_();
-    configASSERT(cJSON_PrintPreallocated(json, buf_.get(), size_, false));
+
+    if (!cJSON_PrintPreallocated(json, buf_.get(), size_, false)) {
+        return status::StatusCode::NoMem;
+    }
+
+    return status::StatusCode::OK;
 }
 
 const char* DynamicJsonFormatter::c_str() const {

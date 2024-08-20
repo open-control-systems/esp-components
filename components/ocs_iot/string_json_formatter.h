@@ -25,7 +25,7 @@ public:
     virtual ~StringJsonFormatter() = default;
 
     //! Format key-value pairs into @p json.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 
     //! Add key-value pair to be added to the result json when format() is called.
     void add(const char* key, const char* value);

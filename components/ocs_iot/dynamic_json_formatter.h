@@ -25,7 +25,7 @@ public:
     explicit DynamicJsonFormatter(unsigned size);
 
     //! Format @p json into the underlying buffer.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 
     //! Return the underlying buffer.
     const char* c_str() const;

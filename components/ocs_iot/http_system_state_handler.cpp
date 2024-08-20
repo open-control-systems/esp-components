@@ -27,8 +27,15 @@ HttpSystemStateHandler::HttpSystemStateHandler(net::HttpServer& server,
             return status::StatusCode::NoMem;
         }
 
-        state_json_formatter_->format(json.get());
-        json_formatter_->format(json.get());
+        auto code = state_json_formatter_->format(json.get());
+        if (code != status::StatusCode::OK) {
+            return code;
+        }
+
+        code = json_formatter_->format(json.get());
+        if (code != status::StatusCode::OK) {
+            return code;
+        }
 
         const auto err =
             httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);

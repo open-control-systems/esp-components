@@ -15,17 +15,29 @@
 namespace ocs {
 namespace iot {
 
-void SystemJsonFormatter::format(cJSON* json) {
+status::StatusCode SystemJsonFormatter::format(cJSON* json) {
     CjsonObjectFormatter formatter(json);
 
-    formatter.add_number_cs("system_memory_heap", esp_get_free_heap_size());
-    formatter.add_number_cs("system_memory_heap_min", esp_get_minimum_free_heap_size());
+    if (!formatter.add_number_cs("system_memory_heap", esp_get_free_heap_size())) {
+        return status::StatusCode::NoMem;
+    }
 
-    formatter.add_number_cs("system_memory_heap_internal",
-                            esp_get_free_internal_heap_size());
+    if (!formatter.add_number_cs("system_memory_heap_min",
+                                 esp_get_minimum_free_heap_size())) {
+        return status::StatusCode::NoMem;
+    }
 
-    formatter.add_string_ref_cs("system_reset_reason",
-                                system::reset_reason_to_str(esp_reset_reason()));
+    if (!formatter.add_number_cs("system_memory_heap_internal",
+                                 esp_get_free_internal_heap_size())) {
+        return status::StatusCode::NoMem;
+    }
+
+    if (!formatter.add_string_ref_cs("system_reset_reason",
+                                     system::reset_reason_to_str(esp_reset_reason()))) {
+        return status::StatusCode::NoMem;
+    }
+
+    return status::StatusCode::OK;
 }
 
 } // namespace iot
