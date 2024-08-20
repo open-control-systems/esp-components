@@ -24,8 +24,8 @@ TelemetryJsonFormatter::TelemetryJsonFormatter() {
     fanout_formatter_->add(*system_formatter_);
 }
 
-void TelemetryJsonFormatter::format(cJSON* json) {
-    fanout_formatter_->format(json);
+status::StatusCode TelemetryJsonFormatter::format(cJSON* json) {
+    return fanout_formatter_->format(json);
 }
 
 FanoutJsonFormatter& TelemetryJsonFormatter::get_fanout_formatter() {

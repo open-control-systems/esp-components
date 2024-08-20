@@ -24,7 +24,7 @@ public:
     RegistrationJsonFormatter();
 
     //! Format the underlying data into @p json.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 
     FanoutJsonFormatter& get_fanout_formatter();
 

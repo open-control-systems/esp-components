@@ -17,7 +17,7 @@ namespace iot {
 class SystemJsonFormatter : public IJsonFormatter, public core::NonCopyable<> {
 public:
     //! Format system metrics into @p json.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 };
 
 } // namespace iot

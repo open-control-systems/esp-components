@@ -20,7 +20,7 @@ class CounterJsonFormatter : public IJsonFormatter,
                              public core::NonCopyable<> {
 public:
     //! Format the underlying counters into @p json.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 };
 
 } // namespace iot

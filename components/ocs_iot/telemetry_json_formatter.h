@@ -23,7 +23,7 @@ public:
     TelemetryJsonFormatter();
 
     //! Format all telemetry data into @p json.
-    void format(cJSON* json);
+    status::StatusCode format(cJSON* json);
 
     FanoutJsonFormatter& get_fanout_formatter();
 

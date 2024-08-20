@@ -16,14 +16,24 @@ LdrSensorJsonFormatter::LdrSensorJsonFormatter(sensor::LdrSensor& sensor)
     : sensor_(sensor) {
 }
 
-void LdrSensorJsonFormatter::format(cJSON* json) {
+status::StatusCode LdrSensorJsonFormatter::format(cJSON* json) {
     CjsonObjectFormatter formatter(json);
 
     const auto data = sensor_.get_data();
 
-    formatter.add_number_cs("sensor_ldr_raw", data.raw);
-    formatter.add_number_cs("sensor_ldr_voltage", data.voltage);
-    formatter.add_number_cs("sensor_ldr_lightness", data.lightness);
+    if (!formatter.add_number_cs("sensor_ldr_raw", data.raw)) {
+        return status::StatusCode::NoMem;
+    }
+
+    if (!formatter.add_number_cs("sensor_ldr_voltage", data.voltage)) {
+        return status::StatusCode::NoMem;
+    }
+
+    if (!formatter.add_number_cs("sensor_ldr_lightness", data.lightness)) {
+        return status::StatusCode::NoMem;
+    }
+
+    return status::StatusCode::OK;
 }
 
 } // namespace iot

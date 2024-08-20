@@ -24,11 +24,11 @@ public:
     explicit NetworkJsonFormatter(net::BasicNetwork& network);
 
     //! Format the network data in @p json.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 
 private:
-    void format_ap_info_(cJSON* json);
-    void format_ip_addr_(cJSON* json);
+    status::StatusCode format_ap_info_(cJSON* json);
+    status::StatusCode format_ip_addr_(cJSON* json);
 
     net::BasicNetwork& network_;
 };

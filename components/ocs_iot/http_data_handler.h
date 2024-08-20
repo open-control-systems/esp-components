@@ -51,7 +51,10 @@ public:
                 return status::StatusCode::NoMem;
             }
 
-            fanout_formatter_->format(json.get());
+            const auto code = fanout_formatter_->format(json.get());
+            if (code != status::StatusCode::OK) {
+                return code;
+            }
 
             const auto err =
                 httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);

@@ -41,8 +41,8 @@ RegistrationJsonFormatter::RegistrationJsonFormatter() {
     fanout_formatter_->add(*version_formatter_);
 }
 
-void RegistrationJsonFormatter::format(cJSON* json) {
-    fanout_formatter_->format(json);
+status::StatusCode RegistrationJsonFormatter::format(cJSON* json) {
+    return fanout_formatter_->format(json);
 }
 
 FanoutJsonFormatter& RegistrationJsonFormatter::get_fanout_formatter() {

@@ -11,10 +11,15 @@
 namespace ocs {
 namespace iot {
 
-void FanoutJsonFormatter::format(cJSON* json) {
+status::StatusCode FanoutJsonFormatter::format(cJSON* json) {
     for (auto& formatter : formatters_) {
-        formatter->format(json);
+        const auto code = formatter->format(json);
+        if (code != status::StatusCode::OK) {
+            return code;
+        }
     }
+
+    return status::StatusCode::OK;
 }
 
 void FanoutJsonFormatter::add(IJsonFormatter& formatter) {

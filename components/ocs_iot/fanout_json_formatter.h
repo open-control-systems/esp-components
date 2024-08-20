@@ -19,7 +19,7 @@ namespace iot {
 class FanoutJsonFormatter : public IJsonFormatter, public core::NonCopyable<> {
 public:
     //! Propogate the call to the underlying formatters.
-    void format(cJSON* json) override;
+    status::StatusCode format(cJSON* json) override;
 
     //! Add @p formatter to be notified when format is called.
     void add(IJsonFormatter& formatter);
