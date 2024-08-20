@@ -10,19 +10,15 @@
 
 #include <memory>
 
-#include "esp_log.h"
-
 #include "ocs_core/noncopyable.h"
-#include "ocs_iot/cjson_builder.h"
-#include "ocs_iot/default_json_formatter.h"
+#include "ocs_iot/dynamic_json_formatter.h"
 #include "ocs_iot/fanout_json_formatter.h"
 #include "ocs_net/http_server.h"
 
 namespace ocs {
 namespace iot {
 
-template <unsigned Size>
-class HttpDataHandler : public core::NonCopyable<HttpDataHandler<Size>> {
+class HttpDataHandler : public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -31,47 +27,16 @@ public:
     //!  - @p formatter to format the data.
     //!  - @p path - URI path.
     //!  - @p log_tag - ESP-IDF log tag.
+    //!  - @p buffer_size to hold the formatted JSON data, in bytes.
     HttpDataHandler(net::HttpServer& server,
                     IJsonFormatter& formatter,
                     const char* path,
-                    const char* log_tag) {
-        fanout_formatter_.reset(new (std::nothrow) FanoutJsonFormatter());
-        configASSERT(fanout_formatter_);
-
-        fanout_formatter_->add(formatter);
-
-        json_formatter_.reset(new (std::nothrow) JsonFormatter());
-        configASSERT(json_formatter_);
-
-        fanout_formatter_->add(*json_formatter_);
-
-        server.add_GET(path, [this, path, log_tag](httpd_req_t* req) {
-            auto json = CjsonUniqueBuilder::make_json();
-            if (!json) {
-                return status::StatusCode::NoMem;
-            }
-
-            const auto code = fanout_formatter_->format(json.get());
-            if (code != status::StatusCode::OK) {
-                return code;
-            }
-
-            const auto err =
-                httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
-            if (err != ESP_OK) {
-                ESP_LOGE(log_tag, "httpd_resp_send(): %s", esp_err_to_name(err));
-                return status::StatusCode::Error;
-            }
-
-            return status::StatusCode::OK;
-        });
-    }
+                    const char* log_tag,
+                    unsigned buffer_size);
 
 private:
-    using JsonFormatter = DefaultJsonFormatter<Size>;
-
     std::unique_ptr<FanoutJsonFormatter> fanout_formatter_;
-    std::unique_ptr<JsonFormatter> json_formatter_;
+    std::unique_ptr<DynamicJsonFormatter> json_formatter_;
 };
 
 } // namespace iot

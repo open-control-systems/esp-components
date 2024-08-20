@@ -18,10 +18,10 @@ namespace ocs {
 namespace iot {
 
 template <unsigned Size>
-class DefaultJsonFormatter : public IJsonFormatter, public core::NonCopyable<> {
+class StaticJsonFormatter : public IJsonFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    DefaultJsonFormatter() {
+    StaticJsonFormatter() {
         clear_();
     }
 
