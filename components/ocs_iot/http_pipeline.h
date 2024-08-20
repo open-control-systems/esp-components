@@ -17,6 +17,10 @@
 #include "ocs_scheduler/itask.h"
 #include "ocs_status/code_to_str.h"
 
+#ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
+#include "ocs_iot/http_system_state_handler.h"
+#endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
+
 namespace ocs {
 namespace iot {
 
@@ -52,6 +56,12 @@ public:
         configASSERT(network_formatter_);
 
         registration_formatter.add(*network_formatter_);
+
+#ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
+        http_system_state_handler_.reset(new (std::nothrow) HttpSystemStateHandler(
+            http_server_pipeline_->server(), 1024 * 2));
+        configASSERT(http_system_state_handler_);
+#endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
     }
 
     //! Start the pipeline.
@@ -100,6 +110,12 @@ private:
                     "commands",
                     "/commands",
                 },
+#ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
+                {
+                    "report_system",
+                    "/report/system",
+                },
+#endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
             });
     }
 
@@ -114,6 +130,10 @@ private:
     std::unique_ptr<RegistrationHandler> http_registration_handler_;
     std::unique_ptr<CommandHandler> http_command_handler_;
     std::unique_ptr<IJsonFormatter> network_formatter_;
+
+#ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
+    std::unique_ptr<HttpSystemStateHandler> http_system_state_handler_;
+#endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
 };
 
 } // namespace iot
