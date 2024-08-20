@@ -20,6 +20,10 @@ namespace {
 
 const char* log_tag = "http-server";
 
+httpd_err_code_t status_code_to_http_code(status::StatusCode) {
+    return HTTPD_500_INTERNAL_SERVER_ERROR;
+}
+
 } // namespace
 
 HttpServer::HttpServer(const Params& params) {
@@ -90,6 +94,13 @@ void HttpServer::handle_request_get_(httpd_req_t* req) {
     if (code != status::StatusCode::OK) {
         ESP_LOGE(log_tag, "failed to handle request: URI=%s code=%s", req->uri,
                  status::code_to_str(code));
+
+        const auto http_code = status_code_to_http_code(code);
+        const auto ret = httpd_resp_send_err(req, http_code, status::code_to_str(code));
+        if (ret != ESP_OK) {
+            ESP_LOGE(log_tag, "httpd_resp_send_err(): URI=%s err=%s", req->uri,
+                     esp_err_to_name(ret));
+        }
     }
 }
 
