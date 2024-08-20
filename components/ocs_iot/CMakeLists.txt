@@ -16,6 +16,9 @@ idf_component_register(
     "json_data_pipeline.cpp"
     "yl69_sensor_json_formatter.cpp"
     "ldr_sensor_json_formatter.cpp"
+    "system_state_json_formatter.cpp"
+    "http_system_state_handler.cpp"
+    "dynamic_json_formatter.cpp"
 
     REQUIRES
     "json"
