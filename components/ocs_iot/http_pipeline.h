@@ -14,7 +14,6 @@
 #include "ocs_iot/http_data_handler.h"
 #include "ocs_iot/http_server_pipeline.h"
 #include "ocs_scheduler/itask.h"
-
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
 #include "ocs_iot/http_system_state_handler.h"
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
