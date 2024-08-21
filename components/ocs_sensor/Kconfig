@@ -1,64 +1,86 @@
 menu "OCS Sensor Configuration"
     menu "YL-69 Sensor Configuration"
+        config OCS_SENSOR_YL69_ENABLE
+            bool "Enable YL-69 sensor"
+            default y
+            help
+                Enable YL-69 sensor.
+
         config OCS_SENSOR_YL69_ADC_CHANNEL
             int "YL-69 sensor ADC channel"
             default 6
+            depends on OCS_SENSOR_YL69_ENABLE
             help
                 ADC channel to read the soil moisture values.
 
         config OCS_SENSOR_YL69_VALUE_MAX
             int "YL-69 sensor soil dryness threshold"
             default 700
+            depends on OCS_SENSOR_YL69_ENABLE
             help
                 Value of completely dry soil.
 
         config OCS_SENSOR_YL69_VALUE_MIN
             int "YL-69 sensor soil wetness threshold"
             default 300
+            depends on OCS_SENSOR_YL69_ENABLE
             help
                 Value of completely wet soil.
 
         config OCS_SENSOR_YL69_RELAY_GPIO
             int "YL-69 sensor relay control GPIO"
             default 26
+            depends on OCS_SENSOR_YL69_ENABLE
             help
                 GPIO to control the relay.
 
         config OCS_SENSOR_YL69_READ_INTERVAL
             int "YL-69 sensor read interval, in seconds"
             default 86400
+            depends on OCS_SENSOR_YL69_ENABLE
             help
                 How often to read data from the sensor.
 
         config OCS_SENSOR_YL69_POWER_ON_DELAY_INTERVAL
             int "YL-69 sensor power on delay interval, in seconds"
             default 1
+            depends on OCS_SENSOR_YL69_ENABLE
             help
                 How long to wait after the relay is energized.
     endmenu
 
     menu "LDR Sensor Configuration"
+        config OCS_SENSOR_LDR_ENABLE
+            bool "Enable LDR sensor"
+            default y
+            help
+                Enable LDR sensor.
+
         config OCS_SENSOR_LDR_ADC_CHANNEL
             int "LDR sensor ADC channel"
             default 5
+            depends on OCS_SENSOR_LDR_ENABLE
             help
                 ADC channel to read the LDR value.
 
         config OCS_SENSOR_LDR_VALUE_MAX
             int "LDR sensor complete lightness value"
             default 950
+            depends on OCS_SENSOR_LDR_ENABLE
             help
                 Value of complete lightness.
 
         config OCS_SENSOR_LDR_VALUE_MIN
             int "LDR sensor complete darkness value"
             default 50
+            depends on OCS_SENSOR_LDR_ENABLE
             help
                 Value of complete darkness.
 
         config OCS_SENSOR_LDR_READ_INTERVAL
             int "LDR sensor read interval, in seconds"
             default 5
+            depends on OCS_SENSOR_LDR_ENABLE
             help
                 How often to read the lightness value.
     endmenu

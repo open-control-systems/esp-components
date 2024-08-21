@@ -20,8 +20,14 @@ namespace sensor {
 
 class LdrSensor : public scheduler::ITask, public core::NonCopyable<> {
 public:
+    struct Params {
+        unsigned value_min { 0 };
+        unsigned value_max { 0 };
+        adc_channel_t adc_channel { ADC_CHANNEL_0 };
+    };
+
     //! Initialize.
-    explicit LdrSensor(io::AdcStore& adc_store);
+    LdrSensor(io::AdcStore& adc_store, Params params);
 
     //! Various sensor characteristics.
     struct Data {
@@ -41,8 +47,7 @@ private:
 
     void update_data_(int raw, int voltage);
 
-    const int value_min_ { 0 };
-    const int value_max_ { 0 };
+    const Params params_;
 
     io::IAdc* adc_ { nullptr };
 

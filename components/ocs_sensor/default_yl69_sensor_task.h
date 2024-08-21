@@ -30,6 +30,11 @@ namespace sensor {
 class DefaultYL69SensorTask : public BasicSensorTask<YL69Sensor>,
                               public core::NonCopyable<> {
 public:
+    struct Params {
+        YL69Sensor::Params sensor;
+        core::microseconds_t read_interval { 0 };
+    };
+
     //! Initialize.
     DefaultYL69SensorTask(core::IClock& clock,
                           io::AdcStore& adc_store,
@@ -37,7 +42,8 @@ public:
                           system::FanoutRebootHandler& reboot_handler,
                           scheduler::AsyncTaskScheduler& task_scheduler,
                           scheduler::TimerStore& timer_store,
-                          diagnostic::BasicCounterHolder& counter_holder);
+                          diagnostic::BasicCounterHolder& counter_holder,
+                          Params params);
 };
 
 } // namespace sensor

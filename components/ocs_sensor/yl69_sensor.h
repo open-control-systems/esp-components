@@ -50,6 +50,12 @@ public:
         SoilStatus status { SoilStatus::None };
     };
 
+    struct Params {
+        unsigned value_min { 0 };
+        unsigned value_max { 0 };
+        adc_channel_t adc_channel { ADC_CHANNEL_0 };
+    };
+
     //! Initialize.
     YL69Sensor(core::IClock& clock,
                io::AdcStore& adc_store,
@@ -57,7 +63,8 @@ public:
                system::FanoutRebootHandler& reboot_handler,
                scheduler::AsyncTaskScheduler& task_scheduler,
                scheduler::TimerStore& timer_store,
-               diagnostic::BasicCounterHolder& counter_holder);
+               diagnostic::BasicCounterHolder& counter_holder,
+               Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
@@ -71,8 +78,7 @@ private:
 
     SoilStatus update_data_(int raw, int voltage);
 
-    const int value_min_ { 0 };
-    const int value_max_ { 0 };
+    const Params params_;
 
     io::IAdc* adc_ { nullptr };
 

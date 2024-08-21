@@ -19,18 +19,18 @@ DefaultYL69SensorTask::DefaultYL69SensorTask(
     system::FanoutRebootHandler& reboot_handler,
     scheduler::AsyncTaskScheduler& task_scheduler,
     scheduler::TimerStore& timer_store,
-    diagnostic::BasicCounterHolder& counter_holder) {
-    sensor_.reset(new (std::nothrow)
-                      YL69Sensor(clock, adc_store, storage, reboot_handler,
-                                 task_scheduler, timer_store, counter_holder));
+    diagnostic::BasicCounterHolder& counter_holder,
+    DefaultYL69SensorTask::Params params) {
+    sensor_.reset(new (std::nothrow) YL69Sensor(clock, adc_store, storage, reboot_handler,
+                                                task_scheduler, timer_store,
+                                                counter_holder, params.sensor));
     configASSERT(sensor_);
 
     async_task_ = task_scheduler.add(*sensor_);
     configASSERT(async_task_);
 
     async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *async_task_, "Default-YL69-sensor-control",
-        core::Second * CONFIG_OCS_SENSOR_YL69_READ_INTERVAL));
+        *async_task_, "Default-YL69-sensor-control", params.read_interval));
     configASSERT(async_task_timer_);
 
     timer_store.add(*async_task_timer_);
