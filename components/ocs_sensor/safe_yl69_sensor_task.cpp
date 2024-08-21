@@ -19,23 +19,22 @@ SafeYL69SensorTask::SafeYL69SensorTask(core::IClock& clock,
                                        system::FanoutRebootHandler& reboot_handler,
                                        scheduler::AsyncTaskScheduler& task_scheduler,
                                        scheduler::TimerStore& timer_store,
-                                       diagnostic::BasicCounterHolder& counter_holder) {
-    sensor_.reset(new (std::nothrow)
-                      YL69Sensor(clock, adc_store, storage, reboot_handler,
-                                 task_scheduler, timer_store, counter_holder));
+                                       diagnostic::BasicCounterHolder& counter_holder,
+                                       SafeYL69SensorTask::Params params) {
+    sensor_.reset(new (std::nothrow) YL69Sensor(clock, adc_store, storage, reboot_handler,
+                                                task_scheduler, timer_store,
+                                                counter_holder, params.sensor));
     configASSERT(sensor_);
 
-    relay_sensor_.reset(new (std::nothrow) RelaySensor(
-        *sensor_, static_cast<gpio_num_t>(CONFIG_OCS_SENSOR_YL69_RELAY_GPIO),
-        (1000 * CONFIG_OCS_SENSOR_YL69_POWER_ON_DELAY_INTERVAL) / portTICK_PERIOD_MS));
+    relay_sensor_.reset(new (std::nothrow) RelaySensor(*sensor_, params.relay_gpio,
+                                                       params.power_on_delay_interval));
     configASSERT(relay_sensor_);
 
     async_task_ = task_scheduler.add(*relay_sensor_);
     configASSERT(async_task_);
 
     async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *async_task_, "Safe-YL69-sensor-control",
-        core::Second * CONFIG_OCS_SENSOR_YL69_READ_INTERVAL));
+        *async_task_, "Safe-YL69-sensor-control", params.read_interval));
     configASSERT(async_task_timer_);
 
     timer_store.add(*async_task_timer_);

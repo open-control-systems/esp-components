@@ -9,6 +9,7 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
+#include "ocs_core/time.h"
 #include "ocs_io/adc_store.h"
 #include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_scheduler/timer_store.h"
@@ -20,10 +21,16 @@ namespace sensor {
 
 class LdrSensorTask : public BasicSensorTask<LdrSensor>, public core::NonCopyable<> {
 public:
+    struct Params {
+        LdrSensor::Params sensor;
+        core::microseconds_t read_interval { 0 };
+    };
+
     //! Initialize.
     LdrSensorTask(io::AdcStore& adc_store,
                   scheduler::AsyncTaskScheduler& task_scheduler,
-                  scheduler::TimerStore& timer_store);
+                  scheduler::TimerStore& timer_store,
+                  Params params);
 };
 
 } // namespace sensor

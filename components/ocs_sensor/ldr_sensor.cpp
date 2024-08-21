@@ -13,12 +13,11 @@
 namespace ocs {
 namespace sensor {
 
-LdrSensor::LdrSensor(io::AdcStore& adc_store)
-    : value_min_(CONFIG_OCS_SENSOR_LDR_VALUE_MIN)
-    , value_max_(CONFIG_OCS_SENSOR_LDR_VALUE_MAX) {
-    configASSERT(value_min_ < value_max_);
+LdrSensor::LdrSensor(io::AdcStore& adc_store, LdrSensor::Params params)
+    : params_(params) {
+    configASSERT(params_.value_min < params_.value_max);
 
-    adc_ = adc_store.add(static_cast<adc_channel_t>(CONFIG_OCS_SENSOR_LDR_ADC_CHANNEL));
+    adc_ = adc_store.add(params_.adc_channel);
     configASSERT(adc_);
 }
 
@@ -43,16 +42,16 @@ LdrSensor::Data LdrSensor::get_data() const {
 }
 
 int LdrSensor::calculate_lightness_(int raw) const {
-    if (raw >= value_max_) {
+    if (raw >= params_.value_max) {
         return 100;
     }
 
-    if (raw <= value_min_) {
+    if (raw <= params_.value_min) {
         return 0;
     }
 
-    const int range = value_max_ - value_min_;
-    const int offset = raw - value_min_;
+    const int range = params_.value_max - params_.value_min;
+    const int offset = raw - params_.value_min;
     const float lightness = static_cast<float>(offset) / range;
 
     return 100 * lightness;
