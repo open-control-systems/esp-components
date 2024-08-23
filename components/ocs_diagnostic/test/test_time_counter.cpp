@@ -41,10 +41,10 @@ TEST_CASE("Time counter: reach resolution after reset",
     clock.value += core::Millisecond * 499;
     TEST_ASSERT_EQUAL(0, counter.get());
 
-    counter.reset(core::Millisecond * 499);
+    counter.reset();
     TEST_ASSERT_EQUAL(0, counter.get());
 
-    clock.value += core::Millisecond * 499;
+    clock.value += core::Millisecond * 999;
     TEST_ASSERT_EQUAL(0, counter.get());
 
     clock.value += core::Millisecond;

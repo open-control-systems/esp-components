@@ -27,11 +27,10 @@ StateCounter::StateCounter(storage::IStorage& storage,
                            const char* id,
                            core::microseconds_t resolution,
                            State required_state)
-    : required_state_(required_state)
-    , resolution_(resolution) {
+    : required_state_(required_state) {
     configASSERT(required_state_);
 
-    time_counter_.reset(new (std::nothrow) TimeCounter(clock, id, resolution_));
+    time_counter_.reset(new (std::nothrow) TimeCounter(clock, id, resolution));
     configASSERT(time_counter_);
 
     persistent_counter_.reset(new (std::nothrow)
@@ -93,11 +92,9 @@ void StateCounter::handle_state_set_() {
             ESP_LOGE(log_tag, "failed to invalidate counter value: id=%s code=%s",
                      counter_->id(), status::code_to_str(code));
         }
-
-        time_counter_->reset(last_value_ * resolution_);
-    } else {
-        time_counter_->reset(0);
     }
+
+    time_counter_->reset();
 
     last_value_ = 0;
     alive_ = true;
