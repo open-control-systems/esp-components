@@ -71,7 +71,6 @@ private:
     void handle_state_lost_();
 
     const State required_state_ { 0 };
-    const core::microseconds_t resolution_ { 0 };
 
     bool alive_ { false };
     State current_state_ { 0 };

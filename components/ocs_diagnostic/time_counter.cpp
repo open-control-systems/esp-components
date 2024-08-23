@@ -26,9 +26,8 @@ ICounter::Value TimeCounter::get() const {
     return (clock_.now() - offset_) / resolution_;
 }
 
-void TimeCounter::reset(core::microseconds_t now) {
-    configASSERT(clock_.now() >= now);
-    offset_ = now;
+void TimeCounter::reset() {
+    offset_ = clock_.now();
 }
 
 } // namespace diagnostic

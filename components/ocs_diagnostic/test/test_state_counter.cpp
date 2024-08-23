@@ -41,10 +41,10 @@ TEST_CASE("State counter: state is set", "[ocs_diagnostic], [state_counter]") {
     counter.update(new_state);
 
     TEST_ASSERT_TRUE(storage.get(id));
-    TEST_ASSERT_EQUAL(persisted_value + new_value, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value, counter.get());
 
     clock.value += new_value * resolution;
-    TEST_ASSERT_EQUAL(persisted_value + (2 * new_value), counter.get());
+    TEST_ASSERT_EQUAL(persisted_value + new_value, counter.get());
 }
 
 TEST_CASE("State counter: state is lost", "[ocs_diagnostic], [state_counter]") {
@@ -99,34 +99,37 @@ TEST_CASE("State counter: state changed multiple times",
 
     StateCounter counter(storage, clock, id, resolution, required_state);
 
-    // There is no previous state.
     TEST_ASSERT_TRUE(storage.get(id));
     TEST_ASSERT_EQUAL(persisted_value, counter.get());
+
+    // State is set.There is no previous state.
     counter.update(state_set);
 
     TEST_ASSERT_TRUE(storage.get(id));
-    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value, counter.get());
 
     current_value *= 2;
-
     clock.value = current_value * resolution;
-    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
 
+    TEST_ASSERT_EQUAL(persisted_value + current_value / 2, counter.get());
+
+    // State is lost.
     counter.update(state_lost);
 
     const auto read_value = storage.get(id);
     TEST_ASSERT_TRUE(read_value);
-    TEST_ASSERT_EQUAL(persisted_value + current_value, *read_value);
-    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value + current_value / 2, *read_value);
+    TEST_ASSERT_EQUAL(persisted_value + current_value / 2, counter.get());
 
     const unsigned new_value = 10 * current_value;
 
     clock.value = new_value * resolution;
-    TEST_ASSERT_EQUAL(persisted_value + current_value, counter.get());
+    TEST_ASSERT_EQUAL(persisted_value + current_value / 2, counter.get());
 
+    // State is set. A new cycle is started, start counting from the beginning.
     counter.update(state_set);
     TEST_ASSERT_FALSE(storage.get(id));
-    TEST_ASSERT_EQUAL(new_value - current_value - persisted_value, counter.get());
+    TEST_ASSERT_EQUAL(0, counter.get());
 }
 
 TEST_CASE("State counter: persist state on task run",
@@ -163,7 +166,7 @@ TEST_CASE("State counter: persist state on task run",
 
     const auto read_value = storage.get(id);
     TEST_ASSERT_TRUE(read_value);
-    TEST_ASSERT_EQUAL(current_value, *read_value);
+    TEST_ASSERT_EQUAL(0, *read_value);
 }
 
 TEST_CASE("State counter: save counter when reboot is happened",
@@ -201,11 +204,11 @@ TEST_CASE("State counter: save counter when reboot is happened",
     // Required state is set.
     counter.update(required_state);
     TEST_ASSERT_FALSE(storage.get(id));
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_EQUAL(0, counter.get());
 
     counter.handle_reboot();
     TEST_ASSERT_TRUE(storage.get(id));
-    TEST_ASSERT_EQUAL(current_value, counter.get());
+    TEST_ASSERT_EQUAL(0, counter.get());
 }
 
 } // namespace diagnostic
