@@ -10,6 +10,7 @@
 
 #include "ocs_io/oneshot_gpio.h"
 #include "ocs_status/code_to_str.h"
+#include "ocs_status/macros.h"
 
 namespace ocs {
 namespace io {
@@ -26,12 +27,9 @@ OneshotGpio::OneshotGpio(scheduler::ITask& task, IGpio& gpio)
 }
 
 status::StatusCode OneshotGpio::run() {
-    auto code = gpio_.turn_on();
-    if (code != status::StatusCode::OK) {
-        return code;
-    }
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.turn_on());
 
-    code = task_.run();
+    const auto code = task_.run();
     if (code != status::StatusCode::OK) {
         if (const auto c = gpio_.turn_off(); c != status::StatusCode::OK) {
             ESP_LOGE(log_tag, "failed to turn off GPIO on task failure: %s",
@@ -40,10 +38,7 @@ status::StatusCode OneshotGpio::run() {
         return code;
     }
 
-    code = gpio_.turn_off();
-    if (code != status::StatusCode::OK) {
-        return code;
-    }
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.turn_off());
 
     return status::StatusCode::OK;
 }

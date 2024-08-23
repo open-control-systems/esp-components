@@ -7,6 +7,7 @@
  */
 
 #include "ocs_io/delay_gpio.h"
+#include "ocs_status/macros.h"
 
 namespace ocs {
 namespace io {
@@ -21,10 +22,7 @@ int DelayGpio::get() {
 }
 
 status::StatusCode DelayGpio::flip() {
-    const auto code = gpio_.flip();
-    if (code != status::StatusCode::OK) {
-        return code;
-    }
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.flip());
 
     if (params_.flip_delay_interval) {
         vTaskDelay(params_.flip_delay_interval);
@@ -34,10 +32,7 @@ status::StatusCode DelayGpio::flip() {
 }
 
 status::StatusCode DelayGpio::turn_on() {
-    const auto code = gpio_.turn_on();
-    if (code != status::StatusCode::OK) {
-        return code;
-    }
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.turn_on());
 
     if (params_.turn_on_delay_interval) {
         vTaskDelay(params_.turn_on_delay_interval);
@@ -47,10 +42,7 @@ status::StatusCode DelayGpio::turn_on() {
 }
 
 status::StatusCode DelayGpio::turn_off() {
-    const auto code = gpio_.turn_off();
-    if (code != status::StatusCode::OK) {
-        return code;
-    }
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.turn_off());
 
     if (params_.turn_off_delay_interval) {
         vTaskDelay(params_.turn_off_delay_interval);
