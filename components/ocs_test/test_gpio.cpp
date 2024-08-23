@@ -19,6 +19,10 @@ TestGpio::TestGpio(status::StatusCode flip_code,
     , turn_off_code_(turn_off_code) {
 }
 
+int TestGpio::get() {
+    return value;
+}
+
 status::StatusCode TestGpio::flip() {
     ++flip_call_count;
 
