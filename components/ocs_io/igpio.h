@@ -18,6 +18,9 @@ public:
     //! Destroy.
     virtual ~IGpio() = default;
 
+    //! Get the GPIO level.
+    virtual int get() = 0;
+
     //! Change the GPIO state to the opposite.
     virtual status::StatusCode flip() = 0;
 

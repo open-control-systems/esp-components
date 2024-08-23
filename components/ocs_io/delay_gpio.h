@@ -32,6 +32,9 @@ public:
     //! Initialize.
     DelayGpio(IGpio& gpio, Params params);
 
+    //! Get the GPIO level.
+    int get() override;
+
     //! Add a delay after the GPIO is flipped.
     status::StatusCode flip() override;
 
