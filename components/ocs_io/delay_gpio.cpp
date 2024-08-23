@@ -16,6 +16,10 @@ DelayGpio::DelayGpio(IGpio& gpio, DelayGpio::Params params)
     , gpio_(gpio) {
 }
 
+int DelayGpio::get() {
+    return gpio_.get();
+}
+
 status::StatusCode DelayGpio::flip() {
     const auto code = gpio_.flip();
     if (code != status::StatusCode::OK) {

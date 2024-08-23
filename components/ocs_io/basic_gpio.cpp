@@ -25,6 +25,10 @@ BasicGpio::BasicGpio(const char* id, gpio_num_t gpio, bool enable_value)
     , enable_value_(enable_value) {
 }
 
+int BasicGpio::get() {
+    return gpio_get_level(gpio_);
+}
+
 status::StatusCode BasicGpio::flip() {
     const auto err = gpio_set_level(gpio_, !gpio_get_level(gpio_));
     if (err != ESP_OK) {
