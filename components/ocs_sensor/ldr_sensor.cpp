@@ -37,10 +37,6 @@ status::StatusCode LdrSensor::run() {
     return status::StatusCode::OK;
 }
 
-LdrSensor::Data LdrSensor::get_data() const {
-    return data_;
-}
-
 int LdrSensor::calculate_lightness_(int raw) const {
     if (raw >= params_.value_max) {
         return 100;
@@ -58,13 +54,13 @@ int LdrSensor::calculate_lightness_(int raw) const {
 }
 
 void LdrSensor::update_data_(int raw, int voltage) {
-    Data data;
+    LdrSensorData data;
 
     data.raw = raw;
     data.voltage = voltage;
     data.lightness = calculate_lightness_(raw);
 
-    data_ = data;
+    set_data_(data);
 }
 
 } // namespace sensor

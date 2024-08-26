@@ -15,12 +15,12 @@
 namespace ocs {
 namespace sensor {
 
-const char* YL69Sensor::soil_status_to_str(YL69Sensor::SoilStatus status) {
+const char* YL69SensorData::soil_status_to_str(YL69SensorData::SoilStatus status) {
     switch (status) {
-    case YL69Sensor::SoilStatus::Dry:
+    case YL69SensorData::SoilStatus::Dry:
         return "dry";
 
-    case YL69Sensor::SoilStatus::Wet:
+    case YL69SensorData::SoilStatus::Wet:
         return "wet";
 
     default:
@@ -46,7 +46,7 @@ YL69Sensor::YL69Sensor(core::IClock& clock,
 
     dry_state_task_.reset(new (std::nothrow) diagnostic::StateCounter(
         storage, clock, "c_sen_yl69_dry", core::Second,
-        static_cast<diagnostic::StateCounter::State>(SoilStatus::Dry)));
+        static_cast<diagnostic::StateCounter::State>(YL69SensorData::SoilStatus::Dry)));
     configASSERT(dry_state_task_);
 
     counter_holder.add(*dry_state_task_);
@@ -54,7 +54,7 @@ YL69Sensor::YL69Sensor(core::IClock& clock,
 
     wet_state_task_.reset(new (std::nothrow) diagnostic::StateCounter(
         storage, clock, "c_sen_yl69_wet", core::Second,
-        static_cast<diagnostic::StateCounter::State>(SoilStatus::Wet)));
+        static_cast<diagnostic::StateCounter::State>(YL69SensorData::SoilStatus::Wet)));
     configASSERT(wet_state_task_);
 
     counter_holder.add(*wet_state_task_);
@@ -95,10 +95,6 @@ status::StatusCode YL69Sensor::run() {
     return status::StatusCode::OK;
 }
 
-YL69Sensor::Data YL69Sensor::get_data() const {
-    return data_;
-}
-
 int YL69Sensor::calculate_moisture_(int raw) const {
     if (raw >= params_.value_max) {
         return 0;
@@ -116,23 +112,23 @@ int YL69Sensor::calculate_moisture_(int raw) const {
     return 100 * remain;
 }
 
-YL69Sensor::SoilStatus YL69Sensor::calculate_status_(int raw) const {
+YL69SensorData::SoilStatus YL69Sensor::calculate_status_(int raw) const {
     if (raw >= params_.value_max) {
-        return YL69Sensor::SoilStatus::Dry;
+        return YL69SensorData::SoilStatus::Dry;
     }
 
-    return YL69Sensor::SoilStatus::Wet;
+    return YL69SensorData::SoilStatus::Wet;
 }
 
-YL69Sensor::SoilStatus YL69Sensor::update_data_(int raw, int voltage) {
-    Data data;
+YL69SensorData::SoilStatus YL69Sensor::update_data_(int raw, int voltage) {
+    YL69SensorData data;
 
     data.raw = raw;
     data.voltage = voltage;
     data.moisture = calculate_moisture_(raw);
     data.status = calculate_status_(raw);
 
-    data_ = data;
+    set_data_(data);
 
     return data.status;
 }

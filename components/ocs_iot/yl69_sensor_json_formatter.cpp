@@ -34,7 +34,8 @@ status::StatusCode YL69SensorJsonFormatter::format(cJSON* json) {
     }
 
     if (!formatter.add_string_ref_cs(
-            "sensor_yl69_status", sensor::YL69Sensor::soil_status_to_str(data.status))) {
+            "sensor_yl69_status",
+            sensor::YL69SensorData::soil_status_to_str(data.status))) {
         return status::StatusCode::NoMem;
     }
 

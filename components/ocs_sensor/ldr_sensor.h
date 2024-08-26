@@ -8,17 +8,22 @@
 
 #pragma once
 
-#include <atomic>
-
 #include "ocs_core/noncopyable.h"
 #include "ocs_io/adc_store.h"
 #include "ocs_io/iadc.h"
-#include "ocs_scheduler/itask.h"
+#include "ocs_sensor/basic_sensor.h"
 
 namespace ocs {
 namespace sensor {
 
-class LdrSensor : public scheduler::ITask, public core::NonCopyable<> {
+//! Various sensor characteristics.
+struct LdrSensorData {
+    int raw { 0 };
+    int voltage { 0 };
+    int lightness { 0 };
+};
+
+class LdrSensor : public BasicSensor<LdrSensorData>, public core::NonCopyable<> {
 public:
     struct Params {
         unsigned value_min { 0 };
@@ -29,18 +34,8 @@ public:
     //! Initialize.
     LdrSensor(io::AdcStore& adc_store, Params params);
 
-    //! Various sensor characteristics.
-    struct Data {
-        int raw { 0 };
-        int voltage { 0 };
-        int lightness { 0 };
-    };
-
     //! Read sensor data.
     status::StatusCode run() override;
-
-    //! Return the underlying sensor data.
-    Data get_data() const;
 
 private:
     int calculate_lightness_(int raw) const;
@@ -50,8 +45,6 @@ private:
     const Params params_;
 
     io::IAdc* adc_ { nullptr };
-
-    std::atomic<Data> data_;
 };
 
 } // namespace sensor

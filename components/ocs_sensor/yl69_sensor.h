@@ -20,17 +20,17 @@
 #include "ocs_io/iadc.h"
 #include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_scheduler/fanout_task.h"
-#include "ocs_scheduler/itask.h"
 #include "ocs_scheduler/itimer.h"
 #include "ocs_scheduler/timer_store.h"
+#include "ocs_sensor/basic_sensor.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
 namespace ocs {
 namespace sensor {
 
-class YL69Sensor : public scheduler::ITask, public core::NonCopyable<> {
-public:
+//! Various sensor characteristics.
+struct YL69SensorData {
     //! Known soil statuses.
     enum class SoilStatus {
         None,
@@ -42,14 +42,14 @@ public:
     //! Convert soil moisture status to human-readable description.
     static const char* soil_status_to_str(SoilStatus);
 
-    //! Various sensor characteristics.
-    struct Data {
-        int raw { 0 };
-        int voltage { 0 };
-        int moisture { 0 };
-        SoilStatus status { SoilStatus::None };
-    };
+    int raw { 0 };
+    int voltage { 0 };
+    int moisture { 0 };
+    SoilStatus status { SoilStatus::None };
+};
 
+class YL69Sensor : public BasicSensor<YL69SensorData>, public core::NonCopyable<> {
+public:
     struct Params {
         unsigned value_min { 0 };
         unsigned value_max { 0 };
@@ -69,14 +69,10 @@ public:
     //! Read sensor data.
     status::StatusCode run() override;
 
-    //! Return the underlying sensor data.
-    Data get_data() const;
-
 private:
     int calculate_moisture_(int raw) const;
-    SoilStatus calculate_status_(int raw) const;
-
-    SoilStatus update_data_(int raw, int voltage);
+    YL69SensorData::SoilStatus calculate_status_(int raw) const;
+    YL69SensorData::SoilStatus update_data_(int raw, int voltage);
 
     const Params params_;
 
@@ -88,8 +84,6 @@ private:
     std::unique_ptr<scheduler::FanoutTask> fanout_task_;
     scheduler::ITask* fanout_task_async_ { nullptr };
     std::unique_ptr<scheduler::ITimer> task_timer_;
-
-    std::atomic<Data> data_;
 };
 
 } // namespace sensor
