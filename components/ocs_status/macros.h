@@ -8,13 +8,15 @@
 
 #pragma once
 
+#include "esp_compiler.h"
+
 #include "ocs_status/code.h"
 
 //! Macro to check the status code. If the status code is not OK, it returns.
 #define OCS_STATUS_RETURN_ON_ERROR(x)                                                    \
     do {                                                                                 \
         const ocs::status::StatusCode _code = (x);                                       \
-        if (_code != ocs::status::StatusCode::OK) {                                      \
+        if (unlikely(_code != ocs::status::StatusCode::OK)) {                            \
             return _code;                                                                \
         }                                                                                \
     } while (0)
