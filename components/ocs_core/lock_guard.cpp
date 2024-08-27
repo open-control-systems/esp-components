@@ -6,17 +6,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "unity.h"
-
 #include "ocs_core/lock_guard.h"
-#include "ocs_core/static_mutex.h"
 
 namespace ocs {
 namespace core {
 
-TEST_CASE("Lock/unlock static mutex", "[ocs_core], [static_mutex]") {
-    StaticMutex mu;
-    LockGuard lock(mu);
+LockGuard::LockGuard(ILocker& locker)
+    : locker_(locker) {
+    locker_.lock();
+}
+
+LockGuard::~LockGuard() {
+    locker_.unlock();
 }
 
 } // namespace core

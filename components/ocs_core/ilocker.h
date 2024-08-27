@@ -8,20 +8,24 @@
 
 #pragma once
 
-#include "ocs_core/basic_static_mutex.h"
-#include "ocs_core/noncopyable.h"
+#include "freertos/FreeRTOS.h"
+
+#include "ocs_status/code.h"
 
 namespace ocs {
 namespace core {
 
-//! FreeRTOS mutex to be used in FreeRTOS tasks.
-class StaticMutex : public BasicStaticMutex, public NonCopyable<> {
+//! Resource locker/unlocker.
+class ILocker {
 public:
-    //! Lock the mutex.
-    status::StatusCode lock(TickType_t wait = portMAX_DELAY) override;
+    //! Destroy.
+    virtual ~ILocker() = default;
 
-    //! Unlock the mutex.
-    status::StatusCode unlock() override;
+    //! Lock the resource.
+    virtual status::StatusCode lock(TickType_t wait = portMAX_DELAY) = 0;
+
+    //! Unlock the resource.
+    virtual status::StatusCode unlock() = 0;
 };
 
 } // namespace core

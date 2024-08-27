@@ -25,7 +25,7 @@ public:
     bool was_run_called() const;
 
     //! Wait for the task to be called.
-    bool wait(TickType_t wait = portMAX_DELAY);
+    status::StatusCode wait(TickType_t wait = portMAX_DELAY);
 
 private:
     mutable core::StaticMutex mu_;

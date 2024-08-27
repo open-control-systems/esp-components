@@ -13,8 +13,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "ocs_core/ilocker.h"
 #include "ocs_core/noncopyable.h"
-#include "ocs_core/static_mutex.h"
 
 namespace ocs {
 namespace core {
@@ -23,7 +23,10 @@ namespace core {
 class Cond : public NonCopyable<> {
 public:
     //! Initialize.
-    explicit Cond(StaticMutex& mutex);
+    //!
+    //! @params
+    //!  - @p locker is held while observing or changing the condition.
+    explicit Cond(ILocker& locker);
 
     //! Atomically unlocks mutex and suspends execution of the calling task.
     //! After later resuming execution, wait() locks mutex before returning.
@@ -42,22 +45,24 @@ public:
     //!    while (!condition()) {
     //!        cond.wait()
     //!    }
-    bool wait(TickType_t wait = portMAX_DELAY);
+    status::StatusCode wait(TickType_t wait = portMAX_DELAY);
 
     //! Signal wakes a task waiting on a condition variable, if there is one.
     //!
     //! @remarks
     //!  Mutex should be held.
-    void signal();
+    status::StatusCode signal();
 
     //! Signal wakes any tasks waiting on the condition variable, if there are any.
     //!
     //! @remarks
     //!  Mutex should be held.
-    void broadcast();
+    status::StatusCode broadcast();
 
 private:
-    StaticMutex& mu_;
+    status::StatusCode signal_();
+
+    ILocker& locker_;
     std::deque<TaskHandle_t> tasks_;
 };
 

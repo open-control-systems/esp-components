@@ -7,6 +7,8 @@
  */
 
 #include "ocs_test/test_task.h"
+#include "ocs_core/lock_guard.h"
+#include "ocs_status/macros.h"
 
 namespace ocs {
 namespace test {
@@ -17,7 +19,7 @@ TestTask::TestTask(status::StatusCode code)
 }
 
 status::StatusCode TestTask::run() {
-    core::StaticMutex::Lock lock(mu_);
+    core::LockGuard lock(mu_);
 
     run_called_ = true;
     cond_.broadcast();
@@ -26,21 +28,19 @@ status::StatusCode TestTask::run() {
 }
 
 bool TestTask::was_run_called() const {
-    core::StaticMutex::Lock lock(mu_);
+    core::LockGuard lock(mu_);
 
     return run_called_;
 }
 
-bool TestTask::wait(TickType_t wait) {
-    core::StaticMutex::Lock lock(mu_);
+status::StatusCode TestTask::wait(TickType_t wait) {
+    core::LockGuard lock(mu_);
 
     while (!run_called_) {
-        if (!cond_.wait(wait)) {
-            return false;
-        }
+        OCS_STATUS_RETURN_ON_ERROR(cond_.wait(wait));
     }
 
-    return true;
+    return status::StatusCode::OK;
 }
 
 } // namespace test

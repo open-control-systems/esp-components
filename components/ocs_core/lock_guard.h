@@ -6,18 +6,26 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "unity.h"
+#pragma once
 
-#include "ocs_core/lock_guard.h"
-#include "ocs_core/static_mutex.h"
+#include "ocs_core/ilocker.h"
+#include "ocs_core/noncopyable.h"
 
 namespace ocs {
 namespace core {
 
-TEST_CASE("Lock/unlock static mutex", "[ocs_core], [static_mutex]") {
-    StaticMutex mu;
-    LockGuard lock(mu);
-}
+//! RAII resource locker.
+class LockGuard : public NonCopyable<> {
+public:
+    //! Acquire the resource.
+    explicit LockGuard(ILocker& locker);
+
+    //! Release the resource.
+    ~LockGuard();
+
+private:
+    ILocker& locker_;
+};
 
 } // namespace core
 } // namespace ocs

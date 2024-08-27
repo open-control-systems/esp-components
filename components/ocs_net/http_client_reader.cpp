@@ -10,7 +10,9 @@
 
 #include "esp_log.h"
 
+#include "ocs_core/lock_guard.h"
 #include "ocs_net/http_client_reader.h"
+#include "ocs_status/macros.h"
 
 namespace ocs {
 namespace net {
@@ -41,20 +43,18 @@ esp_http_client_handle_t HttpClientReader::client() const {
     return client_.get();
 }
 
-bool HttpClientReader::wait(TickType_t wait) {
-    core::StaticMutex::Lock lock(mu_);
-
-    bool ret = true;
+status::StatusCode HttpClientReader::wait(TickType_t wait) {
+    core::LockGuard lock(mu_);
 
     while (!data_received_) {
-        ret = cond_.wait(wait);
+        OCS_STATUS_RETURN_ON_ERROR(cond_.wait(wait));
     }
 
-    return ret;
+    return status::StatusCode::OK;
 }
 
 unsigned HttpClientReader::read(char* buf, unsigned size) {
-    core::StaticMutex::Lock lock(mu_);
+    core::LockGuard lock(mu_);
 
     const unsigned len = std::min(size, strlen(buf_.get()));
     memcpy(buf, buf_.get(), len);
@@ -107,14 +107,14 @@ esp_err_t HttpClientReader::handle_event_(esp_http_client_event_t* event) {
 }
 
 void HttpClientReader::handle_event_on_data_(esp_http_client_event_t* event) {
-    core::StaticMutex::Lock lock(mu_);
+    core::LockGuard lock(mu_);
 
     memcpy(buf_.get(), event->data,
            std::min(event->data_len, static_cast<int>(params_.bufsize)));
 }
 
 void HttpClientReader::handle_event_on_finish_() {
-    core::StaticMutex::Lock lock(mu_);
+    core::LockGuard lock(mu_);
 
     data_received_ = true;
 

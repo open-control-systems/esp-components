@@ -14,6 +14,7 @@
 
 #include "ocs_core/cond.h"
 #include "ocs_core/noncopyable.h"
+#include "ocs_core/static_mutex.h"
 #include "ocs_net/http_client_builder.h"
 
 namespace ocs {
@@ -39,10 +40,7 @@ public:
     esp_http_client_handle_t client() const;
 
     //! Wait for the response.
-    //!
-    //! @return
-    //!  True if the response is received withing the @p wait interval.
-    bool wait(TickType_t wait = portMAX_DELAY);
+    status::StatusCode wait(TickType_t wait = portMAX_DELAY);
 
     //! Read the response.
     //!

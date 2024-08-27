@@ -20,7 +20,7 @@ TEST_CASE("High resolution timer: handle events in periodic task",
     HighResolutionTimer timer(task, "test", core::Millisecond * 100);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, timer.start());
-    TEST_ASSERT_TRUE(task.wait());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, task.wait());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, timer.stop());
 }
 

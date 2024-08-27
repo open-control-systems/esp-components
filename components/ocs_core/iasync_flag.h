@@ -6,18 +6,26 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "unity.h"
+#pragma once
 
-#include "ocs_core/lock_guard.h"
-#include "ocs_core/static_mutex.h"
+#include "freertos/FreeRTOS.h"
+
+#include "ocs_status/code.h"
 
 namespace ocs {
 namespace core {
 
-TEST_CASE("Lock/unlock static mutex", "[ocs_core], [static_mutex]") {
-    StaticMutex mu;
-    LockGuard lock(mu);
-}
+class IAsyncFlag {
+public:
+    //! Destroy.
+    virtual ~IAsyncFlag() = default;
+
+    //! Wait for the event.
+    virtual status::StatusCode wait(TickType_t wait = portMAX_DELAY) = 0;
+
+    //! Signal the event.
+    virtual status::StatusCode signal() = 0;
+};
 
 } // namespace core
 } // namespace ocs
