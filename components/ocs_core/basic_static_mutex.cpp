@@ -6,17 +6,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "unity.h"
+#include <cstring>
 
-#include "ocs_core/lock_guard.h"
-#include "ocs_core/static_mutex.h"
+#include "freertos/FreeRTOSConfig.h"
+
+#include "ocs_core/basic_static_mutex.h"
 
 namespace ocs {
 namespace core {
 
-TEST_CASE("Lock/unlock static mutex", "[ocs_core], [static_mutex]") {
-    StaticMutex mu;
-    LockGuard lock(mu);
+BasicStaticMutex::BasicStaticMutex() {
+    memset(&buff_, 0, sizeof(buff_));
+
+    sem_ = xSemaphoreCreateMutexStatic(&buff_);
+    configASSERT(sem_);
 }
 
 } // namespace core

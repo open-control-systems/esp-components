@@ -14,8 +14,8 @@
 namespace ocs {
 namespace core {
 
-//! FreeRTOS mutex to be used in FreeRTOS tasks.
-class StaticMutex : public BasicStaticMutex, public NonCopyable<> {
+//! FreeRTOS mutex to be used in ISR.
+class StaticMutexIsr : public BasicStaticMutex, public NonCopyable<> {
 public:
     //! Lock the mutex.
     status::StatusCode lock(TickType_t wait = portMAX_DELAY) override;

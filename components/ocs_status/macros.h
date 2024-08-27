@@ -20,3 +20,10 @@
             return _code;                                                                \
         }                                                                                \
     } while (0)
+
+#define OCS_STATUS_RETURN_ON_FALSE(x, code)                                              \
+    do {                                                                                 \
+        if (unlikely(!(x))) {                                                            \
+            return code;                                                                 \
+        }                                                                                \
+    } while (0)

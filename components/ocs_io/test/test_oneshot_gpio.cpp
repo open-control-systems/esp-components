@@ -24,7 +24,7 @@ TEST_CASE("Oneshot GPIO: switch the GPIO: no error", "[ocs_io], [oneshot_gpio]")
     OneshotGpio oneshot_gpio(task, gpio);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, oneshot_gpio.run());
-    TEST_ASSERT_TRUE(task.wait());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, task.wait());
 
     TEST_ASSERT_EQUAL(0, gpio.flip_call_count);
     TEST_ASSERT_EQUAL(1, gpio.turn_on_call_count);
@@ -40,7 +40,7 @@ TEST_CASE("Oneshot GPIO: switch the GPIO: task error", "[ocs_io], [oneshot_gpio]
     OneshotGpio oneshot_gpio(task, gpio);
 
     TEST_ASSERT_EQUAL(status::StatusCode::Error, oneshot_gpio.run());
-    TEST_ASSERT_TRUE(task.wait());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, task.wait());
 
     TEST_ASSERT_EQUAL(0, gpio.flip_call_count);
     TEST_ASSERT_EQUAL(1, gpio.turn_on_call_count);
@@ -57,7 +57,7 @@ TEST_CASE("Oneshot GPIO: switch the GPIO: task error turn off error",
     OneshotGpio oneshot_gpio(task, gpio);
 
     TEST_ASSERT_EQUAL(status::StatusCode::Error, oneshot_gpio.run());
-    TEST_ASSERT_TRUE(task.wait());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, task.wait());
 
     TEST_ASSERT_EQUAL(0, gpio.flip_call_count);
     TEST_ASSERT_EQUAL(1, gpio.turn_on_call_count);
@@ -73,7 +73,7 @@ TEST_CASE("Oneshot GPIO: switch the GPIO: turn off error", "[ocs_io], [oneshot_g
     OneshotGpio oneshot_gpio(task, gpio);
 
     TEST_ASSERT_EQUAL(status::StatusCode::Error, oneshot_gpio.run());
-    TEST_ASSERT_TRUE(task.wait());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, task.wait());
 
     TEST_ASSERT_EQUAL(0, gpio.flip_call_count);
     TEST_ASSERT_EQUAL(1, gpio.turn_on_call_count);
@@ -89,7 +89,7 @@ TEST_CASE("Oneshot GPIO: switch the GPIO: turn on error", "[ocs_io], [oneshot_gp
     OneshotGpio oneshot_gpio(task, gpio);
 
     TEST_ASSERT_EQUAL(status::StatusCode::Error, oneshot_gpio.run());
-    TEST_ASSERT_FALSE(task.wait(pdMS_TO_TICKS(100)));
+    TEST_ASSERT_EQUAL(status::StatusCode::Error, task.wait(pdMS_TO_TICKS(100)));
 
     TEST_ASSERT_EQUAL(0, gpio.flip_call_count);
     TEST_ASSERT_EQUAL(1, gpio.turn_on_call_count);

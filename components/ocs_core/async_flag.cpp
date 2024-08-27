@@ -6,21 +6,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_core/static_mutex.h"
+#include "ocs_core/async_flag.h"
 #include "ocs_status/macros.h"
 
 namespace ocs {
 namespace core {
 
-status::StatusCode StaticMutex::lock(TickType_t wait) {
-    OCS_STATUS_RETURN_ON_FALSE(xSemaphoreTake(sem_, wait) == pdTRUE,
-                               status::StatusCode::Error);
+status::StatusCode AsyncFlag::signal() {
+    TaskHandle_t task_to_notify = acquire_task_();
+    OCS_STATUS_RETURN_ON_FALSE(task_to_notify, status::StatusCode::Error);
 
-    return status::StatusCode::OK;
-}
-
-status::StatusCode StaticMutex::unlock() {
-    OCS_STATUS_RETURN_ON_FALSE(xSemaphoreGive(sem_) == pdTRUE, status::StatusCode::Error);
+    const BaseType_t ret = xTaskNotifyGive(task_to_notify);
+    OCS_STATUS_RETURN_ON_FALSE(ret == pdTRUE, status::StatusCode::Error);
 
     return status::StatusCode::OK;
 }

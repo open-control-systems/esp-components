@@ -72,7 +72,7 @@ TEST_CASE("Async task scheduler: register maximum tasks",
     scheduler.wait();
 
     for (auto& task : tasks) {
-        TEST_ASSERT_TRUE(task->wait());
+        TEST_ASSERT_EQUAL(status::StatusCode::OK, task->wait());
     }
 }
 
@@ -111,7 +111,7 @@ TEST_CASE("Async task scheduler: register maximum tasks: some failed",
     scheduler.wait();
 
     for (auto& task : tasks) {
-        TEST_ASSERT_TRUE(task->wait());
+        TEST_ASSERT_EQUAL(status::StatusCode::OK, task->wait());
     }
 }
 
