@@ -8,9 +8,15 @@ idf_component_register(
     "reset_reason_to_str.cpp"
     "task_state_to_str.cpp"
     "system_state_builder.cpp"
+    "delayer_configuration.cpp"
+    "basic_delayer.cpp"
+    "default_delayer.cpp"
+    "busy_loop_delayer.cpp"
+    "low_power_delayer.cpp"
 
     REQUIRES
     "esp_timer"
+    "driver"
 
     INCLUDE_DIRS
     ".."
