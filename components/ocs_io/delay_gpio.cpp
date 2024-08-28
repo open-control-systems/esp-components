@@ -51,5 +51,9 @@ status::StatusCode DelayGpio::turn_off() {
     return status::StatusCode::OK;
 }
 
+status::StatusCode DelayGpio::set_direction(IGpio::Direction direction) {
+    return gpio_.set_direction(direction);
+}
+
 } // namespace io
 } // namespace ocs

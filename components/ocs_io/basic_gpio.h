@@ -43,6 +43,9 @@ public:
     //! Disable GPIO.
     status::StatusCode turn_off() override;
 
+    //! Set the GPIO direction.
+    status::StatusCode set_direction(IGpio::Direction direction) override;
+
 private:
     const std::string id_;
     const gpio_num_t gpio_ { GPIO_NUM_NC };

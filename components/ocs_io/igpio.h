@@ -15,6 +15,12 @@ namespace io {
 
 class IGpio {
 public:
+    //! Possible GPIO directions.
+    enum class Direction {
+        Output,
+        Input,
+    };
+
     //! Destroy.
     virtual ~IGpio() = default;
 
@@ -29,6 +35,15 @@ public:
 
     //! Disable the GPIO.
     virtual status::StatusCode turn_off() = 0;
+
+    //! Set the GPIO direction.
+    //!
+    //! @notes
+    //!  In most cases the GPIO direction is set once when the GPIOs are configured.
+    //!  For some setups it is necessary to change the GPIO direction, e.g. 1-Wire sensors
+    //!  require the GPIO direction to be changed depending on whether the data is
+    //!  receiving/transmitting from/to the sensor.
+    virtual status::StatusCode set_direction(Direction direction) = 0;
 };
 
 } // namespace io

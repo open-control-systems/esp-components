@@ -24,11 +24,13 @@ public:
     status::StatusCode flip() override;
     status::StatusCode turn_on() override;
     status::StatusCode turn_off() override;
+    status::StatusCode set_direction(IGpio::Direction direction) override;
 
     unsigned value { 0 };
     unsigned flip_call_count { 0 };
     unsigned turn_on_call_count { 0 };
     unsigned turn_off_call_count { 0 };
+    IGpio::Direction direction { IGpio::Direction::Output };
 
 private:
     status::StatusCode flip_code_ { status::StatusCode::OK };
