@@ -41,5 +41,10 @@ status::StatusCode TestGpio::turn_off() {
     return turn_off_code_;
 }
 
+status::StatusCode TestGpio::set_direction(IGpio::Direction direction) {
+    this->direction = direction;
+    return status::StatusCode::OK;
+}
+
 } // namespace test
 } // namespace ocs

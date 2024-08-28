@@ -44,6 +44,9 @@ public:
     //! Add a delay after the GPIO is turned off.
     status::StatusCode turn_off() override;
 
+    //! Set the GPIO direction.
+    status::StatusCode set_direction(IGpio::Direction direction) override;
+
 private:
     const Params params_;
 
