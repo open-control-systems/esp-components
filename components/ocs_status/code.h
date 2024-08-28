@@ -25,7 +25,7 @@ enum class StatusCode {
     //! There is no enough memory to perform an operation.
     NoMem,
 
-    // A context switch should be requested before the interrupt is exited.
+    //! A context switch should be requested before the interrupt is exited.
     IsrYield,
 };
 
