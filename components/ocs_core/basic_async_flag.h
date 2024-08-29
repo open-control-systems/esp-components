@@ -39,7 +39,7 @@ private:
     //! of the producer-consumer communication, as a result of which the acquire-release
     //! memory order can be used.
     //!
-    //! The consumer acquires the task with the RWM atomic operation, so it should use the
+    //! The consumer acquires the task with the RMW atomic operation, so it should use the
     //! acquire-release memory order. The producer only performs an atomic write
     //! operation, so it should use the release memory order.
     std::atomic<TaskHandle_t> task_to_notify_ { nullptr };
