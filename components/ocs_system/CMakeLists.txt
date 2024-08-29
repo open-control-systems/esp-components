@@ -13,6 +13,7 @@ idf_component_register(
     "default_delayer.cpp"
     "busy_loop_delayer.cpp"
     "low_power_delayer.cpp"
+    "default_randomizer.cpp"
 
     REQUIRES
     "esp_timer"
