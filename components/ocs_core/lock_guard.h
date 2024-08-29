@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include "freertos/FreeRTOS.h"
+
 #include "ocs_core/ilocker.h"
 #include "ocs_core/noncopyable.h"
 
@@ -18,7 +20,11 @@ namespace core {
 class LockGuard : public NonCopyable<> {
 public:
     //! Acquire the resource.
-    explicit LockGuard(ILocker& locker);
+    //!
+    //! @params
+    //!  - @p locker to lock/unlock the resource.
+    //!  - @p wait - interval to wait for the resource to become available.
+    LockGuard(ILocker& locker, TickType_t wait = portMAX_DELAY);
 
     //! Release the resource.
     ~LockGuard();
