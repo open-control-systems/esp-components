@@ -12,7 +12,7 @@
 
 #include "ocs_status/code.h"
 
-//! Macro to check the status code. If the status code is not OK, it returns.
+//! If the status code is not OK, it returns.
 #define OCS_STATUS_RETURN_ON_ERROR(x)                                                    \
     do {                                                                                 \
         const ocs::status::StatusCode _code = (x);                                       \
@@ -21,6 +21,7 @@
         }                                                                                \
     } while (0)
 
+//! If the condition isn't true, the code is returned.
 #define OCS_STATUS_RETURN_ON_FALSE(x, code)                                              \
     do {                                                                                 \
         if (unlikely(!(x))) {                                                            \
