@@ -15,6 +15,7 @@
 
 #include "ocs_core/ilocker.h"
 #include "ocs_core/noncopyable.h"
+#include "ocs_core/static_mutex.h"
 
 namespace ocs {
 namespace core {
@@ -32,9 +33,11 @@ public:
     //! After later resuming execution, wait() locks mutex before returning.
     //!
     //! @remarks
-    //!  Because mutex is not locked when wait() first resumes, the caller
-    //!  typically cannot assume that the condition is true when
-    //!  wait() returns. Instead, the caller should wait() in a loop.
+    //!  - Because mutex is not locked when wait() first resumes, the caller
+    //!    typically cannot assume that the condition is true when
+    //!    wait() returns. Instead, the caller should wait() in a loop.
+    //!
+    //!  - Multiple tasks can wait on the same condition variable.
     //!
     //! @example
     //!    Mutex mutex;
@@ -60,9 +63,13 @@ public:
     status::StatusCode broadcast();
 
 private:
+    void append_task_();
+
     status::StatusCode signal_();
 
     ILocker& locker_;
+
+    core::StaticMutex mu_;
     std::deque<TaskHandle_t> tasks_;
 };
 

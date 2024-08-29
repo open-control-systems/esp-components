@@ -7,6 +7,7 @@
  */
 
 #include "ocs_core/cond.h"
+#include "ocs_core/lock_guard.h"
 #include "ocs_status/macros.h"
 
 namespace ocs {
@@ -17,17 +18,18 @@ Cond::Cond(ILocker& locker)
 }
 
 status::StatusCode Cond::wait(TickType_t wait) {
-    auto task_handle = xTaskGetCurrentTaskHandle();
-    tasks_.push_back(task_handle);
+    append_task_();
 
-    locker_.unlock();
+    OCS_STATUS_RETURN_ON_ERROR(locker_.unlock());
     const auto count = ulTaskNotifyTake(pdTRUE, wait);
-    locker_.lock();
+    OCS_STATUS_RETURN_ON_ERROR(locker_.lock());
 
     return count != 0 ? status::StatusCode::OK : status::StatusCode::Error;
 }
 
 status::StatusCode Cond::signal() {
+    core::LockGuard lock(mu_);
+
     if (!tasks_.empty()) {
         return signal_();
     }
@@ -36,11 +38,19 @@ status::StatusCode Cond::signal() {
 }
 
 status::StatusCode Cond::broadcast() {
+    core::LockGuard lock(mu_);
+
     while (!tasks_.empty()) {
         OCS_STATUS_RETURN_ON_ERROR(signal_());
     }
 
     return status::StatusCode::OK;
+}
+
+void Cond::append_task_() {
+    core::LockGuard lock(mu_);
+
+    tasks_.push_back(xTaskGetCurrentTaskHandle());
 }
 
 status::StatusCode Cond::signal_() {
