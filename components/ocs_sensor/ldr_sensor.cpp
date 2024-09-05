@@ -13,8 +13,9 @@
 namespace ocs {
 namespace sensor {
 
-LdrSensor::LdrSensor(io::AdcStore& adc_store, LdrSensor::Params params)
-    : params_(params) {
+LdrSensor::LdrSensor(io::AdcStore& adc_store, const char* id, LdrSensor::Params params)
+    : BasicSensor(id)
+    , params_(params) {
     configASSERT(params_.value_min < params_.value_max);
 
     adc_ = adc_store.add(params_.adc_channel);

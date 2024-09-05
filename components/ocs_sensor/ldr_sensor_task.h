@@ -30,6 +30,8 @@ public:
     LdrSensorTask(io::AdcStore& adc_store,
                   scheduler::AsyncTaskScheduler& task_scheduler,
                   scheduler::TimerStore& timer_store,
+                  const char* sensor_id,
+                  const char* task_id,
                   Params params);
 };
 

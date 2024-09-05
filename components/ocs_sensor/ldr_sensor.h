@@ -32,7 +32,7 @@ public:
     };
 
     //! Initialize.
-    LdrSensor(io::AdcStore& adc_store, Params params);
+    LdrSensor(io::AdcStore& adc_store, const char* id, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;

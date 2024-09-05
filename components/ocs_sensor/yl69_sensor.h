@@ -64,6 +64,8 @@ public:
                scheduler::AsyncTaskScheduler& task_scheduler,
                scheduler::TimerStore& timer_store,
                diagnostic::BasicCounterHolder& counter_holder,
+               const char* sensor_id,
+               const char* task_id,
                Params params);
 
     //! Read sensor data.

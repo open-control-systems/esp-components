@@ -37,8 +37,11 @@ YL69Sensor::YL69Sensor(core::IClock& clock,
                        scheduler::AsyncTaskScheduler& task_scheduler,
                        scheduler::TimerStore& timer_store,
                        diagnostic::BasicCounterHolder& counter_holder,
+                       const char* sensor_id,
+                       const char* task_id,
                        Params params)
-    : params_(params) {
+    : BasicSensor(sensor_id)
+    , params_(params) {
     configASSERT(params_.value_min < params_.value_max);
 
     adc_ = adc_store.add(params_.adc_channel);
@@ -70,7 +73,7 @@ YL69Sensor::YL69Sensor(core::IClock& clock,
     configASSERT(fanout_task_async_);
 
     task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *fanout_task_async_, "YL69-sensor-save-status", core::Minute * 30));
+        *fanout_task_async_, task_id, core::Minute * 30));
     configASSERT(task_timer_);
 
     timer_store.add(*task_timer_);
