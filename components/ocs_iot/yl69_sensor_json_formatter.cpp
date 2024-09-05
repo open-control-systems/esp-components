@@ -12,8 +12,10 @@
 namespace ocs {
 namespace iot {
 
-YL69SensorJsonFormatter::YL69SensorJsonFormatter(sensor::YL69Sensor& sensor)
-    : sensor_(sensor) {
+YL69SensorJsonFormatter::YL69SensorJsonFormatter(sensor::YL69Sensor& sensor,
+                                                 bool flat_formatting)
+    : BasicJsonFormatter(flat_formatting)
+    , sensor_(sensor) {
 }
 
 status::StatusCode YL69SensorJsonFormatter::format(cJSON* json) {
@@ -21,22 +23,41 @@ status::StatusCode YL69SensorJsonFormatter::format(cJSON* json) {
 
     const auto data = sensor_.get_data();
 
-    if (!formatter.add_number_cs("sensor_yl69_raw", data.raw)) {
-        return status::StatusCode::NoMem;
-    }
+    if (flat_formatting_) {
+        if (!formatter.add_number_cs("sensor_yl69_raw", data.raw)) {
+            return status::StatusCode::NoMem;
+        }
 
-    if (!formatter.add_number_cs("sensor_yl69_voltage", data.voltage)) {
-        return status::StatusCode::NoMem;
-    }
+        if (!formatter.add_number_cs("sensor_yl69_voltage", data.voltage)) {
+            return status::StatusCode::NoMem;
+        }
 
-    if (!formatter.add_number_cs("sensor_yl69_moisture", data.moisture)) {
-        return status::StatusCode::NoMem;
-    }
+        if (!formatter.add_number_cs("sensor_yl69_moisture", data.moisture)) {
+            return status::StatusCode::NoMem;
+        }
 
-    if (!formatter.add_string_ref_cs(
-            "sensor_yl69_status",
-            sensor::YL69SensorData::soil_status_to_str(data.status))) {
-        return status::StatusCode::NoMem;
+        if (!formatter.add_string_ref_cs(
+                "sensor_yl69_status",
+                sensor::YL69SensorData::soil_status_to_str(data.status))) {
+            return status::StatusCode::NoMem;
+        }
+    } else {
+        if (!formatter.add_number_cs("raw", data.raw)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("voltage", data.voltage)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("moisture", data.moisture)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_string_ref_cs(
+                "status", sensor::YL69SensorData::soil_status_to_str(data.status))) {
+            return status::StatusCode::NoMem;
+        }
     }
 
     return status::StatusCode::OK;

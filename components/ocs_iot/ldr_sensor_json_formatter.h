@@ -9,16 +9,16 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_iot/ijson_formatter.h"
+#include "ocs_iot/basic_json_formatter.h"
 #include "ocs_sensor/ldr_sensor.h"
 
 namespace ocs {
 namespace iot {
 
-class LdrSensorJsonFormatter : public IJsonFormatter, public core::NonCopyable<> {
+class LdrSensorJsonFormatter : public BasicJsonFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    explicit LdrSensorJsonFormatter(sensor::LdrSensor& sensor);
+    LdrSensorJsonFormatter(sensor::LdrSensor& sensor, bool flat_formatting);
 
     //! Format LDR sensor data into @p json.
     status::StatusCode format(cJSON* json) override;

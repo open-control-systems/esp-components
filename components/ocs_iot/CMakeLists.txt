@@ -24,6 +24,8 @@ idf_component_register(
     "http_command_handler.cpp"
     "http_data_handler.cpp"
     "http_pipeline.cpp"
+    "basic_json_formatter.cpp"
+    "field_json_formatter.cpp"
 
     REQUIRES
     "json"

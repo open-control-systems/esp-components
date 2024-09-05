@@ -12,8 +12,10 @@
 namespace ocs {
 namespace iot {
 
-LdrSensorJsonFormatter::LdrSensorJsonFormatter(sensor::LdrSensor& sensor)
-    : sensor_(sensor) {
+LdrSensorJsonFormatter::LdrSensorJsonFormatter(sensor::LdrSensor& sensor,
+                                               bool flat_formatting)
+    : BasicJsonFormatter(flat_formatting)
+    , sensor_(sensor) {
 }
 
 status::StatusCode LdrSensorJsonFormatter::format(cJSON* json) {
@@ -21,16 +23,30 @@ status::StatusCode LdrSensorJsonFormatter::format(cJSON* json) {
 
     const auto data = sensor_.get_data();
 
-    if (!formatter.add_number_cs("sensor_ldr_raw", data.raw)) {
-        return status::StatusCode::NoMem;
-    }
+    if (flat_formatting_) {
+        if (!formatter.add_number_cs("sensor_ldr_raw", data.raw)) {
+            return status::StatusCode::NoMem;
+        }
 
-    if (!formatter.add_number_cs("sensor_ldr_voltage", data.voltage)) {
-        return status::StatusCode::NoMem;
-    }
+        if (!formatter.add_number_cs("sensor_ldr_voltage", data.voltage)) {
+            return status::StatusCode::NoMem;
+        }
 
-    if (!formatter.add_number_cs("sensor_ldr_lightness", data.lightness)) {
-        return status::StatusCode::NoMem;
+        if (!formatter.add_number_cs("sensor_ldr_lightness", data.lightness)) {
+            return status::StatusCode::NoMem;
+        }
+    } else {
+        if (!formatter.add_number_cs("raw", data.raw)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("voltage", data.voltage)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("lightness", data.lightness)) {
+            return status::StatusCode::NoMem;
+        }
     }
 
     return status::StatusCode::OK;
