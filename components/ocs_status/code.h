@@ -27,6 +27,9 @@ enum class StatusCode {
 
     //! A context switch should be requested before the interrupt is exited.
     IsrYield,
+
+    //! An operation can't be performed due to invalid arguments.
+    InvalidArg,
 };
 
 } // namespace status

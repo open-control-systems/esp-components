@@ -23,6 +23,8 @@ const char* code_to_str(StatusCode status) {
         return "NoMem";
     case StatusCode::IsrYield:
         return "IsrYield";
+    case StatusCode::InvalidArg:
+        return "InvalidArg";
 
     default:
         break;
