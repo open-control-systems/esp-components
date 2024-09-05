@@ -53,7 +53,8 @@ CjsonUniqueBuilder::Ptr FieldJsonFormatter::make_field_() const {
         break;
     }
 
-    return nullptr;
+    // Should not happen.
+    return CjsonUniqueBuilder::make_json_nullptr();
 }
 
 } // namespace iot

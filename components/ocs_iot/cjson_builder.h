@@ -53,6 +53,11 @@ template <typename T> struct cJSONBuilder {
         return { cJSON_CreateNull(), cJSON_Delete };
     }
 
+    //! Make cJSON nullptr.
+    static T make_json_nullptr() {
+        return { nullptr, cJSON_Delete };
+    }
+
     //! Parse cJSON.
     static T parse_json(const char* str) {
         return { cJSON_Parse(str), cJSON_Delete };
