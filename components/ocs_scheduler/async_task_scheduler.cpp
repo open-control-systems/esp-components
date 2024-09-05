@@ -10,6 +10,7 @@
 
 #include "esp_log.h"
 
+#include "ocs_core/bit_ops.h"
 #include "ocs_scheduler/async_task.h"
 #include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_status/code_to_str.h"
@@ -41,7 +42,7 @@ ITask* AsyncTaskScheduler::add(ITask& task) {
         }
     }
 
-    const ITask::Event event = BIT(nodes_.size());
+    const ITask::Event event = core::BitOps::mask(nodes_.size());
 
     TaskNode node(&task, event_group_.get(), event);
     nodes_.emplace_back(node);

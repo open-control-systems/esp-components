@@ -11,6 +11,7 @@ idf_component_register(
     "async_flag_isr.cpp"
     "version.cpp"
     "version_to_str.cpp"
+    "bit_ops.cpp"
 
     REQUIRES
     "json"
