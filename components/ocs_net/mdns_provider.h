@@ -65,6 +65,9 @@ public:
     void add_txt_records(Service service, Proto proto, const TxtRecordList& records);
 
     //! Flush previously added txt records to the underlying mDNS driver.
+    //!
+    //! @remarks
+    //!  Records should be flashed only after the service is started.
     status::StatusCode flush_txt_records();
 
 private:
