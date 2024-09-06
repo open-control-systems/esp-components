@@ -25,6 +25,8 @@ const char* code_to_str(StatusCode status) {
         return "IsrYield";
     case StatusCode::InvalidArg:
         return "InvalidArg";
+    case StatusCode::InvalidState:
+        return "InvalidState";
 
     default:
         break;

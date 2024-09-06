@@ -30,6 +30,9 @@ enum class StatusCode {
 
     //! An operation can't be performed due to invalid arguments.
     InvalidArg,
+
+    //! An operation can't be performed due to invalid state.
+    InvalidState,
 };
 
 } // namespace status
