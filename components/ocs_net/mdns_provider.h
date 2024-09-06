@@ -20,8 +20,27 @@ namespace ocs {
 namespace net {
 
 //! Provides local network service.
+//!
+//! @references
+//!  - https://datatracker.ietf.org/doc/html/rfc2782
+//!  - https://datatracker.ietf.org/doc/html/rfc6335
+//!  - https://www.ietf.org/rfc/rfc6763.txt
 class MdnsProvider : public core::NonCopyable<> {
 public:
+    //! Known mDNS services.
+    //!
+    //! @references
+    //!  See common services: http://www.dns-sd.org/serviceTypes.html
+    enum class Service {
+        Http,
+    };
+
+    //! Known transport protocols.
+    enum class Proto {
+        //! For application protocols that run over TCP.
+        Tcp,
+    };
+
     struct Params {
         std::string hostname;
         std::string instance_name;
@@ -40,18 +59,17 @@ public:
     status::StatusCode stop();
 
     //! Add mDNS service.
-    //!
-    //! @notes
-    //!  See common services: http://www.dns-sd.org/serviceTypes.html
-    status::StatusCode add_service(const char* service, const char* proto, unsigned port);
+    status::StatusCode add_service(Service service, Proto proto, unsigned port);
 
-    status::StatusCode add_service_txt_records(const char* service,
-                                               const char* proto,
-                                               const TxtRecordList& records);
+    //! Add txt records for the mDNS service.
+    void add_txt_records(Service service, Proto proto, const TxtRecordList& records);
+
+    //! Flush previously added txt records to the underlying mDNS driver.
+    status::StatusCode flush_txt_records();
 
 private:
-    using ProtoToRecords = std::unordered_map<std::string, TxtRecordList>;
-    using ServiceToProto = std::unordered_map<std::string, ProtoToRecords>;
+    using ProtoToRecords = std::unordered_map<Proto, TxtRecordList>;
+    using ServiceToProto = std::unordered_map<Service, ProtoToRecords>;
 
     ServiceToProto services_;
 

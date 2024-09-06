@@ -113,8 +113,9 @@ status::StatusCode HttpServerPipeline::try_start_mdns_() {
         return code;
     }
 
-    code =
-        mdns_provider_->add_service("_http", "_tcp", CONFIG_OCS_NETWORK_HTTP_SERVER_PORT);
+    code = mdns_provider_->add_service(net::MdnsProvider::Service::Http,
+                                       net::MdnsProvider::Proto::Tcp,
+                                       CONFIG_OCS_NETWORK_HTTP_SERVER_PORT);
     if (code != status::StatusCode::OK) {
         return code;
     }
