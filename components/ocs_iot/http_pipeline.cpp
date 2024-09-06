@@ -92,10 +92,6 @@ status::StatusCode HttpPipeline::register_mdns_endpoints_() {
                                                           "/commands/reboot",
                                                       },
                                                       {
-                                                          "command_reload",
-                                                          "/commands/reload",
-                                                      },
-                                                      {
                                                           "commands",
                                                           "/commands",
                                                       },
