@@ -22,7 +22,6 @@ const char* log_tag = "http-pipeline";
 } // namespace
 
 HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
-                           scheduler::ITask& control_task,
                            IJsonFormatter& telemetry_formatter,
                            FanoutJsonFormatter& registration_formatter,
                            Params params) {
@@ -40,8 +39,7 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     configASSERT(http_registration_handler_);
 
     http_command_handler_.reset(new (std::nothrow) HttpCommandHandler(
-        http_server_pipeline_->server(), reboot_task, control_task,
-        params.commands.buffer_size));
+        http_server_pipeline_->server(), reboot_task, params.commands.buffer_size));
     configASSERT(http_command_handler_);
 
     network_formatter_.reset(new (std::nothrow)

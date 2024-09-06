@@ -36,7 +36,6 @@ public:
 
     //! Initialize.
     HttpPipeline(scheduler::ITask& reboot_task,
-                 scheduler::ITask& control_task,
                  IJsonFormatter& telemetry_formatter,
                  FanoutJsonFormatter& registration_formatter,
                  Params params);

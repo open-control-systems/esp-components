@@ -26,19 +26,15 @@ public:
     //! @params
     //!  - @p server to register HTTP commands.
     //!  - @p reboot_task to initiate the reboot process.
-    //!  - @p control_task to trigger the control system.
     //!  - @p buffer_size to hold the formatted JSON data, in bytes.
     HttpCommandHandler(net::HttpServer& server,
                        scheduler::ITask& reboot_task,
-                       scheduler::ITask& control_task,
                        unsigned buffer_size);
 
 private:
     void format_commands_response_();
 
-    void register_routes_(net::HttpServer& server,
-                          scheduler::ITask& reboot_task,
-                          scheduler::ITask& control_task);
+    void register_routes_(net::HttpServer& server, scheduler::ITask& reboot_task);
 
     std::unique_ptr<DynamicJsonFormatter> commands_response_;
 };
