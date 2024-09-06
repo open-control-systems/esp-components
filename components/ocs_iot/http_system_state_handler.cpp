@@ -14,6 +14,7 @@ namespace ocs {
 namespace iot {
 
 HttpSystemStateHandler::HttpSystemStateHandler(net::HttpServer& server,
+                                               net::MdnsProvider& provider,
                                                unsigned response_size) {
     state_json_formatter_.reset(new (std::nothrow) SystemStateJsonFormatter());
     configASSERT(state_json_formatter_);
@@ -45,6 +46,15 @@ HttpSystemStateHandler::HttpSystemStateHandler(net::HttpServer& server,
 
         return status::StatusCode::OK;
     });
+
+    provider.add_txt_records(net::MdnsProvider::Service::Http,
+                             net::MdnsProvider::Proto::Tcp,
+                             net::MdnsProvider::TxtRecordList {
+                                 {
+                                     "report_system",
+                                     "/report/system",
+                                 },
+                             });
 }
 
 } // namespace iot

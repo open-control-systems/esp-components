@@ -13,6 +13,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_iot/dynamic_json_formatter.h"
 #include "ocs_net/http_server.h"
+#include "ocs_net/mdns_provider.h"
 
 namespace ocs {
 namespace iot {
@@ -23,8 +24,11 @@ public:
     //!
     //! @params
     //!  - @p server to register endpoint to receive system statistics.
+    //!  - @p provider to register mDNS txt records.
     //!  - @p response_size - system state response size, in bytes.
-    HttpSystemStateHandler(net::HttpServer& server, unsigned response_size);
+    HttpSystemStateHandler(net::HttpServer& server,
+                           net::MdnsProvider& provider,
+                           unsigned response_size);
 
 private:
     std::unique_ptr<IJsonFormatter> state_json_formatter_;
