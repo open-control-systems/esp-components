@@ -50,7 +50,7 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
     http_system_state_handler_.reset(new (std::nothrow) HttpSystemStateHandler(
-        http_server_pipeline_->server(), 1024 * 2));
+        http_server_pipeline_->server(), http_server_pipeline_->mdns(), 1024 * 2));
     configASSERT(http_system_state_handler_);
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
 }
@@ -99,12 +99,6 @@ status::StatusCode HttpPipeline::register_mdns_endpoints_() {
                                                           "commands",
                                                           "/commands",
                                                       },
-#ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
-                                                      {
-                                                          "report_system",
-                                                          "/report/system",
-                                                      },
-#endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
                                                   });
 
     return http_server_pipeline_->mdns().flush_txt_records();
