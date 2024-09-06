@@ -78,36 +78,39 @@ status::StatusCode HttpPipeline::start() {
 }
 
 status::StatusCode HttpPipeline::register_mdns_endpoints_() {
-    return http_server_pipeline_->mdns().add_service_txt_records(
-        "_http", "_tcp",
-        net::MdnsProvider::TxtRecordList {
-            {
-                "telemetry",
-                "/telemetry",
-            },
-            {
-                "registration",
-                "/registration",
-            },
-            {
-                "command_reboot",
-                "/commands/reboot",
-            },
-            {
-                "command_reload",
-                "/commands/reload",
-            },
-            {
-                "commands",
-                "/commands",
-            },
+    http_server_pipeline_->mdns().add_txt_records(net::MdnsProvider::Service::Http,
+                                                  net::MdnsProvider::Proto::Tcp,
+                                                  net::MdnsProvider::TxtRecordList {
+                                                      {
+                                                          "telemetry",
+                                                          "/telemetry",
+                                                      },
+                                                      {
+                                                          "registration",
+                                                          "/registration",
+                                                      },
+                                                      {
+                                                          "command_reboot",
+                                                          "/commands/reboot",
+                                                      },
+                                                      {
+                                                          "command_reload",
+                                                          "/commands/reload",
+                                                      },
+                                                      {
+                                                          "commands",
+                                                          "/commands",
+                                                      },
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
-            {
-                "report_system",
-                "/report/system",
-            },
+                                                      {
+                                                          "report_system",
+                                                          "/report/system",
+                                                      },
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
-        });
+                                                  });
+
+    return http_server_pipeline_->mdns().flush_txt_records();
+}
 }
 
 } // namespace iot
