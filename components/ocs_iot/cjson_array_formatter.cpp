@@ -33,6 +33,20 @@ bool CjsonArrayFormatter::append_uint16(uint16_t value) {
     return true;
 }
 
+bool CjsonArrayFormatter::append_string(const char* str) {
+    auto item = CjsonUniqueBuilder::make_json_string(str);
+    if (!item) {
+        return false;
+    }
+
+    if (!cJSON_AddItemToArray(json_, item.get())) {
+        return false;
+    }
+
+    item.release();
+    return true;
+}
+
 bool CjsonArrayFormatter::append_string_ref(const char* str) {
     auto item = CjsonUniqueBuilder::make_json_string_ref(str);
     if (!item) {
