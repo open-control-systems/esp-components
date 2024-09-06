@@ -109,6 +109,9 @@ status::StatusCode HttpPipeline::register_mdns_endpoints_() {
 
     return http_server_pipeline_->mdns().flush_txt_records();
 }
+
+HttpServerPipeline& HttpPipeline::get_server_pipeline() {
+    return *http_server_pipeline_;
 }
 
 } // namespace iot

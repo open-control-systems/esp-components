@@ -43,6 +43,8 @@ public:
     //! Start the pipeline.
     status::StatusCode start();
 
+    HttpServerPipeline& get_server_pipeline();
+
 private:
     status::StatusCode register_mdns_endpoints_();
 
