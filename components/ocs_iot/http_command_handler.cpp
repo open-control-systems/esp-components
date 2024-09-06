@@ -25,13 +25,12 @@ const char* log_tag = "http-command-handler";
 
 HttpCommandHandler::HttpCommandHandler(net::HttpServer& server,
                                        scheduler::ITask& reboot_task,
-                                       scheduler::ITask& control_task,
                                        unsigned buffer_size) {
     commands_response_.reset(new (std::nothrow) DynamicJsonFormatter(buffer_size));
     configASSERT(commands_response_);
 
     format_commands_response_();
-    register_routes_(server, reboot_task, control_task);
+    register_routes_(server, reboot_task);
 }
 
 void HttpCommandHandler::format_commands_response_() {
@@ -50,8 +49,7 @@ void HttpCommandHandler::format_commands_response_() {
 }
 
 void HttpCommandHandler::register_routes_(net::HttpServer& server,
-                                          scheduler::ITask& reboot_task,
-                                          scheduler::ITask& control_task) {
+                                          scheduler::ITask& reboot_task) {
     server.add_GET("/commands/reboot", [&reboot_task](httpd_req_t* req) {
         const auto err = httpd_resp_send(req, "Rebooting...", HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
@@ -61,16 +59,6 @@ void HttpCommandHandler::register_routes_(net::HttpServer& server,
         ESP_LOGI(log_tag, "Rebooting...");
 
         return reboot_task.run();
-    });
-    server.add_GET("/commands/reload", [&control_task](httpd_req_t* req) {
-        const auto err = httpd_resp_send(req, "Reloading...", HTTPD_RESP_USE_STRLEN);
-        if (err != ESP_OK) {
-            return status::StatusCode::Error;
-        }
-
-        ESP_LOGI(log_tag, "Reloading...");
-
-        return control_task.run();
     });
     server.add_GET("/commands", [this](httpd_req_t* req) {
         const auto err =
