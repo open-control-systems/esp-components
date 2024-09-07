@@ -21,7 +21,15 @@ namespace {
 
 const char* log_tag = "http-server";
 
-httpd_err_code_t status_code_to_http_code(status::StatusCode) {
+httpd_err_code_t status_code_to_http_code(status::StatusCode code) {
+    switch (code) {
+    case status::StatusCode::InvalidArg:
+        return HTTPD_400_BAD_REQUEST;
+
+    default:
+        break;
+    }
+
     return HTTPD_500_INTERNAL_SERVER_ERROR;
 }
 
@@ -88,6 +96,15 @@ void HttpServer::handle_request_get_(httpd_req_t* req) {
     const auto handler = uris_get_.find(UriOps::parse_path(req->uri));
     if (handler == uris_get_.end()) {
         ESP_LOGE(log_tag, "unknown URI: %s", req->uri);
+
+        const auto ret = httpd_resp_send_err(
+            req, status_code_to_http_code(status::StatusCode::InvalidArg),
+            status::code_to_str(status::StatusCode::InvalidArg));
+        if (ret != ESP_OK) {
+            ESP_LOGE(log_tag, "httpd_resp_send_err(): URI=%s err=%s", req->uri,
+                     esp_err_to_name(ret));
+        }
+
         return;
     }
 
