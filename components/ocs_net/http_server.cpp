@@ -11,6 +11,7 @@
 #include "esp_log.h"
 
 #include "ocs_net/http_server.h"
+#include "ocs_net/uri_ops.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
@@ -84,7 +85,7 @@ esp_err_t HttpServer::handle_request_(httpd_req_t* req) {
 }
 
 void HttpServer::handle_request_get_(httpd_req_t* req) {
-    const auto handler = uris_get_.find(req->uri);
+    const auto handler = uris_get_.find(UriOps::parse_path(req->uri));
     if (handler == uris_get_.end()) {
         ESP_LOGE(log_tag, "unknown URI: %s", req->uri);
         return;

@@ -9,6 +9,7 @@ idf_component_register(
     "ip_addr_to_str.cpp"
     "basic_network.cpp"
     "rssi_to_signal_strength.cpp"
+    "uri_ops.cpp"
 
     REQUIRES
     "esp_netif"
