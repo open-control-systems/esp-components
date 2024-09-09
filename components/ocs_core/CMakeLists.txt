@@ -14,6 +14,7 @@ idf_component_register(
     "version.cpp"
     "version_to_str.cpp"
     "bit_ops.cpp"
+    "future.cpp"
 
     REQUIRES
     "json"
