@@ -33,6 +33,12 @@ enum class StatusCode {
 
     //! An operation can't be performed due to invalid state.
     InvalidState,
+
+    //! An operation was not performed within the timeout.
+    Timeout,
+
+    //! Invalid status code.
+    Last,
 };
 
 } // namespace status
