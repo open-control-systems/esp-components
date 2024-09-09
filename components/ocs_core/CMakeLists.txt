@@ -3,6 +3,8 @@ idf_component_register(
     "basic_static_mutex.cpp"
     "static_mutex.cpp"
     "static_mutex_isr.cpp"
+    "basic_static_recursive_mutex.cpp"
+    "static_recursive_mutex.cpp"
     "static_event_group.cpp"
     "cond.cpp"
     "lock_guard.cpp"
