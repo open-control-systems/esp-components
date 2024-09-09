@@ -5,6 +5,7 @@ idf_component_register(
     "test_async_task.cpp"
     "test_async_task_scheduler.cpp"
     "test_high_resolution_timer.cpp"
+    "test_async_func_scheduler.cpp"
 
     REQUIRES
     "unity"
