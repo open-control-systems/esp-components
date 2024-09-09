@@ -29,6 +29,9 @@ public:
     SystemPipeline();
 
     //! Start the pipeline.
+    //!
+    //! @remarks
+    //!  Blocking call.
     status::StatusCode start();
 
     core::IClock& get_clock();

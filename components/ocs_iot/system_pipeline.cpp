@@ -7,7 +7,9 @@
  */
 
 #include "ocs_iot/system_pipeline.h"
+#include "ocs_core/log.h"
 #include "ocs_scheduler/high_resolution_timer.h"
+#include "ocs_status/code_to_str.h"
 #include "ocs_system/default_clock.h"
 #include "ocs_system/default_rebooter.h"
 #include "ocs_system/delay_rebooter.h"
@@ -15,6 +17,12 @@
 
 namespace ocs {
 namespace iot {
+
+namespace {
+
+const char* log_tag = "system-pipeline";
+
+} // namespace
 
 SystemPipeline::SystemPipeline() {
     flash_initializer_.reset(new (std::nothrow) storage::FlashInitializer());
@@ -56,7 +64,16 @@ status::StatusCode SystemPipeline::start() {
         return code;
     }
 
-    task_scheduler_->run();
+    ocs_logi(log_tag, "start handling tasks: count=%u max=%u", task_scheduler_->count(),
+             scheduler::AsyncTaskScheduler::max_task_count);
+
+    while (true) {
+        const auto code = task_scheduler_->wait();
+        if (code != status::StatusCode::OK) {
+            ocs_logw(log_tag, "failed to wait for asynchronous events: %s",
+                     status::code_to_str(code));
+        }
+    }
 
     return status::StatusCode::OK;
 }
