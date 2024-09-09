@@ -30,6 +30,19 @@ AsyncTaskScheduler::AsyncTaskScheduler() {
     nodes_.reserve(max_task_count);
 }
 
+status::StatusCode AsyncTaskScheduler::run() {
+    const auto bits = xEventGroupGetBits(event_group_.get());
+    if (!bits) {
+        return status::StatusCode::NoData;
+    }
+
+    return handle_events_(bits);
+}
+
+unsigned AsyncTaskScheduler::count() const {
+    return nodes_.size();
+}
+
 ITask* AsyncTaskScheduler::add(ITask& task) {
     if (nodes_.size() == max_task_count) {
         return nullptr;
@@ -52,21 +65,16 @@ ITask* AsyncTaskScheduler::add(ITask& task) {
     return &nodes_.back().async_task;
 }
 
-void AsyncTaskScheduler::run() {
-    ESP_LOGI(log_tag, "start handling tasks: count=%u max=%u", nodes_.size(),
-             max_task_count);
-
-    while (true) {
-        wait();
-    }
-}
-
-void AsyncTaskScheduler::wait(TickType_t wait) {
+status::StatusCode AsyncTaskScheduler::wait(TickType_t wait) {
     configASSERT(nodes_.size());
 
     const EventBits_t bits =
         xEventGroupWaitBits(event_group_.get(), bits_all_, pdTRUE, pdFALSE, wait);
 
+    return handle_events_(bits);
+}
+
+status::StatusCode AsyncTaskScheduler::handle_events_(EventBits_t bits) {
     for (auto& node : nodes_) {
         if (bits & node.event) {
             const auto code = node.task->run();
@@ -76,6 +84,8 @@ void AsyncTaskScheduler::wait(TickType_t wait) {
             }
         }
     }
+
+    return status::StatusCode::OK;
 }
 
 } // namespace scheduler

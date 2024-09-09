@@ -17,7 +17,7 @@
 namespace ocs {
 namespace scheduler {
 
-class AsyncTaskScheduler : public core::NonCopyable<> {
+class AsyncTaskScheduler : public ITask, public core::NonCopyable<> {
 public:
     //! Initialize.
     AsyncTaskScheduler();
@@ -28,6 +28,12 @@ public:
     //!  8 high bits are used by the FreeRTOS itself.
     static const unsigned max_task_count = (sizeof(ITask::Event) * 8) - 8;
 
+    //! Handle asynchronous events.
+    status::StatusCode run() override;
+
+    //! Return number of registered tasks to which asynchronous events are delivered.
+    unsigned count() const;
+
     //! Register a new task to which asynchronous events should be scheduled.
     //!
     //! @return
@@ -36,14 +42,8 @@ public:
     //!  nullptr if maximum number of tasks were already registered.
     ITask* add(ITask& task);
 
-    //! Handle asynchronous events.
-    //!
-    //! @remarks
-    //!  Blocking call.
-    void run();
-
     //! Wait for the asynchronous events.
-    void wait(TickType_t wait = portMAX_DELAY);
+    status::StatusCode wait(TickType_t wait = portMAX_DELAY);
 
 private:
     struct TaskNode {
@@ -57,6 +57,8 @@ private:
         ITask::Event event { 0 };
         AsyncTask async_task;
     };
+
+    status::StatusCode handle_events_(EventBits_t bits);
 
     core::StaticEventGroup event_group_;
 
