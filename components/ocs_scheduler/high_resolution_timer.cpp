@@ -75,7 +75,9 @@ void HighResolutionTimer::handle_cb_(void* arg) {
 
     HighResolutionTimer& self = *static_cast<HighResolutionTimer*>(arg);
     const auto code = self.task_.run();
-    ESP_LOGD(log_tag, "failed to run task: code=%s", status::code_to_str(code));
+    if (code != status::StatusCode::OK) {
+        ESP_LOGD(log_tag, "failed to run task: %s", status::code_to_str(code));
+    }
 }
 
 } // namespace scheduler
