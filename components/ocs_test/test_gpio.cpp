@@ -20,10 +20,12 @@ TestGpio::TestGpio(status::StatusCode flip_code,
 }
 
 int TestGpio::get() {
-    return value;
+    return level_;
 }
 
 status::StatusCode TestGpio::flip() {
+    level_ = !level_;
+
     ++flip_call_count;
 
     return flip_code_;
@@ -32,11 +34,15 @@ status::StatusCode TestGpio::flip() {
 status::StatusCode TestGpio::turn_on() {
     ++turn_on_call_count;
 
+    level_ = 1;
+
     return turn_on_code_;
 }
 
 status::StatusCode TestGpio::turn_off() {
     ++turn_off_call_count;
+
+    level_ = 0;
 
     return turn_off_code_;
 }
