@@ -30,15 +30,6 @@ AsyncTaskScheduler::AsyncTaskScheduler() {
     nodes_.reserve(max_task_count);
 }
 
-status::StatusCode AsyncTaskScheduler::run() {
-    const auto bits = xEventGroupGetBits(event_group_.get());
-    if (!bits) {
-        return status::StatusCode::NoData;
-    }
-
-    return handle_events_(bits);
-}
-
 unsigned AsyncTaskScheduler::count() const {
     return nodes_.size();
 }
