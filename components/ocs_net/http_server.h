@@ -29,6 +29,9 @@ public:
     struct Params {
         //! TCP port to accept incoming connections.
         unsigned server_port { 80 };
+
+        //! Maximum allowed URI handlers.
+        unsigned max_uri_handlers { 32 };
     };
 
     //! Initialize.

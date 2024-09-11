@@ -33,6 +33,7 @@ HttpServerPipeline::HttpServerPipeline() {
 
     http_server_.reset(new (std::nothrow) net::HttpServer(net::HttpServer::Params {
         .server_port = CONFIG_OCS_NETWORK_HTTP_SERVER_PORT,
+        .max_uri_handlers = CONFIG_OCS_NETWORK_HTTP_SERVER_MAX_URI_HANDLERS,
     }));
     configASSERT(http_server_);
 
