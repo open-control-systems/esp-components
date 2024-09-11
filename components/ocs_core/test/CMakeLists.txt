@@ -4,6 +4,7 @@ idf_component_register(
     "test_version.cpp"
     "test_version_to_str.cpp"
     "test_cond.cpp"
+    "test_string_ops.cpp"
 
     REQUIRES
     "unity"
