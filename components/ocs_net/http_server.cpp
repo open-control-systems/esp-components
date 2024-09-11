@@ -38,6 +38,7 @@ httpd_err_code_t status_code_to_http_code(status::StatusCode code) {
 HttpServer::HttpServer(const Params& params) {
     config_ = HTTPD_DEFAULT_CONFIG();
     config_.server_port = params.server_port;
+    config_.max_uri_handlers = params.max_uri_handlers;
 }
 
 HttpServer::~HttpServer() {

@@ -27,6 +27,12 @@ menu "OCS Network Configuration"
             default 80
             help
                 TCP port to accept incoming connections.
+
+        config OCS_NETWORK_HTTP_SERVER_MAX_URI_HANDLERS
+            int "Maximum number of URI handlers"
+            default 64
+            help
+                Maximum number of URI handlers that can be registered for an HTTP server.
     endmenu
 
     menu "mDNS Configuration"
