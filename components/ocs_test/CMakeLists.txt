@@ -2,7 +2,6 @@ idf_component_register(
     SRCS
     "test_clock.cpp"
     "test_counter.cpp"
-    "test_counter_storage.cpp"
     "test_task.cpp"
     "test_timer.cpp"
     "test_gpio.cpp"

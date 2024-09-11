@@ -10,10 +10,16 @@
 
 #include "ocs_diagnostic/live_counter.h"
 #include "ocs_test/test_counter.h"
-#include "ocs_test/test_counter_storage.h"
+#include "ocs_test/test_storage.h"
 
 namespace ocs {
 namespace diagnostic {
+
+namespace {
+
+using TestStorage = test::TestStorage<diagnostic::ICounter::Value>;
+
+} // namespace
 
 TEST_CASE("Live counter: erase on initialization", "[ocs_diagnostic], [live_counter]") {
     const unsigned counter_value = 7;
@@ -23,7 +29,7 @@ TEST_CASE("Live counter: erase on initialization", "[ocs_diagnostic], [live_coun
 
     const unsigned persisted_value = 42;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
     storage.set(counter.id(), persisted_value);
 
     TEST_ASSERT_TRUE(persisted_value != counter_value);

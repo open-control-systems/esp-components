@@ -10,10 +10,16 @@
 
 #include "ocs_diagnostic/state_counter.h"
 #include "ocs_test/test_clock.h"
-#include "ocs_test/test_counter_storage.h"
+#include "ocs_test/test_storage.h"
 
 namespace ocs {
 namespace diagnostic {
+
+namespace {
+
+using TestStorage = test::TestStorage<diagnostic::ICounter::Value>;
+
+} // namespace
 
 TEST_CASE("State counter: state is set", "[ocs_diagnostic], [state_counter]") {
     const char* id = "foo";
@@ -21,7 +27,7 @@ TEST_CASE("State counter: state is set", "[ocs_diagnostic], [state_counter]") {
 
     const unsigned persisted_value = 24;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
     storage.set(id, persisted_value);
 
     const unsigned new_value = 42;
@@ -60,7 +66,7 @@ TEST_CASE("State counter: state is lost", "[ocs_diagnostic], [state_counter]") {
     test::TestClock clock;
     clock.value = current_value * resolution;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
     TEST_ASSERT_FALSE(storage.get(id));
 
     StateCounter counter(storage, clock, id, resolution, required_state);
@@ -85,7 +91,7 @@ TEST_CASE("State counter: state changed multiple times",
 
     const unsigned persisted_value = 24;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
     storage.set(id, persisted_value);
 
     unsigned current_value = 42;
@@ -146,7 +152,7 @@ TEST_CASE("State counter: persist state on task run",
     test::TestClock clock;
     clock.value = current_value * resolution;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
     TEST_ASSERT_FALSE(storage.get(id));
 
     StateCounter counter(storage, clock, id, resolution, required_state);
@@ -183,7 +189,7 @@ TEST_CASE("State counter: save counter when reboot is happened",
     test::TestClock clock;
     clock.value = current_value * resolution;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
     TEST_ASSERT_FALSE(storage.get(id));
 
     StateCounter counter(storage, clock, id, resolution, required_state);

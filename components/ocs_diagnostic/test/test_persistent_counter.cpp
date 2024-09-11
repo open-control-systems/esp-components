@@ -10,16 +10,22 @@
 
 #include "ocs_diagnostic/persistent_counter.h"
 #include "ocs_test/test_counter.h"
-#include "ocs_test/test_counter_storage.h"
+#include "ocs_test/test_storage.h"
 
 namespace ocs {
 namespace diagnostic {
+
+namespace {
+
+using TestStorage = test::TestStorage<diagnostic::ICounter::Value>;
+
+} // namespace
 
 TEST_CASE("Persistent counter: without initial value",
           "[ocs_diagnostic], [persistent_counter]") {
     const unsigned counter_value = 42;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter("foo");
     counter.value = counter_value;
@@ -33,7 +39,7 @@ TEST_CASE("Persistent counter: with initial value",
     const unsigned counter_value = 42;
     const unsigned persisted_value = 43;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter("foo");
     counter.value = counter_value;
@@ -48,7 +54,7 @@ TEST_CASE("Persistent counter: handle reboot: without initial value",
           "[ocs_diagnostic], [persistent_counter]") {
     const unsigned counter_value = 42;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter("foo");
     counter.value = counter_value;
@@ -69,7 +75,7 @@ TEST_CASE("Persistent counter: handle reboot: with initial value",
     const unsigned counter_value = 42;
     const unsigned persisted_value = 43;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter("foo");
     counter.value = counter_value;
@@ -97,7 +103,7 @@ TEST_CASE("Persistent counter: invalidate value: with previous value",
 
     const char* id = "foo";
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter(id);
     counter.value = current_value;
@@ -122,7 +128,7 @@ TEST_CASE("Persistent counter: invalidate value: without previous value",
     const unsigned current_value = 42;
     const char* id = "foo";
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter(id);
     counter.value = current_value;
@@ -142,7 +148,7 @@ TEST_CASE("Persistent counter: save value: without previous value",
     const unsigned current_value = 42;
     const char* id = "foo";
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter(id);
     counter.value = current_value;
@@ -171,7 +177,7 @@ TEST_CASE("Persistent counter: save value: with previous value",
 
     const char* id = "foo";
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter(id);
     counter.value = current_value;
@@ -199,7 +205,7 @@ TEST_CASE("Persistent counter: save value on task run",
           "[ocs_diagnostic], [persistent_counter]") {
     const unsigned counter_value = 42;
 
-    test::TestCounterStorage storage;
+    TestStorage storage;
 
     test::TestCounter counter("foo");
     counter.value = counter_value;
