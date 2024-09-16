@@ -1,0 +1,17 @@
+idf_component_register(
+    SRCS
+    "main.cpp"
+
+    REQUIRES
+    "freertos"
+    "driver"
+    "ocs_sensor"
+    "ocs_status"
+    "ocs_system"
+    "ocs_core"
+    "ocs_io"
+    "ocs_iot"
+
+    INCLUDE_DIRS
+    "."
+)

@@ -1,0 +1,59 @@
+menu "Dallas Semiconductor DS18B20 Sensor Verification"
+    config OCS_TOOLS_DS18B20_VERIFIER_RESULT_BUFFER_SIZE
+        int "Buffer size to store the formatted verification result, in bytes"
+        default 1024
+
+    config OCS_TOOLS_DS18B20_VERIFIER_GPIO
+        int "1-Wire bus GPIO"
+        default 27
+        help
+            1-Wire bus GPIO.
+
+    config OCS_TOOLS_DS18B20_VERIFIER_TOTAL_ATTEMPTS
+        int "Number of attempts to read temperature"
+        default 15
+        help
+            Number of times to read the temperature value from the sensor.
+
+    config OCS_TOOLS_DS18B20_VERIFIER_DELAY
+        int "Delay after each temperature reading, in seconds"
+        default 1
+        help
+            Number of seconds to wait after each temperature reading.
+
+    config OCS_TOOLS_DS18B20_VERIFIER_RESET_PULSE_INTERVAL
+        int "Reset pulse duration, in microseconds"
+        default 480
+
+    config OCS_TOOLS_DS18B20_VERIFIER_PRESENCE_PULSE_INTERVAL
+        int "Presence pulse duration, in microseconds"
+        default 60
+
+    config OCS_TOOLS_DS18B20_VERIFIER_WRITE_SLOT_INTERVAL
+        int "Write slot duration, in microseconds"
+        default 60
+
+    config OCS_TOOLS_DS18B20_VERIFIER_WRITE_BIT_INTERVAL
+        int "Write bit duration, in microseconds"
+        default 10
+
+    config OCS_TOOLS_DS18B20_VERIFIER_WRITE_RECOVERY_INTERVAL
+        int "Write recovery duration, in microseconds"
+        default 1
+
+    config OCS_TOOLS_DS18B20_VERIFIER_READ_SLOT_INTERVAL
+        int "Read slot duration, in microseconds"
+        default 60
+
+    config OCS_TOOLS_DS18B20_VERIFIER_READ_BIT_INIT_INTERVAL
+        int "Read bit INIT duration, in microseconds"
+        default 5
+
+    config OCS_TOOLS_DS18B20_VERIFIER_READ_BIT_RC_INTERVAL
+        int "Read bit RC duration, in microseconds"
+        default 5
+
+    config OCS_TOOLS_DS18B20_VERIFIER_READ_RECOVERY_INTERVAL
+        int "Read bit recovery interval, in microseconds"
+        default 1
+endmenu

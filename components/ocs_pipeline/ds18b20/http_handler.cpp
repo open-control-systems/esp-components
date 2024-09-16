@@ -1,0 +1,479 @@
+/*
+ * Copyright (c) 2024, Open Control Systems authors
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
+
+#include <charconv>
+#include <cstring>
+
+#include "ocs_iot/cjson_array_formatter.h"
+#include "ocs_iot/cjson_object_formatter.h"
+#include "ocs_iot/dynamic_json_formatter.h"
+#include "ocs_net/uri_ops.h"
+#include "ocs_onewire/rom_code.h"
+#include "ocs_onewire/rom_code_scanner.h"
+#include "ocs_onewire/serial_number_to_str.h"
+#include "ocs_pipeline/ds18b20/http_handler.h"
+#include "ocs_sensor/ds18b20/parse_configuration.h"
+#include "ocs_sensor/ds18b20/resolution_to_str.h"
+
+namespace ocs {
+namespace pipeline {
+namespace ds18b20 {
+
+namespace {
+
+sensor::ds18b20::Sensor* get_sensor(const std::string_view& sensor_id,
+                                    const sensor::ds18b20::Store::SensorList& sensors) {
+    for (const auto& sensor : sensors) {
+        if (sensor_id == sensor->id()) {
+            return sensor;
+        }
+    }
+
+    return nullptr;
+}
+
+status::StatusCode
+format_configuration(cJSON* json,
+                     const sensor::ds18b20::Sensor::Configuration& configuration) {
+    iot::CjsonObjectFormatter formatter(json);
+
+    if (!formatter.add_string_cs(
+            "resolution", sensor::ds18b20::resolution_to_str(configuration.resolution))) {
+        return status::StatusCode::NoMem;
+    }
+
+    if (!formatter.add_string_cs(
+            "serial_number",
+            onewire::serial_number_to_str(configuration.rom_code.serial_number)
+                .c_str())) {
+        return status::StatusCode::NoMem;
+    }
+
+    return status::StatusCode::OK;
+}
+
+} // namespace
+
+HttpHandler::HttpHandler(net::HttpServer& server,
+                         net::MdnsProvider& provider,
+                         sensor::ds18b20::Store& store) {
+    server.add_GET("/sensor/ds18b20/scan", [this, &store](httpd_req_t* req) {
+        return handle_scan_(store, req);
+    });
+    server.add_GET("/sensor/ds18b20/read_configuration",
+                   [this, &store](httpd_req_t* req) {
+                       return handle_configuration_(
+                           store, req, read_wait_interval_, read_response_buffer_size_,
+                           [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
+                               return read_configuration_(json, sensor);
+                           });
+                   });
+    server.add_GET("/sensor/ds18b20/write_configuration",
+                   [this, &store](httpd_req_t* req) {
+                       return handle_write_configuration_(store, req);
+                   });
+    server.add_GET("/sensor/ds18b20/erase_configuration",
+                   [this, &store](httpd_req_t* req) {
+                       return handle_configuration_(
+                           store, req, erase_wait_interval_, erase_response_buffer_size_,
+                           [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
+                               return erase_configuration_(json, sensor);
+                           });
+                   });
+
+    provider.add_txt_records(net::MdnsProvider::Service::Http,
+                             net::MdnsProvider::Proto::Tcp,
+                             net::MdnsProvider::TxtRecordList {
+                                 {
+                                     "sensor-ds18b20-scan",
+                                     "/sensor/ds18b20/scan",
+                                 },
+                                 {
+                                     "sensor-ds18b20-read-configuration",
+                                     "/sensor/ds18b20/read_configuration",
+                                 },
+                                 {
+                                     "sensor-ds18b20-write-configuration",
+                                     "/sensor/ds18b20/write_configuration",
+                                 },
+                                 {
+                                     "sensor-ds18b20-erase-configuration",
+                                     "/sensor/ds18b20/erase_configuration",
+                                 },
+                             });
+}
+
+status::StatusCode HttpHandler::handle_scan_(sensor::ds18b20::Store& store,
+                                             httpd_req_t* req) {
+    const auto values = net::UriOps::parse_query(req->uri);
+    const auto it = values.find("gpio");
+    if (it == values.end()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    int gpio = 0;
+
+    const auto [_, ec] =
+        std::from_chars(it->second.data(), it->second.data() + it->second.size(), gpio);
+    if (ec != std::errc()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    iot::CjsonUniqueBuilder builder;
+
+    auto json = builder.make_json();
+    if (!json) {
+        return status::StatusCode::NoMem;
+    }
+
+    auto future = store.schedule(
+        static_cast<gpio_num_t>(gpio),
+        [this, &json, &builder](onewire::Bus& bus,
+                                sensor::ds18b20::Store::SensorList& sensors) {
+            return scan_(json.get(), builder, bus, sensors);
+        });
+    if (!future) {
+        return status::StatusCode::InvalidState;
+    }
+    if (future->wait(scan_wait_interval_) != status::StatusCode::OK) {
+        return status::StatusCode::Timeout;
+    }
+    if (future->code() != status::StatusCode::OK) {
+        return future->code();
+    }
+
+    return send_response_(scan_response_buffer_size_, json.get(), req);
+}
+
+status::StatusCode HttpHandler::scan_(cJSON* json,
+                                      iot::CjsonUniqueBuilder& builder,
+                                      onewire::Bus& bus,
+                                      const sensor::ds18b20::Store::SensorList& sensors) {
+    auto code = format_rom_codes_(json, bus);
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    code = format_sensors_(json, builder, sensors);
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode HttpHandler::format_rom_codes_(cJSON* json, onewire::Bus& bus) {
+    auto array = cJSON_AddArrayToObject(json, "rom_codes");
+    if (!array) {
+        return status::StatusCode::NoMem;
+    }
+
+    iot::CjsonArrayFormatter formatter(array);
+
+    onewire::RomCodeScanner scanner(bus);
+
+    while (true) {
+        onewire::RomCode rom_code;
+
+        const auto code = scanner.scan(rom_code);
+        if (code != status::StatusCode::OK) {
+            if (code != status::StatusCode::NoData) {
+                return code;
+            }
+
+            break;
+        }
+
+        onewire::serial_number_to_str str(rom_code.serial_number);
+        if (!formatter.append_string(str.c_str())) {
+            return status::StatusCode::NoMem;
+        }
+    }
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode
+HttpHandler::format_sensors_(cJSON* json,
+                             iot::CjsonUniqueBuilder& builder,
+                             const sensor::ds18b20::Store::SensorList& sensors) {
+    auto array = cJSON_AddArrayToObject(json, "sensors");
+    if (!array) {
+        return status::StatusCode::NoMem;
+    }
+
+    iot::CjsonArrayFormatter formatter(array);
+
+    for (const auto& sensor : sensors) {
+        const auto code = format_sensor_(array, builder, *sensor);
+        if (code != status::StatusCode::OK) {
+            return code;
+        }
+    }
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode HttpHandler::format_sensor_(cJSON* array,
+                                               iot::CjsonUniqueBuilder& builder,
+                                               const sensor::ds18b20::Sensor& sensor) {
+    auto json = builder.make_json();
+    if (!json) {
+        return status::StatusCode::NoMem;
+    }
+
+    iot::CjsonObjectFormatter formatter(json.get());
+
+    if (!formatter.add_string_cs("id", sensor.id())) {
+        return status::StatusCode::NoMem;
+    }
+
+    if (sensor.configured()) {
+        if (!formatter.add_true_cs("configured")) {
+            return status::StatusCode::NoMem;
+        }
+    } else {
+        if (!formatter.add_false_cs("configured")) {
+            return status::StatusCode::NoMem;
+        }
+    }
+
+    if (!cJSON_AddItemToArray(array, json.get())) {
+        return status::StatusCode::NoMem;
+    }
+    json.release();
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode
+HttpHandler::handle_configuration_(sensor::ds18b20::Store& store,
+                                   httpd_req_t* req,
+                                   unsigned wait_interval,
+                                   unsigned response_size,
+                                   HttpHandler::HandleConfigurationFunc func) {
+    const auto values = net::UriOps::parse_query(req->uri);
+
+    const auto gpio_it = values.find("gpio");
+    if (gpio_it == values.end()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    int gpio = 0;
+
+    const auto [_, ec] = std::from_chars(
+        gpio_it->second.data(), gpio_it->second.data() + gpio_it->second.size(), gpio);
+    if (ec != std::errc()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    const auto sensor_id = values.find("sensor_id");
+    if (sensor_id == values.end()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    iot::CjsonUniqueBuilder builder;
+
+    auto json = builder.make_json();
+    if (!json) {
+        return status::StatusCode::NoMem;
+    }
+
+    auto future = store.schedule(
+        static_cast<gpio_num_t>(gpio),
+        [this, &json, &sensor_id, func](onewire::Bus& bus,
+                                        sensor::ds18b20::Store::SensorList& sensors) {
+            auto sensor = get_sensor(sensor_id->second, sensors);
+            if (!sensor) {
+                return status::StatusCode::InvalidArg;
+            }
+
+            return func(json.get(), *sensor);
+        });
+    if (!future) {
+        return status::StatusCode::InvalidState;
+    }
+    if (future->wait(wait_interval) != status::StatusCode::OK) {
+        return status::StatusCode::Timeout;
+    }
+    if (future->code() != status::StatusCode::OK) {
+        return future->code();
+    }
+
+    return send_response_(response_size, json.get(), req);
+}
+
+status::StatusCode HttpHandler::read_configuration_(cJSON* json,
+                                                    sensor::ds18b20::Sensor& sensor) {
+    sensor::ds18b20::Sensor::Configuration configuration;
+    auto code = sensor.read_configuration(configuration);
+    if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
+        return code;
+    }
+
+    code = format_configuration(json, configuration);
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode HttpHandler::handle_write_configuration_(sensor::ds18b20::Store& store,
+                                                            httpd_req_t* req) {
+    const auto values = net::UriOps::parse_query(req->uri);
+
+    const auto gpio_it = values.find("gpio");
+    if (gpio_it == values.end()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    int gpio = 0;
+
+    const auto [_, ec] = std::from_chars(
+        gpio_it->second.data(), gpio_it->second.data() + gpio_it->second.size(), gpio);
+    if (ec != std::errc()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    const auto sensor_id = values.find("sensor_id");
+    if (sensor_id == values.end()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    const auto serial_number = values.find("serial_number");
+    if (serial_number == values.end()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    const auto resolution = values.find("resolution");
+    if (resolution == values.end()) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    iot::CjsonUniqueBuilder builder;
+
+    auto json = builder.make_json();
+    if (!json) {
+        return status::StatusCode::NoMem;
+    }
+
+    auto future = store.schedule(
+        static_cast<gpio_num_t>(gpio),
+        [this, &json, &sensor_id, &serial_number,
+         &resolution](onewire::Bus& bus, sensor::ds18b20::Store::SensorList& sensors) {
+            return write_configuration_(json.get(), bus,
+                                        get_sensor(sensor_id->second, sensors),
+                                        serial_number->second, resolution->second);
+        });
+    if (!future) {
+        return status::StatusCode::InvalidState;
+    }
+    if (future->wait(write_wait_interval_) != status::StatusCode::OK) {
+        return status::StatusCode::Timeout;
+    }
+    if (future->code() != status::StatusCode::OK) {
+        return future->code();
+    }
+
+    return send_response_(write_response_buffer_size_, json.get(), req);
+}
+
+status::StatusCode
+HttpHandler::write_configuration_(cJSON* json,
+                                  onewire::Bus& bus,
+                                  sensor::ds18b20::Sensor* sensor,
+                                  const std::string_view& serial_number,
+                                  const std::string_view& resolution) {
+    if (!sensor) {
+        return status::StatusCode::InvalidArg;
+    }
+
+    sensor::ds18b20::Sensor::Configuration configuration;
+
+    auto code =
+        sensor::ds18b20::parse_configuration(configuration, serial_number, resolution);
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    onewire::RomCodeScanner scanner(bus);
+
+    while (true) {
+        onewire::RomCode rom_code;
+
+        const auto code = scanner.scan(rom_code);
+        if (code != status::StatusCode::OK) {
+            if (code != status::StatusCode::NoData) {
+                return code;
+            }
+
+            // Required rom code wasn't found.
+            return status::StatusCode::InvalidArg;
+        }
+
+        if (memcmp(rom_code.serial_number, configuration.rom_code.serial_number,
+                   sizeof(rom_code.serial_number))
+            == 0) {
+            configuration.rom_code = rom_code;
+            break;
+        }
+    }
+
+    code = sensor->write_configuration(bus, configuration);
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    code = read_configuration_(json, *sensor);
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode HttpHandler::erase_configuration_(cJSON* json,
+                                                     sensor::ds18b20::Sensor& sensor) {
+    iot::CjsonObjectFormatter formatter(json);
+
+    sensor::ds18b20::Sensor::Configuration configuration;
+
+    auto code = sensor.erase_configuration(configuration);
+    if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
+        return code;
+    }
+
+    code = format_configuration(json, configuration);
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode
+HttpHandler::send_response_(unsigned buffer_size, cJSON* json, httpd_req_t* req) {
+    iot::DynamicJsonFormatter json_formatter(buffer_size);
+
+    const auto code = json_formatter.format(json);
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    const auto err = httpd_resp_send(req, json_formatter.c_str(), HTTPD_RESP_USE_STRLEN);
+    if (err != ESP_OK) {
+        return status::StatusCode::Error;
+    }
+
+    return status::StatusCode::OK;
+}
+
+} // namespace ds18b20
+} // namespace pipeline
+} // namespace ocs
