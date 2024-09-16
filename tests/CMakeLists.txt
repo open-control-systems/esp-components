@@ -14,6 +14,7 @@ set(TEST_COMPONENTS
     ocs_scheduler
     ocs_io
     ocs_system
+    ocs_sensor
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
