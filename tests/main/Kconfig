@@ -1,5 +1,5 @@
 menu "OCS Unit Tests Configuration"
     config OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
-    bool "Enable/Disable WiFi Unit Tests"
-    default n
+        bool "Enable/Disable WiFi Unit Tests"
+        default n
 endmenu
