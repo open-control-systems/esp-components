@@ -45,8 +45,6 @@ public:
     HttpServerPipeline& get_server_pipeline();
 
 private:
-    status::StatusCode register_mdns_endpoints_();
-
     std::unique_ptr<HttpServerPipeline> http_server_pipeline_;
     std::unique_ptr<HttpDataHandler> http_telemetry_handler_;
     std::unique_ptr<HttpDataHandler> http_registration_handler_;
