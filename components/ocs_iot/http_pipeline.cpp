@@ -38,9 +38,9 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
         "http-registration-handler", params.registration.buffer_size));
     configASSERT(http_registration_handler_);
 
-    http_command_handler_.reset(new (std::nothrow) HttpCommandHandler(
-        http_server_pipeline_->server(), reboot_task, params.commands.buffer_size));
-    configASSERT(http_command_handler_);
+    http_system_handler_.reset(new (std::nothrow) HttpSystemHandler(
+        http_server_pipeline_->server(), reboot_task));
+    configASSERT(http_system_handler_);
 
     network_formatter_.reset(new (std::nothrow)
                                  NetworkJsonFormatter(http_server_pipeline_->network()));
@@ -86,14 +86,6 @@ status::StatusCode HttpPipeline::register_mdns_endpoints_() {
                                                       {
                                                           "registration",
                                                           "/registration",
-                                                      },
-                                                      {
-                                                          "command_reboot",
-                                                          "/commands/reboot",
-                                                      },
-                                                      {
-                                                          "commands",
-                                                          "/commands",
                                                       },
                                                   });
 
