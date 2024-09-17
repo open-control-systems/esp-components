@@ -21,11 +21,11 @@ idf_component_register(
     "dynamic_json_formatter.cpp"
     "console_json_task.cpp"
     "console_json_pipeline.cpp"
-    "http_command_handler.cpp"
     "http_data_handler.cpp"
     "http_pipeline.cpp"
     "basic_json_formatter.cpp"
     "field_json_formatter.cpp"
+    "http_system_handler.cpp"
 
     REQUIRES
     "json"

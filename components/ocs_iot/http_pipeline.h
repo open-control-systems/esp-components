@@ -10,9 +10,9 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_iot/fanout_json_formatter.h"
-#include "ocs_iot/http_command_handler.h"
 #include "ocs_iot/http_data_handler.h"
 #include "ocs_iot/http_server_pipeline.h"
+#include "ocs_iot/http_system_handler.h"
 #include "ocs_scheduler/itask.h"
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
 #include "ocs_iot/http_system_state_handler.h"
@@ -31,7 +31,6 @@ public:
     struct Params {
         DataParams telemetry;
         DataParams registration;
-        DataParams commands;
     };
 
     //! Initialize.
@@ -51,7 +50,7 @@ private:
     std::unique_ptr<HttpServerPipeline> http_server_pipeline_;
     std::unique_ptr<HttpDataHandler> http_telemetry_handler_;
     std::unique_ptr<HttpDataHandler> http_registration_handler_;
-    std::unique_ptr<HttpCommandHandler> http_command_handler_;
+    std::unique_ptr<HttpSystemHandler> http_system_handler_;
     std::unique_ptr<IJsonFormatter> network_formatter_;
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY

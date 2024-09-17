@@ -11,12 +11,6 @@ menu "OCS IoT Configuration"
             default 256
             help
                 Buffer size to hold the formatted registration JSON data, in bytes.
-
-        config OCS_IOT_HTTP_PIPELINE_COMMANDS_BUFFER_SIZE
-            int "Buffer size to hold the formatted commands JSON data"
-            default 256
-            help
-                Buffer size to hold the formatted commands JSON data, in bytes.
     endmenu
 
     menu "OCS Console Pipeline Configuration"
