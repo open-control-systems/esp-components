@@ -21,6 +21,7 @@ const char* log_tag = "http-system-handler";
 } // namespace
 
 HttpSystemHandler::HttpSystemHandler(net::HttpServer& server,
+                                     net::MdnsProvider& provider,
                                      scheduler::ITask& reboot_task) {
     server.add_GET("/system/reboot", [&reboot_task](httpd_req_t* req) {
         const auto err = httpd_resp_send(req, "Rebooting...", HTTPD_RESP_USE_STRLEN);
@@ -32,6 +33,14 @@ HttpSystemHandler::HttpSystemHandler(net::HttpServer& server,
 
         return reboot_task.run();
     });
+    provider.add_txt_records(net::MdnsProvider::Service::Http,
+                             net::MdnsProvider::Proto::Tcp,
+                             net::MdnsProvider::TxtRecordList {
+                                 {
+                                     "system-reboot",
+                                     "/system/reboot",
+                                 },
+                             });
 }
 
 } // namespace iot

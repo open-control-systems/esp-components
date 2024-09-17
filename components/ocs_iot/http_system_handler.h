@@ -10,6 +10,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_net/http_server.h"
+#include "ocs_net/mdns_provider.h"
 #include "ocs_scheduler/itask.h"
 
 namespace ocs {
@@ -21,8 +22,11 @@ public:
     //!
     //! @params
     //!  - @p server to register HTTP endpoints.
+    //!  - @p provider to register mDNS txt records.
     //!  - @p reboot_task to initiate the reboot process.
-    HttpSystemHandler(net::HttpServer& server, scheduler::ITask& reboot_task);
+    HttpSystemHandler(net::HttpServer& server,
+                      net::MdnsProvider& provider,
+                      scheduler::ITask& reboot_task);
 };
 
 } // namespace iot
