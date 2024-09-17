@@ -29,17 +29,19 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     configASSERT(http_server_pipeline_);
 
     http_telemetry_handler_.reset(new (std::nothrow) HttpDataHandler(
-        http_server_pipeline_->server(), telemetry_formatter, "/telemetry",
-        "http-telemetry-handler", params.telemetry.buffer_size));
+        http_server_pipeline_->server(), http_server_pipeline_->mdns(),
+        telemetry_formatter, "/telemetry", "http-telemetry-handler",
+        params.telemetry.buffer_size));
     configASSERT(http_telemetry_handler_);
 
     http_registration_handler_.reset(new (std::nothrow) HttpDataHandler(
-        http_server_pipeline_->server(), registration_formatter, "/registration",
-        "http-registration-handler", params.registration.buffer_size));
+        http_server_pipeline_->server(), http_server_pipeline_->mdns(),
+        registration_formatter, "/registration", "http-registration-handler",
+        params.registration.buffer_size));
     configASSERT(http_registration_handler_);
 
     http_system_handler_.reset(new (std::nothrow) HttpSystemHandler(
-        http_server_pipeline_->server(), reboot_task));
+        http_server_pipeline_->server(), http_server_pipeline_->mdns(), reboot_task));
     configASSERT(http_system_handler_);
 
     network_formatter_.reset(new (std::nothrow)
@@ -64,32 +66,15 @@ status::StatusCode HttpPipeline::start() {
         return code;
     }
 
-    code = register_mdns_endpoints_();
+    code = http_server_pipeline_->mdns().flush_txt_records();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to register mDNS endpoints: code=%s",
+        ESP_LOGE(log_tag, "failed to register mDNS txt records: code=%s",
                  status::code_to_str(code));
 
         return code;
     }
 
     return status::StatusCode::OK;
-}
-
-status::StatusCode HttpPipeline::register_mdns_endpoints_() {
-    http_server_pipeline_->mdns().add_txt_records(net::MdnsProvider::Service::Http,
-                                                  net::MdnsProvider::Proto::Tcp,
-                                                  net::MdnsProvider::TxtRecordList {
-                                                      {
-                                                          "telemetry",
-                                                          "/telemetry",
-                                                      },
-                                                      {
-                                                          "registration",
-                                                          "/registration",
-                                                      },
-                                                  });
-
-    return http_server_pipeline_->mdns().flush_txt_records();
 }
 
 HttpServerPipeline& HttpPipeline::get_server_pipeline() {

@@ -15,9 +15,10 @@ namespace ocs {
 namespace iot {
 
 HttpDataHandler::HttpDataHandler(net::HttpServer& server,
+                                 net::MdnsProvider& provider,
                                  IJsonFormatter& formatter,
                                  const char* path,
-                                 const char* log_tag,
+                                 const char* id,
                                  unsigned buffer_size) {
     fanout_formatter_.reset(new (std::nothrow) FanoutJsonFormatter());
     configASSERT(fanout_formatter_);
@@ -29,7 +30,7 @@ HttpDataHandler::HttpDataHandler(net::HttpServer& server,
 
     fanout_formatter_->add(*json_formatter_);
 
-    server.add_GET(path, [this, path, log_tag](httpd_req_t* req) {
+    server.add_GET(path, [this, path, id](httpd_req_t* req) {
         auto json = CjsonUniqueBuilder::make_json();
         if (!json) {
             return status::StatusCode::NoMem;
@@ -43,12 +44,20 @@ HttpDataHandler::HttpDataHandler(net::HttpServer& server,
         const auto err =
             httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
-            ESP_LOGE(log_tag, "httpd_resp_send(): %s", esp_err_to_name(err));
+            ESP_LOGE(id, "httpd_resp_send(): %s", esp_err_to_name(err));
             return status::StatusCode::Error;
         }
 
         return status::StatusCode::OK;
     });
+    provider.add_txt_records(net::MdnsProvider::Service::Http,
+                             net::MdnsProvider::Proto::Tcp,
+                             net::MdnsProvider::TxtRecordList {
+                                 {
+                                     id,
+                                     path,
+                                 },
+                             });
 }
 
 } // namespace iot

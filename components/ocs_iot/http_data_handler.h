@@ -14,6 +14,7 @@
 #include "ocs_iot/dynamic_json_formatter.h"
 #include "ocs_iot/fanout_json_formatter.h"
 #include "ocs_net/http_server.h"
+#include "ocs_net/mdns_provider.h"
 
 namespace ocs {
 namespace iot {
@@ -24,14 +25,16 @@ public:
     //!
     //! @params
     //!  - @p server to register the HTTP endpoint.
+    //!  - @p provider to register mDNS txt records.
     //!  - @p formatter to format the data.
     //!  - @p path - URI path.
-    //!  - @p log_tag - ESP-IDF log tag.
+    //!  - @p id - unique data ID, to distinguish one data from another.
     //!  - @p buffer_size to hold the formatted JSON data, in bytes.
     HttpDataHandler(net::HttpServer& server,
+                    net::MdnsProvider& provider,
                     IJsonFormatter& formatter,
                     const char* path,
-                    const char* log_tag,
+                    const char* id,
                     unsigned buffer_size);
 
 private:
