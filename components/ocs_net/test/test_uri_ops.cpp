@@ -14,21 +14,19 @@ namespace ocs {
 namespace net {
 
 TEST_CASE("URI ops: parse path: null input", "[ocs_net], [uri_ops]") {
-    TEST_ASSERT_TRUE(std::string_view() == UriOps::parse_path(nullptr));
+    TEST_ASSERT_TRUE(UriOps::parse_path(nullptr) == std::string_view());
 }
 
 TEST_CASE("URI ops: parse path: empty", "[ocs_net], [uri_ops]") {
-    TEST_ASSERT_TRUE(std::string_view() == UriOps::parse_path(""));
+    TEST_ASSERT_TRUE(UriOps::parse_path("") == std::string_view());
 }
 
 TEST_CASE("URI ops: parse path: without query", "[ocs_net], [uri_ops]") {
-    TEST_ASSERT_TRUE(std::string_view("/foo/bar/baz")
-                     == UriOps::parse_path("/foo/bar/baz"));
+    TEST_ASSERT_TRUE(UriOps::parse_path("/foo/bar/baz") == "/foo/bar/baz");
 }
 
 TEST_CASE("URI ops: parse path: with query", "[ocs_net], [uri_ops]") {
-    TEST_ASSERT_TRUE(std::string_view("/foo/bar/baz")
-                     == UriOps::parse_path("/foo/bar/baz?key=val"));
+    TEST_ASSERT_TRUE(UriOps::parse_path("/foo/bar/baz?key=val") == "/foo/bar/baz");
 }
 
 TEST_CASE("URI ops: parse query: null input", "[ocs_net], [uri_ops]") {
@@ -65,8 +63,8 @@ TEST_CASE("URI ops: parse query: single pair", "[ocs_net], [uri_ops]") {
 
     const auto it = values.find("key");
     TEST_ASSERT_TRUE(it != values.end());
-    TEST_ASSERT_TRUE(std::string_view("key") == it->first);
-    TEST_ASSERT_TRUE(std::string_view("value") == it->second);
+    TEST_ASSERT_TRUE(it->first == "key");
+    TEST_ASSERT_TRUE(it->second == "value");
 }
 
 TEST_CASE("URI ops: parse query: multile pairs", "[ocs_net], [uri_ops]") {
@@ -75,13 +73,13 @@ TEST_CASE("URI ops: parse query: multile pairs", "[ocs_net], [uri_ops]") {
 
     auto it = values.find("key1");
     TEST_ASSERT_TRUE(it != values.end());
-    TEST_ASSERT_TRUE(std::string_view("key1") == it->first);
-    TEST_ASSERT_TRUE(std::string_view("value1") == it->second);
+    TEST_ASSERT_TRUE(it->first == "key1");
+    TEST_ASSERT_TRUE(it->second == "value1");
 
     it = values.find("key2");
     TEST_ASSERT_TRUE(it != values.end());
-    TEST_ASSERT_TRUE(std::string_view("key2") == it->first);
-    TEST_ASSERT_TRUE(std::string_view("value2") == it->second);
+    TEST_ASSERT_TRUE(it->first == "key2");
+    TEST_ASSERT_TRUE(it->second == "value2");
 }
 
 } // namespace net
