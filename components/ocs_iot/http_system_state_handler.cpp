@@ -22,7 +22,7 @@ HttpSystemStateHandler::HttpSystemStateHandler(net::HttpServer& server,
     json_formatter_.reset(new (std::nothrow) DynamicJsonFormatter(response_size));
     configASSERT(json_formatter_);
 
-    server.add_GET("/report/system", [this](httpd_req_t* req) {
+    server.add_GET("/system/report", [this](httpd_req_t* req) {
         auto json = CjsonUniqueBuilder::make_json();
         if (!json) {
             return status::StatusCode::NoMem;
@@ -51,8 +51,8 @@ HttpSystemStateHandler::HttpSystemStateHandler(net::HttpServer& server,
                              net::MdnsProvider::Proto::Tcp,
                              net::MdnsProvider::TxtRecordList {
                                  {
-                                     "report_system",
-                                     "/report/system",
+                                     "system-report",
+                                     "/system/report",
                                  },
                              });
 }
