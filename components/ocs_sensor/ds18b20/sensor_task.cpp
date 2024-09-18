@@ -16,6 +16,7 @@ namespace sensor {
 namespace ds18b20 {
 
 SensorTask::SensorTask(scheduler::TimerStore& timer_store,
+                       scheduler::AsyncTaskScheduler& task_scheduler,
                        storage::IStorage& storage,
                        Store& sensor_store,
                        const char* sensor_id,
@@ -24,7 +25,10 @@ SensorTask::SensorTask(scheduler::TimerStore& timer_store,
     sensor_.reset(new (std::nothrow) Sensor(storage, sensor_id));
     configASSERT(sensor_);
 
-    async_task_ = sensor_store.add(*sensor_, params.data_pin, "GPIO-DS18B20-onewire");
+    configASSERT(sensor_store.add(*sensor_, params.data_pin, "GPIO-DS18B20-onewire")
+                 == status::StatusCode::OK);
+
+    async_task_ = task_scheduler.add(*sensor_);
     configASSERT(async_task_);
 
     async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(

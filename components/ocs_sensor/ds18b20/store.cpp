@@ -45,7 +45,7 @@ status::StatusCode Store::run() {
     return status::StatusCode::OK;
 }
 
-scheduler::ITask* Store::add(Sensor& sensor, gpio_num_t gpio, const char* gpio_id) {
+status::StatusCode Store::add(Sensor& sensor, gpio_num_t gpio, const char* gpio_id) {
     NodePtr node = get_node_(gpio);
     if (!node) {
         node = add_node_(gpio, gpio_id);
@@ -113,25 +113,21 @@ Store::Node::Node(gpio_num_t gpio, const char* gpio_id, unsigned max_event_count
 }
 
 status::StatusCode Store::Node::run() {
-    auto code = task_scheduler_.wait(wait_interval_);
-    if (code != status::StatusCode::OK) {
-        ocs_logw(log_tag, "failed to handle async task events: %s",
-                 status::code_to_str(code));
-    }
-
-    code = func_scheduler_.run();
+    const auto code = func_scheduler_.run();
     if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
         ocs_logw(log_tag, "failed to handle async func events: %s",
                  status::code_to_str(code));
+
+        return code;
     }
 
     return status::StatusCode::OK;
 }
 
-scheduler::ITask* Store::Node::add(Sensor& sensor) {
+status::StatusCode Store::Node::add(Sensor& sensor) {
     for (auto& s : sensors_) {
         if (strcmp(s->id(), sensor.id()) == 0) {
-            return nullptr;
+            return status::StatusCode::InvalidArg;
         }
     }
 
@@ -158,7 +154,8 @@ scheduler::ITask* Store::Node::add(Sensor& sensor) {
     }
 
     sensors_.push_back(&sensor);
-    return task_scheduler_.add(sensor);
+
+    return status::StatusCode::OK;
 }
 
 scheduler::AsyncFuncScheduler::FuturePtr Store::Node::schedule(Func func) {

@@ -16,7 +16,6 @@
 
 #include "ocs_onewire/bus.h"
 #include "ocs_scheduler/async_func_scheduler.h"
-#include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_sensor/ds18b20/sensor.h"
 #include "ocs_status/code.h"
 
@@ -45,9 +44,13 @@ public:
     //! Add sensor to the bus.
     //!
     //! @notes
-    //!  If no bus exists, it will be created automatically. Single bus can contain
-    //!  several sensors.
-    scheduler::ITask* add(Sensor& sensor, gpio_num_t gpio, const char* gpio_id);
+    //!  - If no bus exists, it will be created automatically.
+    //!  - Single bus can contain several sensors.
+    //!
+    //! @remarks
+    //!  - @p sensor should be used in the same context as a run() method, in other words,
+    //!    the sensor and the store should be scheduled on the same task scheduler.
+    status::StatusCode add(Sensor& sensor, gpio_num_t gpio, const char* gpio_id);
 
     //! Schedule an asynchronous event to the bus.
     scheduler::AsyncFuncScheduler::FuturePtr schedule(gpio_num_t gpio, Func func);
@@ -62,13 +65,12 @@ private:
         status::StatusCode run() override;
 
         //! Associate @p sensor with the bus.
-        scheduler::ITask* add(Sensor& sensor);
+        status::StatusCode add(Sensor& sensor);
 
         //! Schedule an asynchronous event to the bus.
         scheduler::AsyncFuncScheduler::FuturePtr schedule(Func func);
 
     private:
-        scheduler::AsyncTaskScheduler task_scheduler_;
         scheduler::AsyncFuncScheduler func_scheduler_;
 
         std::unique_ptr<io::IGpio> gpio_;
@@ -80,10 +82,6 @@ private:
     using NodePtr = std::shared_ptr<Node>;
     using NodeListItem = std::pair<gpio_num_t, NodePtr>;
     using NodeList = std::vector<NodeListItem>;
-
-    // Keep the interval short, since the store itself actively poll the underlying async
-    // task schedulers.
-    static const TickType_t wait_interval_ { pdMS_TO_TICKS(5) };
 
     const unsigned max_event_count_ { 0 };
 

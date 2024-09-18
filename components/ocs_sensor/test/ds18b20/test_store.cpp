@@ -47,7 +47,7 @@ TEST_CASE("DS18B20-Store: schedule: invalid GPIO", "[ocs_sensor], [ds18b20_store
     TestStorage storage;
     Sensor sensor(storage, sensor_id);
 
-    TEST_ASSERT_NOT_NULL(store.add(sensor, gpio, gpio_id));
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, store.add(sensor, gpio, gpio_id));
 
     auto future =
         store.schedule(invalid_gpio, [](onewire::Bus& bus, Store::SensorList& sensors) {
@@ -65,7 +65,7 @@ TEST_CASE("DS18B20-Store: add sensor", "[ocs_sensor], [ds18b20_store]") {
     TestStorage storage;
     Sensor sensor(storage, sensor_id);
 
-    TEST_ASSERT_NOT_NULL(store.add(sensor, gpio, gpio_id));
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, store.add(sensor, gpio, gpio_id));
 
     auto future =
         store.schedule(gpio, [&sensor](onewire::Bus& bus, Store::SensorList& sensors) {
@@ -90,7 +90,7 @@ TEST_CASE("DS18B20-Store: read sensor configuration: non-configured",
     Sensor sensor(storage, sensor_id);
 
     TEST_ASSERT_FALSE(sensor.configured());
-    TEST_ASSERT_NOT_NULL(store.add(sensor, gpio, gpio_id));
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, store.add(sensor, gpio, gpio_id));
     TEST_ASSERT_FALSE(sensor.configured());
 
     auto future = store.schedule(gpio, [](onewire::Bus& bus, Store::SensorList& sensors) {
