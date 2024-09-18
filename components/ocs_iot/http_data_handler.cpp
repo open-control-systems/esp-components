@@ -6,10 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
-#include "ocs_iot/cjson_builder.h"
 #include "ocs_iot/http_data_handler.h"
+#include "ocs_core/log.h"
+#include "ocs_iot/cjson_builder.h"
 
 namespace ocs {
 namespace iot {
@@ -44,7 +43,7 @@ HttpDataHandler::HttpDataHandler(net::HttpServer& server,
         const auto err =
             httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
-            ESP_LOGE(id, "httpd_resp_send(): %s", esp_err_to_name(err));
+            ocs_loge(id, "httpd_resp_send(): %s", esp_err_to_name(err));
             return status::StatusCode::Error;
         }
 

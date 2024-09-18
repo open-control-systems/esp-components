@@ -8,9 +8,8 @@
 
 #include <cstring>
 
-#include "esp_log.h"
-
 #include "ocs_core/lock_guard.h"
+#include "ocs_core/log.h"
 #include "ocs_net/http_client_reader.h"
 #include "ocs_status/macros.h"
 
@@ -68,38 +67,38 @@ esp_err_t HttpClientReader::handle_event_(esp_http_client_event_t* event) {
 
     switch (event->event_id) {
     case HTTP_EVENT_ERROR:
-        ESP_LOGD(log_tag, "HTTP_EVENT_ERROR");
+        ocs_logd(log_tag, "HTTP_EVENT_ERROR");
         break;
 
     case HTTP_EVENT_ON_CONNECTED:
-        ESP_LOGD(log_tag, "HTTP_EVENT_ON_CONNECTED");
+        ocs_logd(log_tag, "HTTP_EVENT_ON_CONNECTED");
         break;
 
     case HTTP_EVENT_HEADER_SENT:
-        ESP_LOGD(log_tag, "HTTP_EVENT_HEADER_SENT");
+        ocs_logd(log_tag, "HTTP_EVENT_HEADER_SENT");
         break;
 
     case HTTP_EVENT_ON_HEADER:
-        ESP_LOGD(log_tag, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", event->header_key,
+        ocs_logd(log_tag, "HTTP_EVENT_ON_HEADER, key=%s, value=%s", event->header_key,
                  event->header_value);
         break;
 
     case HTTP_EVENT_ON_DATA:
-        ESP_LOGD(log_tag, "HTTP_EVENT_ON_DATA, len=%d", event->data_len);
+        ocs_logd(log_tag, "HTTP_EVENT_ON_DATA, len=%d", event->data_len);
         self.handle_event_on_data_(event);
         break;
 
     case HTTP_EVENT_ON_FINISH:
-        ESP_LOGD(log_tag, "HTTP_EVENT_ON_FINISH");
+        ocs_logd(log_tag, "HTTP_EVENT_ON_FINISH");
         self.handle_event_on_finish_();
         break;
 
     case HTTP_EVENT_DISCONNECTED:
-        ESP_LOGI(log_tag, "HTTP_EVENT_DISCONNECTED");
+        ocs_logi(log_tag, "HTTP_EVENT_DISCONNECTED");
         break;
 
     case HTTP_EVENT_REDIRECT:
-        ESP_LOGD(log_tag, "HTTP_EVENT_REDIRECT");
+        ocs_logd(log_tag, "HTTP_EVENT_REDIRECT");
         break;
     }
 

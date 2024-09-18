@@ -8,8 +8,6 @@
 
 #include <cstdio>
 
-#include "esp_log.h"
-
 #include "ocs_net/mdns_provider.h"
 #include "ocs_net/wifi_network.h"
 #include "ocs_status/code.h"
@@ -38,7 +36,7 @@ extern "C" void app_main(void) {
         .instance_name = "bar",
     });
     const auto status = mdns_provider.add_service("foo", "bar", 80);
-    ESP_LOGI(log_tag, "status=%s", status::code_to_str(status));
+    ocs_logi(log_tag, "status=%s", status::code_to_str(status));
 
     while (true) {
         vTaskDelay(pdMS_TO_TICKS(1000));

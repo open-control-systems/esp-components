@@ -6,9 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "ocs_diagnostic/live_counter.h"
+#include "ocs_core/log.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
@@ -24,7 +23,7 @@ LiveCounter::LiveCounter(storage::IStorage& storage, ICounter& counter)
     : PersistentCounter(storage, counter) {
     const auto code = storage.erase(id());
     if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
-        ESP_LOGE(log_tag, "failed to erase counter value: id=%s code=%s", id(),
+        ocs_loge(log_tag, "failed to erase counter value: id=%s code=%s", id(),
                  status::code_to_str(code));
     }
 }

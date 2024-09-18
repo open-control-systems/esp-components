@@ -7,6 +7,7 @@
  */
 
 #include "ocs_iot/console_json_task.h"
+#include "ocs_core/log.h"
 
 namespace ocs {
 namespace iot {
@@ -36,7 +37,7 @@ status::StatusCode ConsoleJsonTask::run() {
         return code;
     }
 
-    ESP_LOGI(log_tag_.c_str(), "%s", json_formatter_->c_str());
+    ocs_logi(log_tag_.c_str(), "%s", json_formatter_->c_str());
 
     return status::StatusCode::OK;
 }

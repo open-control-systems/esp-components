@@ -8,9 +8,8 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "esp_log.h"
-
 #include "ocs_core/bit_ops.h"
+#include "ocs_core/log.h"
 #include "ocs_scheduler/async_task.h"
 #include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_status/code_to_str.h"
@@ -41,7 +40,7 @@ ITask* AsyncTaskScheduler::add(ITask& task) {
 
     for (const auto& node : nodes_) {
         if (node.task == &task) {
-            ESP_LOGE(log_tag, "task already exists: event=%lu", node.event);
+            ocs_loge(log_tag, "task already exists: event=%lu", node.event);
             return nullptr;
         }
     }
@@ -70,7 +69,7 @@ status::StatusCode AsyncTaskScheduler::handle_events_(EventBits_t bits) {
         if (bits & node.event) {
             const auto code = node.task->run();
             if (code != status::StatusCode::OK) {
-                ESP_LOGE(log_tag, "failed to run task: event=%lu code=%s", node.event,
+                ocs_loge(log_tag, "failed to run task: event=%lu code=%s", node.event,
                          status::code_to_str(code));
             }
         }

@@ -6,10 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_core/log.h"
 #include "ocs_scheduler/timer_store.h"
 
 namespace ocs {
@@ -30,7 +29,7 @@ status::StatusCode TimerStore::start() {
         return status::StatusCode::Error;
     }
 
-    ESP_LOGI(log_tag, "start timers: count=%u", timers_.size());
+    ocs_logi(log_tag, "start timers: count=%u", timers_.size());
 
     for (auto& timer : timers_) {
         const auto code = timer->start();

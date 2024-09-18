@@ -8,8 +8,7 @@
 
 #include <cstring>
 
-#include "esp_log.h"
-
+#include "ocs_core/log.h"
 #include "ocs_net/http_server.h"
 #include "ocs_net/uri_ops.h"
 #include "ocs_status/code_to_str.h"
@@ -61,7 +60,7 @@ void HttpServer::add_GET(const char* path, HttpServer::HandlerFunc func) {
 status::StatusCode HttpServer::start() {
     const auto err = httpd_start(&handle_, &config_);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "httpd_start(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "httpd_start(): %s", esp_err_to_name(err));
         return status::StatusCode::Error;
     }
 
@@ -96,13 +95,13 @@ esp_err_t HttpServer::handle_request_(httpd_req_t* req) {
 void HttpServer::handle_request_get_(httpd_req_t* req) {
     const auto handler = uris_get_.find(UriOps::parse_path(req->uri));
     if (handler == uris_get_.end()) {
-        ESP_LOGE(log_tag, "unknown URI: %s", req->uri);
+        ocs_loge(log_tag, "unknown URI: %s", req->uri);
 
         const auto ret = httpd_resp_send_err(
             req, status_code_to_http_code(status::StatusCode::InvalidArg),
             status::code_to_str(status::StatusCode::InvalidArg));
         if (ret != ESP_OK) {
-            ESP_LOGE(log_tag, "httpd_resp_send_err(): URI=%s err=%s", req->uri,
+            ocs_loge(log_tag, "httpd_resp_send_err(): URI=%s err=%s", req->uri,
                      esp_err_to_name(ret));
         }
 
@@ -111,13 +110,13 @@ void HttpServer::handle_request_get_(httpd_req_t* req) {
 
     const auto code = handler->second.func(req);
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to handle request: URI=%s code=%s", req->uri,
+        ocs_loge(log_tag, "failed to handle request: URI=%s code=%s", req->uri,
                  status::code_to_str(code));
 
         const auto http_code = status_code_to_http_code(code);
         const auto ret = httpd_resp_send_err(req, http_code, status::code_to_str(code));
         if (ret != ESP_OK) {
-            ESP_LOGE(log_tag, "httpd_resp_send_err(): URI=%s err=%s", req->uri,
+            ocs_loge(log_tag, "httpd_resp_send_err(): URI=%s err=%s", req->uri,
                      esp_err_to_name(ret));
         }
     }

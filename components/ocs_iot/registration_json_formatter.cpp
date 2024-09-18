@@ -6,10 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_core/log.h"
 #include "ocs_core/version.h"
 #include "ocs_core/version_to_str.h"
 #include "ocs_iot/registration_json_formatter.h"
@@ -29,7 +28,7 @@ RegistrationJsonFormatter::RegistrationJsonFormatter() {
 
     core::Version version;
     if (!version.parse(CONFIG_OCS_CORE_FW_VERSION)) {
-        ESP_LOGE(log_tag, "failed to parse FW version: %s", CONFIG_OCS_CORE_FW_VERSION);
+        ocs_loge(log_tag, "failed to parse FW version: %s", CONFIG_OCS_CORE_FW_VERSION);
     }
 
     core::version_to_str version_str(version);

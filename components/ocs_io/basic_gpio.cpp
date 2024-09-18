@@ -6,10 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_core/log.h"
 #include "ocs_io/basic_gpio.h"
 
 namespace ocs {
@@ -34,7 +33,7 @@ int BasicGpio::get() {
 status::StatusCode BasicGpio::flip() {
     const auto err = gpio_set_level(gpio_, !gpio_get_level(gpio_));
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "flip failed: id=%s err=%s", id_.c_str(), esp_err_to_name(err));
+        ocs_loge(log_tag, "flip failed: id=%s err=%s", id_.c_str(), esp_err_to_name(err));
 
         return status::StatusCode::Error;
     }
@@ -45,7 +44,7 @@ status::StatusCode BasicGpio::flip() {
 status::StatusCode BasicGpio::turn_on() {
     const auto err = gpio_set_level(gpio_, enable_value_);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "turn on failed: id=%s err=%s", id_.c_str(),
+        ocs_loge(log_tag, "turn on failed: id=%s err=%s", id_.c_str(),
                  esp_err_to_name(err));
 
         return status::StatusCode::Error;
@@ -57,7 +56,7 @@ status::StatusCode BasicGpio::turn_on() {
 status::StatusCode BasicGpio::turn_off() {
     const auto err = gpio_set_level(gpio_, !enable_value_);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "turn off failed: id=%s err=%s", id_.c_str(),
+        ocs_loge(log_tag, "turn off failed: id=%s err=%s", id_.c_str(),
                  esp_err_to_name(err));
 
         return status::StatusCode::Error;
@@ -86,7 +85,7 @@ status::StatusCode BasicGpio::set_direction(IGpio::Direction direction) {
 
     const auto err = gpio_set_direction(gpio_, mode);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "gpio_set_direction(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "gpio_set_direction(): %s", esp_err_to_name(err));
 
         return status::StatusCode::Error;
     }
