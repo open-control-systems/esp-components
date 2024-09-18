@@ -6,9 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "ocs_io/oneshot_gpio.h"
+#include "ocs_core/log.h"
 #include "ocs_status/code_to_str.h"
 #include "ocs_status/macros.h"
 
@@ -32,7 +31,7 @@ status::StatusCode OneshotGpio::run() {
     const auto code = task_.run();
     if (code != status::StatusCode::OK) {
         if (const auto c = gpio_.turn_off(); c != status::StatusCode::OK) {
-            ESP_LOGE(log_tag, "failed to turn off GPIO on task failure: %s",
+            ocs_loge(log_tag, "failed to turn off GPIO on task failure: %s",
                      status::code_to_str(c));
         }
         return code;

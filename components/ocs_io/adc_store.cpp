@@ -8,9 +8,9 @@
 
 #include <cstring>
 
-#include "esp_log.h"
 #include "soc/soc_caps.h"
 
+#include "ocs_core/log.h"
 #include "ocs_io/adc_store.h"
 
 namespace ocs {
@@ -56,14 +56,14 @@ AdcStore::~AdcStore() {
 IAdc* AdcStore::add(adc_channel_t channel) {
     for (const auto& adc : adcs_) {
         if (adc.first == channel) {
-            ESP_LOGE(log_tag, "channel %u already configured", channel);
+            ocs_loge(log_tag, "channel %u already configured", channel);
             return nullptr;
         }
     }
 
     const auto err = adc_oneshot_config_channel(unit_handle_, channel, &config_);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "adc_oneshot_config_channel(): channel=%u err=%s", channel,
+        ocs_loge(log_tag, "adc_oneshot_config_channel(): channel=%u err=%s", channel,
                  esp_err_to_name(err));
 
         return nullptr;

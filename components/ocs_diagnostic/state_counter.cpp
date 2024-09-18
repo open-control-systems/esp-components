@@ -6,10 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_core/log.h"
 #include "ocs_diagnostic/state_counter.h"
 #include "ocs_status/code_to_str.h"
 
@@ -79,7 +78,7 @@ void StateCounter::update(StateCounter::State state) {
         handle_state_lost_();
     }
 
-    ESP_LOGI(log_tag, "state changed: id=%s cur=%u new=%u req=%u alive=%d",
+    ocs_logi(log_tag, "state changed: id=%s cur=%u new=%u req=%u alive=%d",
              counter_->id(), current_state_, state, required_state_, alive_);
 
     current_state_ = state;
@@ -89,7 +88,7 @@ void StateCounter::handle_state_set_() {
     if (current_state_) {
         const auto code = persistent_counter_->invalidate();
         if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
-            ESP_LOGE(log_tag, "failed to invalidate counter value: id=%s code=%s",
+            ocs_loge(log_tag, "failed to invalidate counter value: id=%s code=%s",
                      counter_->id(), status::code_to_str(code));
         }
     }
@@ -104,7 +103,7 @@ void StateCounter::handle_state_lost_() {
     if (current_state_) {
         const auto code = persistent_counter_->save();
         if (code != status::StatusCode::OK) {
-            ESP_LOGE(log_tag, "failed to persist counter value: id=%s code=%s",
+            ocs_loge(log_tag, "failed to persist counter value: id=%s code=%s",
                      counter_->id(), status::code_to_str(code));
         }
 

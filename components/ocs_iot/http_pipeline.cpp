@@ -6,9 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "ocs_iot/http_pipeline.h"
+#include "ocs_core/log.h"
 #include "ocs_iot/network_json_formatter.h"
 #include "ocs_status/code_to_str.h"
 
@@ -60,7 +59,7 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
 status::StatusCode HttpPipeline::start() {
     auto code = http_server_pipeline_->start();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to start HTTP server pipeline: code=%s",
+        ocs_loge(log_tag, "failed to start HTTP server pipeline: code=%s",
                  status::code_to_str(code));
 
         return code;
@@ -68,7 +67,7 @@ status::StatusCode HttpPipeline::start() {
 
     code = http_server_pipeline_->mdns().flush_txt_records();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to register mDNS txt records: code=%s",
+        ocs_loge(log_tag, "failed to register mDNS txt records: code=%s",
                  status::code_to_str(code));
 
         return code;

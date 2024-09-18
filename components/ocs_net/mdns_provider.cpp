@@ -6,9 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
 #include "mdns.h"
 
+#include "ocs_core/log.h"
 #include "ocs_net/mdns_provider.h"
 
 namespace ocs {
@@ -67,7 +67,7 @@ status::StatusCode MdnsProvider::add_service(MdnsProvider::Service service,
     const auto err = mdns_service_add(nullptr, service_to_str(service),
                                       proto_to_str(proto), port, nullptr, 0);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "failed to add service: service=%s proto=%s port=%u",
+        ocs_loge(log_tag, "failed to add service: service=%s proto=%s port=%u",
                  service_to_str(service), proto_to_str(proto), port);
 
         return status::StatusCode::InvalidArg;
@@ -93,7 +93,7 @@ status::StatusCode MdnsProvider::flush_txt_records() {
                     service_to_str(service), proto_to_str(proto), record.first.c_str(),
                     record.second.c_str());
                 if (err != ESP_OK) {
-                    ESP_LOGE(log_tag,
+                    ocs_loge(log_tag,
                              "failed to flush txt record: service=%s proto=%s key=%s "
                              "value=%s",
                              service_to_str(service), proto_to_str(proto),

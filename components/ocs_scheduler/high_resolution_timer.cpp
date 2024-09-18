@@ -8,10 +8,9 @@
 
 #include <cstring>
 
-#include "esp_log.h"
-
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_core/log.h"
 #include "ocs_scheduler/high_resolution_timer.h"
 #include "ocs_status/code_to_str.h"
 
@@ -51,7 +50,7 @@ HighResolutionTimer::~HighResolutionTimer() {
 status::StatusCode HighResolutionTimer::start() {
     const auto err = esp_timer_start_periodic(handle_, interval_);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "esp_timer_start_periodic(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "esp_timer_start_periodic(): %s", esp_err_to_name(err));
 
         return status::StatusCode::Error;
     }
@@ -62,7 +61,7 @@ status::StatusCode HighResolutionTimer::start() {
 status::StatusCode HighResolutionTimer::stop() {
     const auto err = esp_timer_stop(handle_);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "esp_timer_stop(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "esp_timer_stop(): %s", esp_err_to_name(err));
 
         return status::StatusCode::Error;
     }
@@ -76,7 +75,7 @@ void HighResolutionTimer::handle_cb_(void* arg) {
     HighResolutionTimer& self = *static_cast<HighResolutionTimer*>(arg);
     const auto code = self.task_.run();
     if (code != status::StatusCode::OK) {
-        ESP_LOGD(log_tag, "failed to run task: %s", status::code_to_str(code));
+        ocs_logd(log_tag, "failed to run task: %s", status::code_to_str(code));
     }
 }
 

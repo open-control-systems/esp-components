@@ -11,8 +11,7 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "esp_log.h"
-
+#include "ocs_core/log.h"
 #include "ocs_storage/ns_storage.h"
 
 namespace ocs {
@@ -78,7 +77,7 @@ std::pair<nvs_handle_t, status::StatusCode> NsStorage::open_(nvs_open_mode_t mod
     }
 
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "nvs_open(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "nvs_open(): %s", esp_err_to_name(err));
         return { 0, status::StatusCode::Error };
     }
 
@@ -93,7 +92,7 @@ NsStorage::read_(nvs_handle_t handle, const char* key, void* value, size_t size)
     }
 
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "failed to read: nvs_get_blob(): key=%s err=%s", key,
+        ocs_loge(log_tag, "failed to read: nvs_get_blob(): key=%s err=%s", key,
                  esp_err_to_name(err));
 
         return status::StatusCode::Error;
@@ -106,7 +105,7 @@ status::StatusCode
 NsStorage::write_(nvs_handle_t handle, const char* key, const void* value, size_t size) {
     auto err = nvs_set_blob(handle, key, value, size);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "failed to write: nvs_set_blob(): key=%s err=%s", key,
+        ocs_loge(log_tag, "failed to write: nvs_set_blob(): key=%s err=%s", key,
                  esp_err_to_name(err));
 
         return status::StatusCode::Error;
@@ -114,7 +113,7 @@ NsStorage::write_(nvs_handle_t handle, const char* key, const void* value, size_
 
     err = nvs_commit(handle);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "failed to write: nvs_commit(): key=%s err=%s", key,
+        ocs_loge(log_tag, "failed to write: nvs_commit(): key=%s err=%s", key,
                  esp_err_to_name(err));
 
         return status::StatusCode::Error;
@@ -130,7 +129,7 @@ status::StatusCode NsStorage::erase_(nvs_handle_t handle, const char* key) {
     }
 
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "failed to erase: nvs_erase_key(): key=%s err=%s", key,
+        ocs_loge(log_tag, "failed to erase: nvs_erase_key(): key=%s err=%s", key,
                  esp_err_to_name(err));
 
         return status::StatusCode::Error;
@@ -138,7 +137,7 @@ status::StatusCode NsStorage::erase_(nvs_handle_t handle, const char* key) {
 
     err = nvs_commit(handle);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "failed to erase: nvs_commit(): key=%s err=%s", key,
+        ocs_loge(log_tag, "failed to erase: nvs_commit(): key=%s err=%s", key,
                  esp_err_to_name(err));
 
         return status::StatusCode::Error;

@@ -8,9 +8,9 @@
 
 #include <cstring>
 
-#include "esp_log.h"
 #include "esp_wifi.h"
 
+#include "ocs_core/log.h"
 #include "ocs_iot/cjson_object_formatter.h"
 #include "ocs_iot/network_json_formatter.h"
 #include "ocs_net/ip_addr_to_str.h"
@@ -63,7 +63,7 @@ status::StatusCode NetworkJsonFormatter::format_ap_info_(cJSON* json) {
             return status::StatusCode::NoMem;
         }
     } else {
-        ESP_LOGE(log_tag, "esp_wifi_sta_get_ap_info(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "esp_wifi_sta_get_ap_info(): %s", esp_err_to_name(err));
 
         if (!formatter.add_string_ref_cs("network_ssid", "<none>")) {
             return status::StatusCode::NoMem;

@@ -6,9 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
 #include "esp_system.h"
 
+#include "ocs_core/log.h"
 #include "ocs_system/default_rebooter.h"
 
 namespace ocs {
@@ -25,9 +25,9 @@ DefaultRebooter::DefaultRebooter(IRebootHandler& handler)
 }
 
 void DefaultRebooter::reboot() {
-    ESP_LOGI(log_tag, "Prepare for rebooting...");
+    ocs_logi(log_tag, "Prepare for rebooting...");
     handler_.handle_reboot();
-    ESP_LOGI(log_tag, "Ready for rebooting...");
+    ocs_logi(log_tag, "Ready for rebooting...");
 
     return esp_restart();
 }

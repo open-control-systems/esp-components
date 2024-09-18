@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <cstring>
 
-#include "esp_log.h"
 #include "unity.h"
 
 #include "ocs_net/http_client_reader.h"

@@ -6,9 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "ocs_io/oneshot_adc.h"
+#include "ocs_core/log.h"
 
 namespace ocs {
 namespace io {
@@ -32,7 +31,7 @@ IAdc::Result OneshotAdc::read() {
 
     const auto err = adc_oneshot_read(unit_handle_, channel_, &raw);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "adc_oneshot_read(): channel=%u err=%s", channel_,
+        ocs_loge(log_tag, "adc_oneshot_read(): channel=%u err=%s", channel_,
                  esp_err_to_name(err));
 
         return { status::StatusCode::Error, -1 };
@@ -46,7 +45,7 @@ IAdc::Result OneshotAdc::convert(int raw) {
 
     const auto err = adc_cali_raw_to_voltage(calibration_handle_, raw, &voltage);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "adc_cali_raw_to_voltage(): channel=%u err=%s", channel_,
+        ocs_loge(log_tag, "adc_cali_raw_to_voltage(): channel=%u err=%s", channel_,
                  esp_err_to_name(err));
 
         return { status::StatusCode::Error, -1 };

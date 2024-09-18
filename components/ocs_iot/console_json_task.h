@@ -11,8 +11,6 @@
 #include <memory>
 #include <string>
 
-#include "esp_log.h"
-
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/noncopyable.h"

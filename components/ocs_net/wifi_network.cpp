@@ -8,9 +8,9 @@
 
 #include <cstring>
 
-#include "esp_log.h"
 #include "esp_netif.h"
 
+#include "ocs_core/log.h"
 #include "ocs_net/wifi_network.h"
 
 #define EVENT_BIT_CONNECTED BIT0
@@ -29,7 +29,7 @@ int8_t get_rssi() {
 
     const auto err = esp_wifi_sta_get_ap_info(&record);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "esp_wifi_sta_get_ap_info(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "esp_wifi_sta_get_ap_info(): %s", esp_err_to_name(err));
         return 0;
     }
 
@@ -87,7 +87,7 @@ WiFiNetwork::~WiFiNetwork() {
 status::StatusCode WiFiNetwork::start() {
     const auto err = esp_wifi_start();
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "esp_wifi_start(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "esp_wifi_start(): %s", esp_err_to_name(err));
         return status::StatusCode::Error;
     }
 
@@ -97,7 +97,7 @@ status::StatusCode WiFiNetwork::start() {
 status::StatusCode WiFiNetwork::stop() {
     const auto err = esp_wifi_stop();
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "esp_wifi_stop(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "esp_wifi_stop(): %s", esp_err_to_name(err));
         return status::StatusCode::Error;
     }
 
@@ -110,18 +110,18 @@ status::StatusCode WiFiNetwork::wait() {
                             pdFALSE, pdFALSE, portMAX_DELAY);
 
     if (bits & EVENT_BIT_CONNECTED) {
-        ESP_LOGI(log_tag, "connected to AP: SSID=%s RSSI=%d",
+        ocs_logi(log_tag, "connected to AP: SSID=%s RSSI=%d",
                  CONFIG_OCS_NETWORK_WIFI_STA_SSID, get_rssi());
         return status::StatusCode::OK;
     }
 
     if (bits & EVENT_BIT_FAILED) {
-        ESP_LOGI(log_tag, "failed to connect to AP: SSID=%s",
+        ocs_logi(log_tag, "failed to connect to AP: SSID=%s",
                  CONFIG_OCS_NETWORK_WIFI_STA_SSID);
         return status::StatusCode::Error;
     }
 
-    ESP_LOGE(log_tag, "unexpected event bit: bits=%ld", bits);
+    ocs_loge(log_tag, "unexpected event bit: bits=%ld", bits);
     configASSERT(false);
 }
 
@@ -136,7 +136,7 @@ std::optional<ip_addr_t> WiFiNetwork::get_ip_addr() const {
 
     const auto err = esp_netif_get_ip_info(netif_.get(), &ip_info);
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "esp_netif_get_ip_info(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "esp_netif_get_ip_info(): %s", esp_err_to_name(err));
         return std::nullopt;
     }
 
@@ -158,7 +158,7 @@ void WiFiNetwork::handle_event_(void* event_arg,
     } else if (event_base == IP_EVENT) {
         self.handle_ip_event_(event_id, event_data);
     } else {
-        ESP_LOGE(log_tag, "unsupported event: event_id=%ld", event_id);
+        ocs_loge(log_tag, "unsupported event: event_id=%ld", event_id);
     }
 }
 
@@ -178,11 +178,11 @@ void WiFiNetwork::handle_wifi_event_(int32_t event_id, void* event_data) {
 }
 
 void WiFiNetwork::handle_wifi_event_sta_start_() {
-    ESP_LOGI(log_tag, "WIFI_EVENT_STA_START");
+    ocs_logi(log_tag, "WIFI_EVENT_STA_START");
 
     const esp_err_t err = esp_wifi_connect();
     if (err != ESP_OK) {
-        ESP_LOGE(log_tag, "esp_wifi_connect(): %s", esp_err_to_name(err));
+        ocs_loge(log_tag, "esp_wifi_connect(): %s", esp_err_to_name(err));
     }
 }
 
@@ -192,7 +192,7 @@ void WiFiNetwork::handle_wifi_event_sta_disconnected_(void* event_data) {
     wifi_event_sta_disconnected_t& data =
         *static_cast<wifi_event_sta_disconnected_t*>(event_data);
 
-    ESP_LOGI(log_tag, "WIFI_EVENT_STA_DISCONNECTED: reason=%u", data.reason);
+    ocs_logi(log_tag, "WIFI_EVENT_STA_DISCONNECTED: reason=%u", data.reason);
 
     xEventGroupClearBits(event_group_.get(), EVENT_BIT_CONNECTED);
 
@@ -201,9 +201,9 @@ void WiFiNetwork::handle_wifi_event_sta_disconnected_(void* event_data) {
 
         const esp_err_t err = esp_wifi_connect();
         if (err != ESP_OK) {
-            ESP_LOGE(log_tag, "esp_wifi_connect(): %s", esp_err_to_name(err));
+            ocs_loge(log_tag, "esp_wifi_connect(): %s", esp_err_to_name(err));
         } else {
-            ESP_LOGI(log_tag, "reconnecting: retry_count=%u max_retry_count=%u",
+            ocs_logi(log_tag, "reconnecting: retry_count=%u max_retry_count=%u",
                      retry_count_, params_.max_retry_count);
         }
     } else {
@@ -226,7 +226,7 @@ void WiFiNetwork::handle_ip_event_(int32_t event_id, void* event_data) {
 
 void WiFiNetwork::handle_ip_event_sta_got_ip_(void* event_data) {
     ip_event_got_ip_t& event = *static_cast<ip_event_got_ip_t*>(event_data);
-    ESP_LOGI(log_tag, "got ip:" IPSTR "", IP2STR(&event.ip_info.ip));
+    ocs_logi(log_tag, "got ip:" IPSTR "", IP2STR(&event.ip_info.ip));
 
     retry_count_ = 0;
     xEventGroupSetBits(event_group_.get(), EVENT_BIT_CONNECTED);

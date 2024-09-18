@@ -6,9 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "esp_log.h"
-
 #include "ocs_iot/http_server_pipeline.h"
+#include "ocs_core/log.h"
 #include "ocs_net/wifi_network.h"
 #include "ocs_status/code_to_str.h"
 
@@ -47,7 +46,7 @@ HttpServerPipeline::HttpServerPipeline() {
 void HttpServerPipeline::handle_connected() {
     const auto code = http_server_->start();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to start HTTP server when WiFi is connected: code=%s",
+        ocs_loge(log_tag, "failed to start HTTP server when WiFi is connected: code=%s",
                  status::code_to_str(code));
     }
 }
@@ -55,7 +54,7 @@ void HttpServerPipeline::handle_connected() {
 void HttpServerPipeline::handle_disconnected() {
     const auto code = http_server_->stop();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to stop HTTP server when WiFi is disconnected: code=%s",
+        ocs_loge(log_tag, "failed to stop HTTP server when WiFi is disconnected: code=%s",
                  status::code_to_str(code));
     }
 }
@@ -91,7 +90,7 @@ net::MdnsProvider& HttpServerPipeline::mdns() {
 status::StatusCode HttpServerPipeline::try_start_wifi_() {
     auto code = wifi_network_->start();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to start the WiFi connection process: code=%s",
+        ocs_loge(log_tag, "failed to start the WiFi connection process: code=%s",
                  status::code_to_str(code));
 
         return code;
@@ -108,7 +107,7 @@ status::StatusCode HttpServerPipeline::try_start_wifi_() {
 status::StatusCode HttpServerPipeline::try_start_mdns_() {
     auto code = mdns_provider_->start();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to start the mDNS service: code=%s",
+        ocs_loge(log_tag, "failed to start the mDNS service: code=%s",
                  status::code_to_str(code));
 
         return code;
@@ -127,7 +126,7 @@ status::StatusCode HttpServerPipeline::try_start_mdns_() {
 void HttpServerPipeline::stop_wifi_() {
     const auto code = wifi_network_->stop();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to stop the WiFi connection process: code=%s",
+        ocs_loge(log_tag, "failed to stop the WiFi connection process: code=%s",
                  status::code_to_str(code));
     }
 }
@@ -135,7 +134,7 @@ void HttpServerPipeline::stop_wifi_() {
 void HttpServerPipeline::stop_mdns_() {
     const auto code = mdns_provider_->stop();
     if (code != status::StatusCode::OK) {
-        ESP_LOGE(log_tag, "failed to stop the mDNS service: code=%s",
+        ocs_loge(log_tag, "failed to stop the mDNS service: code=%s",
                  status::code_to_str(code));
     }
 }
