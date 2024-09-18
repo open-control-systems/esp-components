@@ -13,10 +13,10 @@
 #include "freertos/task.h"
 
 #include "ocs_core/log.h"
+#include "ocs_fmt/json/cjson_builder.h"
+#include "ocs_fmt/json/cjson_object_formatter.h"
+#include "ocs_fmt/json/dynamic_formatter.h"
 #include "ocs_io/default_gpio.h"
-#include "ocs_iot/cjson_builder.h"
-#include "ocs_iot/cjson_object_formatter.h"
-#include "ocs_iot/dynamic_json_formatter.h"
 #include "ocs_onewire/bus.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/rom_code_scanner.h"
@@ -34,7 +34,7 @@ struct ScanParams {
     gpio_num_t gpio { GPIO_NUM_NC };
 };
 
-void format_bus_params(iot::CjsonObjectFormatter& formatter,
+void format_bus_params(fmt::json::CjsonObjectFormatter& formatter,
                        onewire::Bus::Params params) {
     configASSERT(
         formatter.add_number_cs("reset_pulse_interval", params.reset_pulse_interval));
@@ -62,12 +62,12 @@ void format_bus_params(iot::CjsonObjectFormatter& formatter,
 }
 
 void format_rom_code(cJSON* array,
-                     iot::CjsonUniqueBuilder& builder,
+                     fmt::json::CjsonUniqueBuilder& builder,
                      const onewire::RomCode& rom_code) {
-    auto json = builder.make_json();
+    auto json = builder.make_object();
     configASSERT(json);
 
-    iot::CjsonObjectFormatter formatter(json.get());
+    fmt::json::CjsonObjectFormatter formatter(json.get());
 
     configASSERT(formatter.add_number_cs("family_code", rom_code.family_code));
 
@@ -81,15 +81,15 @@ void format_rom_code(cJSON* array,
 }
 
 void scan_rom_codes(ScanParams scan_params, onewire::Bus::Params bus_params) {
-    iot::CjsonUniqueBuilder builder;
+    fmt::json::CjsonUniqueBuilder builder;
 
-    auto json = builder.make_json();
+    auto json = builder.make_object();
     configASSERT(json);
 
     auto devices = cJSON_AddArrayToObject(json.get(), "devices");
     configASSERT(devices);
 
-    iot::CjsonObjectFormatter formatter(json.get());
+    fmt::json::CjsonObjectFormatter formatter(json.get());
     format_bus_params(formatter, bus_params);
 
     io::DefaultGpio gpio("test-GPIO-onewire-bus", scan_params.gpio);
@@ -114,7 +114,7 @@ void scan_rom_codes(ScanParams scan_params, onewire::Bus::Params bus_params) {
         format_rom_code(devices, builder, rom_code);
     }
 
-    iot::DynamicJsonFormatter json_formatter(
+    fmt::json::DynamicFormatter json_formatter(
         CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_RESULT_BUFFER_SIZE);
 
     configASSERT(json_formatter.format(json.get()) == status::StatusCode::OK);

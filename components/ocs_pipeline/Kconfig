@@ -1,0 +1,51 @@
+menu "OCS IoT Configuration"
+    menu "OCS HTTP Pipeline Configuration"
+        config OCS_PIPELINE_HTTP_PIPELINE_TELEMETRY_BUFFER_SIZE
+            int "Buffer size to hold the formatted telemetry JSON data"
+            default 512
+            help
+                Buffer size to hold the formatted telemetry JSON data, in bytes.
+
+        config OCS_PIPELINE_HTTP_PIPELINE_REGISTRATION_BUFFER_SIZE
+            int "Buffer size to hold the formatted registration JSON data"
+            default 256
+            help
+                Buffer size to hold the formatted registration JSON data, in bytes.
+    endmenu
+
+    menu "OCS Console Pipeline Configuration"
+        config OCS_PIPELINE_CONSOLE_PIPELINE_ENABLE
+            bool "Periodically dump data to the console"
+            default n
+            help
+                Enable periodic dumping of telemetry and registration data to the console.
+
+        config OCS_PIPELINE_CONSOLE_PIPELINE_TELEMETRY_INTERVAL
+            int "How often to dump the telemetry data to the console"
+            default 10
+            depends on OCS_PIPELINE_CONSOLE_PIPELINE_ENABLE
+            help
+                How often telemetry data is dumped to the console, in seconds.
+
+        config OCS_PIPELINE_CONSOLE_PIPELINE_TELEMETRY_BUFFER_SIZE
+            int "Buffer size to hold the formatted telemetry JSON data"
+            default 512
+            depends on OCS_PIPELINE_CONSOLE_PIPELINE_ENABLE
+            help
+                Buffer size to hold the formatted telemetry JSON data, in bytes.
+
+        config OCS_PIPELINE_CONSOLE_PIPELINE_REGISTRATION_INTERVAL
+            int "How often to dump the registration data to the console"
+            default 20
+            depends on OCS_PIPELINE_CONSOLE_PIPELINE_ENABLE
+            help
+                How often registration data is dumped to the console, in seconds.
+
+        config OCS_PIPELINE_CONSOLE_PIPELINE_REGISTRATION_BUFFER_SIZE
+            int "Buffer size to hold the formatted registration JSON data"
+            default 512
+            depends on OCS_PIPELINE_CONSOLE_PIPELINE_ENABLE
+            help
+                Buffer size to hold the formatted registration JSON data, in bytes.
+    endmenu
+endmenu

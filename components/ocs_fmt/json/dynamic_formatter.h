@@ -8,31 +8,37 @@
 
 #pragma once
 
-#include <string>
+#include <memory>
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/iformatter.h"
-#include "ocs_sensor/ds18b20/sensor.h"
 
 namespace ocs {
-namespace pipeline {
-namespace ds18b20 {
+namespace fmt {
+namespace json {
 
-class JsonFormatter : public fmt::json::IFormatter, public core::NonCopyable<> {
+class DynamicFormatter : public IFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
     //! @params
-    //!  - @p sensor to read temperature.
-    explicit JsonFormatter(sensor::ds18b20::Sensor& sensor);
+    //!  - @p size - underlying buffer size, in bytes, allocated on the heap.
+    explicit DynamicFormatter(unsigned size);
 
-    //! Format DS18B20 sensor data into @p json.
+    //! Format @p json into the underlying buffer.
     status::StatusCode format(cJSON* json) override;
 
+    //! Return the underlying buffer.
+    const char* c_str() const;
+
 private:
-    sensor::ds18b20::Sensor& sensor_;
+    void clear_();
+
+    const unsigned size_ { 0 };
+
+    std::unique_ptr<char[]> buf_;
 };
 
-} // namespace ds18b20
-} // namespace pipeline
+} // namespace json
+} // namespace fmt
 } // namespace ocs

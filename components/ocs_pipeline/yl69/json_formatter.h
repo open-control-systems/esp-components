@@ -8,31 +8,26 @@
 
 #pragma once
 
-#include <string>
-
 #include "ocs_core/noncopyable.h"
-#include "ocs_fmt/json/iformatter.h"
-#include "ocs_sensor/ds18b20/sensor.h"
+#include "ocs_fmt/json/basic_formatter.h"
+#include "ocs_sensor/yl69_sensor.h"
 
 namespace ocs {
 namespace pipeline {
-namespace ds18b20 {
+namespace yl69 {
 
-class JsonFormatter : public fmt::json::IFormatter, public core::NonCopyable<> {
+class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    //!
-    //! @params
-    //!  - @p sensor to read temperature.
-    explicit JsonFormatter(sensor::ds18b20::Sensor& sensor);
+    JsonFormatter(sensor::YL69Sensor& sensor, bool flat_formatting);
 
-    //! Format DS18B20 sensor data into @p json.
+    //! Format YL69 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    sensor::ds18b20::Sensor& sensor_;
+    sensor::YL69Sensor& sensor_;
 };
 
-} // namespace ds18b20
+} // namespace yl69
 } // namespace pipeline
 } // namespace ocs

@@ -6,27 +6,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_pipeline/ds18b20/json_formatter.h"
+#include "ocs_pipeline/counter_json_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 
 namespace ocs {
 namespace pipeline {
-namespace ds18b20 {
 
-JsonFormatter::JsonFormatter(sensor::ds18b20::Sensor& sensor)
-    : sensor_(sensor) {
-}
-
-status::StatusCode JsonFormatter::format(cJSON* json) {
+status::StatusCode CounterJsonFormatter::format(cJSON* json) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
-    if (!formatter.add_number_cs(sensor_.id(), sensor_.get_data())) {
-        return status::StatusCode::NoMem;
+    for (auto& counter : get_counters_()) {
+        if (!formatter.add_number_cs(counter->id(), counter->get())) {
+            return status::StatusCode::NoMem;
+        }
     }
 
     return status::StatusCode::OK;
 }
 
-} // namespace ds18b20
 } // namespace pipeline
 } // namespace ocs
