@@ -13,11 +13,11 @@
 #include "freertos/task.h"
 
 #include "ocs_core/log.h"
+#include "ocs_fmt/json/cjson_array_formatter.h"
+#include "ocs_fmt/json/cjson_builder.h"
+#include "ocs_fmt/json/cjson_object_formatter.h"
+#include "ocs_fmt/json/dynamic_formatter.h"
 #include "ocs_io/default_gpio.h"
-#include "ocs_iot/cjson_array_formatter.h"
-#include "ocs_iot/cjson_builder.h"
-#include "ocs_iot/cjson_object_formatter.h"
-#include "ocs_iot/dynamic_json_formatter.h"
 #include "ocs_onewire/bus.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/rom_code_scanner.h"
@@ -79,7 +79,7 @@ status::StatusCode read_temperature(onewire::Bus& bus, const onewire::RomCode& r
     return status::StatusCode::OK;
 }
 
-void format_bus_params(iot::CjsonObjectFormatter& formatter,
+void format_bus_params(fmt::json::CjsonObjectFormatter& formatter,
                        onewire::Bus::Params params) {
     configASSERT(
         formatter.add_number_cs("reset_pulse_interval", params.reset_pulse_interval));
@@ -121,7 +121,7 @@ void read_device(onewire::Bus& bus,
         vTaskDelay(verify_params.delay);
     }
 
-    iot::CjsonObjectFormatter formatter(json);
+    fmt::json::CjsonObjectFormatter formatter(json);
 
     configASSERT(formatter.add_string_cs(
         "serial_number", onewire::serial_number_to_str(rom_code.serial_number).c_str()));
@@ -131,15 +131,15 @@ void read_device(onewire::Bus& bus,
 }
 
 void verify_bus_operations(VerifyParams verify_params, onewire::Bus::Params bus_params) {
-    iot::CjsonUniqueBuilder builder;
+    fmt::json::CjsonUniqueBuilder builder;
 
-    auto json = builder.make_json();
+    auto json = builder.make_object();
     configASSERT(json);
 
     auto devices = cJSON_AddArrayToObject(json.get(), "devices");
     configASSERT(devices);
 
-    iot::CjsonObjectFormatter formatter(json.get());
+    fmt::json::CjsonObjectFormatter formatter(json.get());
 
     format_bus_params(formatter, bus_params);
 
@@ -162,7 +162,7 @@ void verify_bus_operations(VerifyParams verify_params, onewire::Bus::Params bus_
             return;
         }
 
-        auto device_json = builder.make_json();
+        auto device_json = builder.make_object();
         configASSERT(device_json);
 
         read_device(bus, rom_code, device_json.get(), verify_params);
@@ -171,7 +171,7 @@ void verify_bus_operations(VerifyParams verify_params, onewire::Bus::Params bus_
         device_json.release();
     }
 
-    iot::DynamicJsonFormatter json_formatter(
+    fmt::json::DynamicFormatter json_formatter(
         CONFIG_OCS_TOOLS_DS18B20_VERIFIER_RESULT_BUFFER_SIZE);
 
     configASSERT(json_formatter.format(json.get()) == status::StatusCode::OK);

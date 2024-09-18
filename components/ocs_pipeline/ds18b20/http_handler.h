@@ -11,7 +11,7 @@
 #include <functional>
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_iot/cjson_builder.h"
+#include "ocs_fmt/json/cjson_builder.h"
 #include "ocs_net/http_server.h"
 #include "ocs_net/mdns_provider.h"
 #include "ocs_sensor/ds18b20/store.h"
@@ -49,18 +49,18 @@ private:
     status::StatusCode handle_scan_(sensor::ds18b20::Store& store, httpd_req_t* req);
 
     status::StatusCode scan_(cJSON* json,
-                             iot::CjsonUniqueBuilder& builder,
+                             fmt::json::CjsonUniqueBuilder& builder,
                              onewire::Bus& bus,
                              const sensor::ds18b20::Store::SensorList& sensors);
 
     status::StatusCode format_rom_codes_(cJSON* json, onewire::Bus& bus);
 
     status::StatusCode format_sensors_(cJSON* json,
-                                       iot::CjsonUniqueBuilder& builder,
+                                       fmt::json::CjsonUniqueBuilder& builder,
                                        const sensor::ds18b20::Store::SensorList& sensors);
 
     status::StatusCode format_sensor_(cJSON* json,
-                                      iot::CjsonUniqueBuilder& builder,
+                                      fmt::json::CjsonUniqueBuilder& builder,
                                       const sensor::ds18b20::Sensor& sensors);
 
     status::StatusCode handle_configuration_(sensor::ds18b20::Store& store,

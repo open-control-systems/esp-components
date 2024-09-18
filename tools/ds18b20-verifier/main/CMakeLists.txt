@@ -10,7 +10,7 @@ idf_component_register(
     "ocs_system"
     "ocs_core"
     "ocs_io"
-    "ocs_iot"
+    "ocs_fmt"
 
     INCLUDE_DIRS
     "."

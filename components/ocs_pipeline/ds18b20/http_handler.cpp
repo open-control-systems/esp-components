@@ -9,9 +9,9 @@
 #include <charconv>
 #include <cstring>
 
-#include "ocs_iot/cjson_array_formatter.h"
-#include "ocs_iot/cjson_object_formatter.h"
-#include "ocs_iot/dynamic_json_formatter.h"
+#include "ocs_fmt/json/cjson_array_formatter.h"
+#include "ocs_fmt/json/cjson_object_formatter.h"
+#include "ocs_fmt/json/dynamic_formatter.h"
 #include "ocs_net/uri_ops.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/rom_code_scanner.h"
@@ -40,7 +40,7 @@ sensor::ds18b20::Sensor* get_sensor(const std::string_view& sensor_id,
 status::StatusCode
 format_configuration(cJSON* json,
                      const sensor::ds18b20::Sensor::Configuration& configuration) {
-    iot::CjsonObjectFormatter formatter(json);
+    fmt::json::CjsonObjectFormatter formatter(json);
 
     if (!formatter.add_string_cs(
             "resolution", sensor::ds18b20::resolution_to_str(configuration.resolution))) {
@@ -124,9 +124,9 @@ status::StatusCode HttpHandler::handle_scan_(sensor::ds18b20::Store& store,
         return status::StatusCode::InvalidArg;
     }
 
-    iot::CjsonUniqueBuilder builder;
+    fmt::json::CjsonUniqueBuilder builder;
 
-    auto json = builder.make_json();
+    auto json = builder.make_object();
     if (!json) {
         return status::StatusCode::NoMem;
     }
@@ -151,7 +151,7 @@ status::StatusCode HttpHandler::handle_scan_(sensor::ds18b20::Store& store,
 }
 
 status::StatusCode HttpHandler::scan_(cJSON* json,
-                                      iot::CjsonUniqueBuilder& builder,
+                                      fmt::json::CjsonUniqueBuilder& builder,
                                       onewire::Bus& bus,
                                       const sensor::ds18b20::Store::SensorList& sensors) {
     auto code = format_rom_codes_(json, bus);
@@ -173,7 +173,7 @@ status::StatusCode HttpHandler::format_rom_codes_(cJSON* json, onewire::Bus& bus
         return status::StatusCode::NoMem;
     }
 
-    iot::CjsonArrayFormatter formatter(array);
+    fmt::json::CjsonArrayFormatter formatter(array);
 
     onewire::RomCodeScanner scanner(bus);
 
@@ -200,14 +200,14 @@ status::StatusCode HttpHandler::format_rom_codes_(cJSON* json, onewire::Bus& bus
 
 status::StatusCode
 HttpHandler::format_sensors_(cJSON* json,
-                             iot::CjsonUniqueBuilder& builder,
+                             fmt::json::CjsonUniqueBuilder& builder,
                              const sensor::ds18b20::Store::SensorList& sensors) {
     auto array = cJSON_AddArrayToObject(json, "sensors");
     if (!array) {
         return status::StatusCode::NoMem;
     }
 
-    iot::CjsonArrayFormatter formatter(array);
+    fmt::json::CjsonArrayFormatter formatter(array);
 
     for (const auto& sensor : sensors) {
         const auto code = format_sensor_(array, builder, *sensor);
@@ -220,14 +220,14 @@ HttpHandler::format_sensors_(cJSON* json,
 }
 
 status::StatusCode HttpHandler::format_sensor_(cJSON* array,
-                                               iot::CjsonUniqueBuilder& builder,
+                                               fmt::json::CjsonUniqueBuilder& builder,
                                                const sensor::ds18b20::Sensor& sensor) {
-    auto json = builder.make_json();
+    auto json = builder.make_object();
     if (!json) {
         return status::StatusCode::NoMem;
     }
 
-    iot::CjsonObjectFormatter formatter(json.get());
+    fmt::json::CjsonObjectFormatter formatter(json.get());
 
     if (!formatter.add_string_cs("id", sensor.id())) {
         return status::StatusCode::NoMem;
@@ -277,9 +277,9 @@ HttpHandler::handle_configuration_(sensor::ds18b20::Store& store,
         return status::StatusCode::InvalidArg;
     }
 
-    iot::CjsonUniqueBuilder builder;
+    fmt::json::CjsonUniqueBuilder builder;
 
-    auto json = builder.make_json();
+    auto json = builder.make_object();
     if (!json) {
         return status::StatusCode::NoMem;
     }
@@ -356,9 +356,9 @@ status::StatusCode HttpHandler::handle_write_configuration_(sensor::ds18b20::Sto
         return status::StatusCode::InvalidArg;
     }
 
-    iot::CjsonUniqueBuilder builder;
+    fmt::json::CjsonUniqueBuilder builder;
 
-    auto json = builder.make_json();
+    auto json = builder.make_object();
     if (!json) {
         return status::StatusCode::NoMem;
     }
@@ -440,7 +440,7 @@ HttpHandler::write_configuration_(cJSON* json,
 
 status::StatusCode HttpHandler::erase_configuration_(cJSON* json,
                                                      sensor::ds18b20::Sensor& sensor) {
-    iot::CjsonObjectFormatter formatter(json);
+    fmt::json::CjsonObjectFormatter formatter(json);
 
     sensor::ds18b20::Sensor::Configuration configuration;
 
@@ -459,7 +459,7 @@ status::StatusCode HttpHandler::erase_configuration_(cJSON* json,
 
 status::StatusCode
 HttpHandler::send_response_(unsigned buffer_size, cJSON* json, httpd_req_t* req) {
-    iot::DynamicJsonFormatter json_formatter(buffer_size);
+    fmt::json::DynamicFormatter json_formatter(buffer_size);
 
     const auto code = json_formatter.format(json);
     if (code != status::StatusCode::OK) {
