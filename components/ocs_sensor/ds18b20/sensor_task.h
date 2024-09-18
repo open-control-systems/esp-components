@@ -11,6 +11,7 @@
 #include "driver/gpio.h"
 
 #include "ocs_core/noncopyable.h"
+#include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_scheduler/timer_store.h"
 #include "ocs_sensor/basic_sensor_task.h"
 #include "ocs_sensor/ds18b20/store.h"
@@ -28,6 +29,7 @@ public:
 
     //! Initialize.
     SensorTask(scheduler::TimerStore& timer_store,
+               scheduler::AsyncTaskScheduler& task_scheduler,
                storage::IStorage& storage,
                Store& sensor_store,
                const char* sensor_id,
