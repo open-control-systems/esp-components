@@ -13,7 +13,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/dynamic_formatter.h"
 #include "ocs_fmt/json/fanout_formatter.h"
-#include "ocs_net/http_server.h"
+#include "ocs_http/server.h"
 #include "ocs_net/mdns_provider.h"
 
 namespace ocs {
@@ -30,7 +30,7 @@ public:
     //!  - @p path - URI path.
     //!  - @p id - unique data ID, to distinguish one data from another.
     //!  - @p buffer_size to hold the formatted JSON data, in bytes.
-    HttpDataHandler(net::HttpServer& server,
+    HttpDataHandler(http::Server& server,
                     net::MdnsProvider& provider,
                     fmt::json::IFormatter& formatter,
                     const char* path,

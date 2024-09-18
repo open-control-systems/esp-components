@@ -12,7 +12,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/dynamic_formatter.h"
-#include "ocs_net/http_server.h"
+#include "ocs_http/server.h"
 #include "ocs_net/mdns_provider.h"
 
 namespace ocs {
@@ -26,7 +26,7 @@ public:
     //!  - @p server to register endpoint to receive system statistics.
     //!  - @p provider to register mDNS txt records.
     //!  - @p response_size - system state response size, in bytes.
-    HttpSystemStateHandler(net::HttpServer& server,
+    HttpSystemStateHandler(http::Server& server,
                            net::MdnsProvider& provider,
                            unsigned response_size);
 

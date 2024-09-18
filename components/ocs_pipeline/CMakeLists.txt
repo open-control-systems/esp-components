@@ -25,6 +25,7 @@ idf_component_register(
     REQUIRES
     "ocs_io"
     "ocs_net"
+    "ocs_http"
     "ocs_core"
     "ocs_status"
     "ocs_sensor"

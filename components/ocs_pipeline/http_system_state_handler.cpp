@@ -13,7 +13,7 @@
 namespace ocs {
 namespace pipeline {
 
-HttpSystemStateHandler::HttpSystemStateHandler(net::HttpServer& server,
+HttpSystemStateHandler::HttpSystemStateHandler(http::Server& server,
                                                net::MdnsProvider& provider,
                                                unsigned response_size) {
     state_json_formatter_.reset(new (std::nothrow) SystemStateJsonFormatter());

@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_net/http_server.h"
+#include "ocs_http/server.h"
 #include "ocs_net/mdns_provider.h"
 #include "ocs_scheduler/itask.h"
 
@@ -24,7 +24,7 @@ public:
     //!  - @p server to register HTTP endpoints.
     //!  - @p provider to register mDNS txt records.
     //!  - @p reboot_task to initiate the reboot process.
-    HttpSystemHandler(net::HttpServer& server,
+    HttpSystemHandler(http::Server& server,
                       net::MdnsProvider& provider,
                       scheduler::ITask& reboot_task);
 };

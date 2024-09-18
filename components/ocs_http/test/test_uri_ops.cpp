@@ -8,56 +8,56 @@
 
 #include "unity.h"
 
-#include "ocs_net/uri_ops.h"
+#include "ocs_http/uri_ops.h"
 
 namespace ocs {
-namespace net {
+namespace http {
 
-TEST_CASE("URI ops: parse path: null input", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse path: null input", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_TRUE(UriOps::parse_path(nullptr) == std::string_view());
 }
 
-TEST_CASE("URI ops: parse path: empty", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse path: empty", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_TRUE(UriOps::parse_path("") == std::string_view());
 }
 
-TEST_CASE("URI ops: parse path: without query", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse path: without query", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_TRUE(UriOps::parse_path("/foo/bar/baz") == "/foo/bar/baz");
 }
 
-TEST_CASE("URI ops: parse path: with query", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse path: with query", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_TRUE(UriOps::parse_path("/foo/bar/baz?key=val") == "/foo/bar/baz");
 }
 
-TEST_CASE("URI ops: parse query: null input", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: null input", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_EQUAL(0, UriOps::parse_query(nullptr).size());
 }
 
-TEST_CASE("URI ops: parse query: empty inut", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: empty inut", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_EQUAL(0, UriOps::parse_query("").size());
 }
 
-TEST_CASE("URI ops: parse query: no query", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: no query", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_EQUAL(0, UriOps::parse_query("/foo/bar").size());
 }
 
-TEST_CASE("URI ops: parse query: key missed", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: key missed", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_EQUAL(0, UriOps::parse_query("/foo/bar?").size());
 }
 
-TEST_CASE("URI ops: parse query: wrong delimiter", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: wrong delimiter", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_EQUAL(0, UriOps::parse_query("/foo/bar?key:").size());
 }
 
-TEST_CASE("URI ops: parse query: key-value missed", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: key-value missed", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_EQUAL(0, UriOps::parse_query("/foo/bar?=").size());
 }
 
-TEST_CASE("URI ops: parse query: value missed", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: value missed", "[ocs_http], [uri_ops]") {
     TEST_ASSERT_EQUAL(0, UriOps::parse_query("/foo/bar?key=").size());
 }
 
-TEST_CASE("URI ops: parse query: single pair", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: single pair", "[ocs_http], [uri_ops]") {
     const auto values = UriOps::parse_query("/foo/bar?key=value");
     TEST_ASSERT_EQUAL(1, values.size());
 
@@ -67,7 +67,7 @@ TEST_CASE("URI ops: parse query: single pair", "[ocs_net], [uri_ops]") {
     TEST_ASSERT_TRUE(it->second == "value");
 }
 
-TEST_CASE("URI ops: parse query: multile pairs", "[ocs_net], [uri_ops]") {
+TEST_CASE("URI ops: parse query: multile pairs", "[ocs_http], [uri_ops]") {
     const auto values = UriOps::parse_query("/foo/bar?key1=value1&key2=value2");
     TEST_ASSERT_EQUAL(2, values.size());
 
@@ -82,5 +82,5 @@ TEST_CASE("URI ops: parse query: multile pairs", "[ocs_net], [uri_ops]") {
     TEST_ASSERT_TRUE(it->second == "value2");
 }
 
-} // namespace net
+} // namespace http
 } // namespace ocs

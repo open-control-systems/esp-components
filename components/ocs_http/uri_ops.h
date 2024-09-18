@@ -12,7 +12,7 @@
 #include <unordered_map>
 
 namespace ocs {
-namespace net {
+namespace http {
 
 struct UriOps {
     using Path = std::string_view;
@@ -31,5 +31,5 @@ struct UriOps {
     static Values parse_query(const char* uri);
 };
 
-} // namespace net
+} // namespace http
 } // namespace ocs

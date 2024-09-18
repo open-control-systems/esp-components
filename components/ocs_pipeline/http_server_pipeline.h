@@ -11,8 +11,8 @@
 #include <memory>
 
 #include "ocs_core/noncopyable.h"
+#include "ocs_http/server.h"
 #include "ocs_net/basic_network.h"
-#include "ocs_net/http_server.h"
 #include "ocs_net/inetwork_handler.h"
 #include "ocs_net/mdns_provider.h"
 
@@ -40,7 +40,7 @@ public:
     net::BasicNetwork& network();
 
     //! Return HTTP server.
-    net::HttpServer& server();
+    http::Server& server();
 
     //! Return mDNS instance.
     net::MdnsProvider& mdns();
@@ -53,7 +53,7 @@ private:
     void stop_mdns_();
 
     std::unique_ptr<net::BasicNetwork> wifi_network_;
-    std::unique_ptr<net::HttpServer> http_server_;
+    std::unique_ptr<http::Server> http_server_;
     std::unique_ptr<net::MdnsProvider> mdns_provider_;
 };
 

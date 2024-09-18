@@ -9,12 +9,12 @@
 #include <cstring>
 
 #include "ocs_core/log.h"
-#include "ocs_net/http_server.h"
-#include "ocs_net/uri_ops.h"
+#include "ocs_http/server.h"
+#include "ocs_http/uri_ops.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
-namespace net {
+namespace http {
 
 namespace {
 
@@ -34,19 +34,19 @@ httpd_err_code_t status_code_to_http_code(status::StatusCode code) {
 
 } // namespace
 
-HttpServer::HttpServer(const Params& params) {
+Server::Server(const Params& params) {
     config_ = HTTPD_DEFAULT_CONFIG();
     config_.server_port = params.server_port;
     config_.max_uri_handlers = params.max_uri_handlers;
 }
 
-HttpServer::~HttpServer() {
+Server::~Server() {
     if (handle_) {
         stop();
     }
 }
 
-void HttpServer::add_GET(const char* path, HttpServer::HandlerFunc func) {
+void Server::add_GET(const char* path, Server::HandlerFunc func) {
     auto& handler = uris_get_[path];
     memset(&handler.uri, 0, sizeof(handler.uri));
 
@@ -57,7 +57,7 @@ void HttpServer::add_GET(const char* path, HttpServer::HandlerFunc func) {
     handler.func = func;
 }
 
-status::StatusCode HttpServer::start() {
+status::StatusCode Server::start() {
     const auto err = httpd_start(&handle_, &config_);
     if (err != ESP_OK) {
         ocs_loge(log_tag, "httpd_start(): %s", esp_err_to_name(err));
@@ -67,7 +67,7 @@ status::StatusCode HttpServer::start() {
     return register_uris_();
 }
 
-status::StatusCode HttpServer::register_uris_() {
+status::StatusCode Server::register_uris_() {
     for (auto& [path, handler] : uris_get_) {
         handler.uri.uri = path.c_str();
         ESP_ERROR_CHECK(httpd_register_uri_handler(handle_, &handler.uri));
@@ -76,7 +76,7 @@ status::StatusCode HttpServer::register_uris_() {
     return status::StatusCode::OK;
 }
 
-status::StatusCode HttpServer::stop() {
+status::StatusCode Server::stop() {
     if (handle_) {
         ESP_ERROR_CHECK(httpd_stop(handle_));
         handle_ = nullptr;
@@ -85,14 +85,14 @@ status::StatusCode HttpServer::stop() {
     return status::StatusCode::OK;
 }
 
-esp_err_t HttpServer::handle_request_(httpd_req_t* req) {
-    HttpServer& self = *static_cast<HttpServer*>(req->user_ctx);
+esp_err_t Server::handle_request_(httpd_req_t* req) {
+    Server& self = *static_cast<Server*>(req->user_ctx);
     self.handle_request_get_(req);
 
     return ESP_OK;
 }
 
-void HttpServer::handle_request_get_(httpd_req_t* req) {
+void Server::handle_request_get_(httpd_req_t* req) {
     const auto handler = uris_get_.find(UriOps::parse_path(req->uri));
     if (handler == uris_get_.end()) {
         ocs_loge(log_tag, "unknown URI: %s", req->uri);
@@ -122,5 +122,5 @@ void HttpServer::handle_request_get_(httpd_req_t* req) {
     }
 }
 
-} // namespace net
+} // namespace http
 } // namespace ocs
