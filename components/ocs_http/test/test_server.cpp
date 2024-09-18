@@ -25,7 +25,15 @@ TEST_CASE("Stop HTTP server: no start", "[ocs_http], [server]") {
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
 }
 
-TEST_CASE("Start HTTP server: no WiFi", "[ocs_http], [server]") {
+TEST_CASE("Start HTTP server: WiFi not started", "[ocs_http], [server]") {
+    storage::FlashInitializer flash_initializer;
+
+    net::WiFiNetwork wifi_network(net::WiFiNetwork::Params {
+        .max_retry_count = 1,
+        .ssid = "foo",
+        .password = "bar",
+    });
+
     Server server(Server::Params {});
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
