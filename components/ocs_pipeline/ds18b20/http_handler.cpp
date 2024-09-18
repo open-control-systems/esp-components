@@ -12,7 +12,7 @@
 #include "ocs_fmt/json/cjson_array_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 #include "ocs_fmt/json/dynamic_formatter.h"
-#include "ocs_net/uri_ops.h"
+#include "ocs_http/uri_ops.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/rom_code_scanner.h"
 #include "ocs_onewire/serial_number_to_str.h"
@@ -59,7 +59,7 @@ format_configuration(cJSON* json,
 
 } // namespace
 
-HttpHandler::HttpHandler(net::HttpServer& server,
+HttpHandler::HttpHandler(http::Server& server,
                          net::MdnsProvider& provider,
                          sensor::ds18b20::Store& store) {
     server.add_GET("/sensor/ds18b20/scan", [this, &store](httpd_req_t* req) {
@@ -110,7 +110,7 @@ HttpHandler::HttpHandler(net::HttpServer& server,
 
 status::StatusCode HttpHandler::handle_scan_(sensor::ds18b20::Store& store,
                                              httpd_req_t* req) {
-    const auto values = net::UriOps::parse_query(req->uri);
+    const auto values = http::UriOps::parse_query(req->uri);
     const auto it = values.find("gpio");
     if (it == values.end()) {
         return status::StatusCode::InvalidArg;
@@ -257,7 +257,7 @@ HttpHandler::handle_configuration_(sensor::ds18b20::Store& store,
                                    unsigned wait_interval,
                                    unsigned response_size,
                                    HttpHandler::HandleConfigurationFunc func) {
-    const auto values = net::UriOps::parse_query(req->uri);
+    const auto values = http::UriOps::parse_query(req->uri);
 
     const auto gpio_it = values.find("gpio");
     if (gpio_it == values.end()) {
@@ -326,7 +326,7 @@ status::StatusCode HttpHandler::read_configuration_(cJSON* json,
 
 status::StatusCode HttpHandler::handle_write_configuration_(sensor::ds18b20::Store& store,
                                                             httpd_req_t* req) {
-    const auto values = net::UriOps::parse_query(req->uri);
+    const auto values = http::UriOps::parse_query(req->uri);
 
     const auto gpio_it = values.find("gpio");
     if (gpio_it == values.end()) {

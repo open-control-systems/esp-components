@@ -30,9 +30,9 @@ HttpServerPipeline::HttpServerPipeline() {
 
     wifi_network_->add(*this);
 
-    http_server_.reset(new (std::nothrow) net::HttpServer(net::HttpServer::Params {
-        .server_port = CONFIG_OCS_NETWORK_HTTP_SERVER_PORT,
-        .max_uri_handlers = CONFIG_OCS_NETWORK_HTTP_SERVER_MAX_URI_HANDLERS,
+    http_server_.reset(new (std::nothrow) http::Server(http::Server::Params {
+        .server_port = CONFIG_OCS_HTTP_SERVER_PORT,
+        .max_uri_handlers = CONFIG_OCS_HTTP_SERVER_MAX_URI_HANDLERS,
     }));
     configASSERT(http_server_);
 
@@ -79,7 +79,7 @@ net::BasicNetwork& HttpServerPipeline::network() {
     return *wifi_network_;
 }
 
-net::HttpServer& HttpServerPipeline::server() {
+http::Server& HttpServerPipeline::server() {
     return *http_server_;
 }
 
@@ -115,7 +115,7 @@ status::StatusCode HttpServerPipeline::try_start_mdns_() {
 
     code = mdns_provider_->add_service(net::MdnsProvider::Service::Http,
                                        net::MdnsProvider::Proto::Tcp,
-                                       CONFIG_OCS_NETWORK_HTTP_SERVER_PORT);
+                                       CONFIG_OCS_HTTP_SERVER_PORT);
     if (code != status::StatusCode::OK) {
         return code;
     }

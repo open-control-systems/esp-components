@@ -20,7 +20,7 @@ const char* log_tag = "http-system-handler";
 
 } // namespace
 
-HttpSystemHandler::HttpSystemHandler(net::HttpServer& server,
+HttpSystemHandler::HttpSystemHandler(http::Server& server,
                                      net::MdnsProvider& provider,
                                      scheduler::ITask& reboot_task) {
     server.add_GET("/system/reboot", [&reboot_task](httpd_req_t* req) {

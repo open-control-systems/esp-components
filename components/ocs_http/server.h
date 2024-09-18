@@ -19,9 +19,9 @@
 #include "ocs_status/code.h"
 
 namespace ocs {
-namespace net {
+namespace http {
 
-class HttpServer : public core::NonCopyable<> {
+class Server : public core::NonCopyable<> {
 public:
     //! Handler to process an HTTP request.
     using HandlerFunc = std::function<status::StatusCode(httpd_req_t* req)>;
@@ -35,10 +35,10 @@ public:
     };
 
     //! Initialize.
-    explicit HttpServer(const Params& params);
+    explicit Server(const Params& params);
 
     //! Destroy.
-    ~HttpServer();
+    ~Server();
 
     //! Start HTTP server.
     status::StatusCode start();
@@ -73,5 +73,5 @@ private:
     URIMap uris_get_;
 };
 
-} // namespace net
+} // namespace http
 } // namespace ocs

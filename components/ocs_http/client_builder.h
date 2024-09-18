@@ -13,12 +13,12 @@
 #include "esp_http_client.h"
 
 namespace ocs {
-namespace net {
+namespace http {
 
-using HttpClientSharedPtr =
+using ClientSharedPtr =
     std::shared_ptr<std::remove_pointer<esp_http_client_handle_t>::type>;
 
-HttpClientSharedPtr make_http_client_shared(esp_http_client_config_t& config);
+ClientSharedPtr make_client_shared(esp_http_client_config_t& config);
 
-} // namespace net
+} // namespace http
 } // namespace ocs

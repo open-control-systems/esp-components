@@ -12,7 +12,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/cjson_builder.h"
-#include "ocs_net/http_server.h"
+#include "ocs_http/server.h"
 #include "ocs_net/mdns_provider.h"
 #include "ocs_sensor/ds18b20/store.h"
 
@@ -28,7 +28,7 @@ public:
     //!  - @p server to register endpoints.
     //!  - @p provider to register mDNS txt records.
     //!  - @p store to perform operations on sensors.
-    HttpHandler(net::HttpServer& server,
+    HttpHandler(http::Server& server,
                 net::MdnsProvider& prover,
                 sensor::ds18b20::Store& store);
 

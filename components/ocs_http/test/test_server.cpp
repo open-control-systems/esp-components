@@ -11,30 +11,30 @@
 
 #include "unity.h"
 
-#include "ocs_net/http_client_reader.h"
-#include "ocs_net/http_server.h"
+#include "ocs_http/client_reader.h"
+#include "ocs_http/server.h"
 #include "ocs_net/ip_addr_to_str.h"
 #include "ocs_net/wifi_network.h"
 #include "ocs_storage/flash_initializer.h"
 
 namespace ocs {
-namespace net {
+namespace http {
 
-TEST_CASE("Stop HTTP server: no start", "[ocs_net], [http_server]") {
-    HttpServer server(HttpServer::Params {});
+TEST_CASE("Stop HTTP server: no start", "[ocs_http], [server]") {
+    Server server(Server::Params {});
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
 }
 
-TEST_CASE("Start HTTP server: no WiFi", "[ocs_net], [http_server]") {
-    HttpServer server(HttpServer::Params {});
+TEST_CASE("Start HTTP server: no WiFi", "[ocs_http], [server]") {
+    Server server(Server::Params {});
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
 }
 
-TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_net], [http_server]") {
+TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_http], [server]") {
     storage::FlashInitializer flash_initializer;
 
-    WiFiNetwork wifi_network(WiFiNetwork::Params {
+    net::WiFiNetwork wifi_network(net::WiFiNetwork::Params {
         .max_retry_count = 1,
         .ssid = "foo",
         .password = "bar",
@@ -42,7 +42,7 @@ TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_net], [http_serve
     TEST_ASSERT_EQUAL(status::StatusCode::OK, wifi_network.start());
     TEST_ASSERT_EQUAL(status::StatusCode::Error, wifi_network.wait());
 
-    HttpServer server(HttpServer::Params {});
+    Server server(Server::Params {});
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
 
@@ -50,10 +50,10 @@ TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_net], [http_serve
 }
 
 #ifdef CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
-TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_net], [http_server]") {
+TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
     const unsigned server_port = 80;
 
-    HttpServer server(HttpServer::Params {
+    Server server(Server::Params {
         .server_port = server_port,
     });
 
@@ -71,7 +71,7 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_net], [http_server]
 
     storage::FlashInitializer flash_initializer;
 
-    WiFiNetwork wifi_network(WiFiNetwork::Params {
+    net::WiFiNetwork wifi_network(net::WiFiNetwork::Params {
         .max_retry_count = 1,
         .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
         .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
@@ -83,9 +83,9 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_net], [http_server]
     const auto ip_addr = wifi_network.get_ip_addr();
     TEST_ASSERT_TRUE(ip_addr);
 
-    ip_addr_to_str ip_addr_str(*ip_addr);
+    net::ip_addr_to_str ip_addr_str(*ip_addr);
 
-    HttpClientReader reader(HttpClientReader::Params {
+    ClientReader reader(ClientReader::Params {
         .host = ip_addr_str.c_str(),
         .path = path,
         .bufsize = 128,
@@ -93,7 +93,7 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_net], [http_server]
     TEST_ASSERT_EQUAL(ESP_OK, esp_http_client_perform(reader.client()));
     TEST_ASSERT_EQUAL(200, esp_http_client_get_status_code(reader.client()));
 
-    TEST_ASSERT_TRUE(reader.wait());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, reader.wait());
 
     char got_response[strlen(want_response) + 1];
     memset(got_response, 0, sizeof(got_response));
@@ -107,5 +107,5 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_net], [http_server]
 }
 #endif // CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
 
-} // namespace net
+} // namespace http
 } // namespace ocs

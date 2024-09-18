@@ -13,7 +13,7 @@
 namespace ocs {
 namespace pipeline {
 
-HttpDataHandler::HttpDataHandler(net::HttpServer& server,
+HttpDataHandler::HttpDataHandler(http::Server& server,
                                  net::MdnsProvider& provider,
                                  fmt::json::IFormatter& formatter,
                                  const char* path,

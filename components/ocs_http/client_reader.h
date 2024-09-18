@@ -15,12 +15,12 @@
 #include "ocs_core/cond.h"
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_mutex.h"
-#include "ocs_net/http_client_builder.h"
+#include "ocs_http/client_builder.h"
 
 namespace ocs {
-namespace net {
+namespace http {
 
-class HttpClientReader : public core::NonCopyable<> {
+class ClientReader : public core::NonCopyable<> {
 public:
     struct Params {
         //! Domain or IP as string.
@@ -34,7 +34,7 @@ public:
     };
 
     //! Initialize.
-    explicit HttpClientReader(const Params& params);
+    explicit ClientReader(const Params& params);
 
     //! Return the underlying HTTP client handle.
     esp_http_client_handle_t client() const;
@@ -57,7 +57,7 @@ private:
     const Params params_;
 
     esp_http_client_config_t config_;
-    HttpClientSharedPtr client_;
+    ClientSharedPtr client_;
 
     core::StaticMutex mu_;
     core::Cond cond_;
@@ -66,5 +66,5 @@ private:
     std::unique_ptr<char[]> buf_;
 };
 
-} // namespace net
+} // namespace http
 } // namespace ocs
