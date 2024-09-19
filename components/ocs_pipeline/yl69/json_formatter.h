@@ -10,7 +10,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/basic_formatter.h"
-#include "ocs_sensor/yl69_sensor.h"
+#include "ocs_sensor/yl69/sensor.h"
 
 namespace ocs {
 namespace pipeline {
@@ -19,13 +19,13 @@ namespace yl69 {
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::YL69Sensor& sensor, bool flat_formatting);
+    JsonFormatter(sensor::yl69::Sensor& sensor, bool flat_formatting);
 
     //! Format YL69 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    sensor::YL69Sensor& sensor_;
+    sensor::yl69::Sensor& sensor_;
 };
 
 } // namespace yl69

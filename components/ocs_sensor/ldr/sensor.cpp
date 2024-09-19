@@ -8,12 +8,13 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_sensor/ldr_sensor.h"
+#include "ocs_sensor/ldr/sensor.h"
 
 namespace ocs {
 namespace sensor {
+namespace ldr {
 
-LdrSensor::LdrSensor(io::AdcStore& adc_store, const char* id, LdrSensor::Params params)
+Sensor::Sensor(io::AdcStore& adc_store, const char* id, Sensor::Params params)
     : BasicSensor(id)
     , params_(params) {
     configASSERT(params_.value_min < params_.value_max);
@@ -22,7 +23,7 @@ LdrSensor::LdrSensor(io::AdcStore& adc_store, const char* id, LdrSensor::Params 
     configASSERT(adc_);
 }
 
-status::StatusCode LdrSensor::run() {
+status::StatusCode Sensor::run() {
     const auto read_result = adc_->read();
     if (read_result.code != status::StatusCode::OK) {
         return read_result.code;
@@ -38,7 +39,7 @@ status::StatusCode LdrSensor::run() {
     return status::StatusCode::OK;
 }
 
-int LdrSensor::calculate_lightness_(int raw) const {
+int Sensor::calculate_lightness_(int raw) const {
     if (raw >= params_.value_max) {
         return 100;
     }
@@ -54,8 +55,8 @@ int LdrSensor::calculate_lightness_(int raw) const {
     return 100 * lightness;
 }
 
-void LdrSensor::update_data_(int raw, int voltage) {
-    LdrSensorData data;
+void Sensor::update_data_(int raw, int voltage) {
+    SensorData data;
 
     data.raw = raw;
     data.voltage = voltage;
@@ -64,5 +65,6 @@ void LdrSensor::update_data_(int raw, int voltage) {
     set_data_(data);
 }
 
+} // namespace ldr
 } // namespace sensor
 } // namespace ocs

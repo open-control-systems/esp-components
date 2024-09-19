@@ -20,40 +20,41 @@
 #include "ocs_scheduler/itask.h"
 #include "ocs_scheduler/timer_store.h"
 #include "ocs_sensor/basic_sensor_task.h"
-#include "ocs_sensor/yl69_sensor.h"
+#include "ocs_sensor/yl69/sensor.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
 namespace ocs {
 namespace sensor {
+namespace yl69 {
 
 //! The sensor is only powered when the relay is activated.
-class SafeYL69SensorTask : public BasicSensorTask<YL69Sensor>,
-                           public core::NonCopyable<> {
+class SafeSensorTask : public BasicSensorTask<Sensor>, public core::NonCopyable<> {
 public:
     struct Params {
-        YL69Sensor::Params sensor;
+        Sensor::Params sensor;
         core::microseconds_t read_interval { 0 };
         gpio_num_t relay_gpio { GPIO_NUM_NC };
         TickType_t power_on_delay_interval { 0 };
     };
 
     //! Initialize.
-    SafeYL69SensorTask(core::IClock& clock,
-                       io::AdcStore& adc_store,
-                       storage::IStorage& storage,
-                       system::FanoutRebootHandler& reboot_handler,
-                       scheduler::AsyncTaskScheduler& task_scheduler,
-                       scheduler::TimerStore& timer_store,
-                       diagnostic::BasicCounterHolder& counter_holder,
-                       const char* sensor_id,
-                       const char* sensor_task_id,
-                       const char* task_id,
-                       Params params);
+    SafeSensorTask(core::IClock& clock,
+                   io::AdcStore& adc_store,
+                   storage::IStorage& storage,
+                   system::FanoutRebootHandler& reboot_handler,
+                   scheduler::AsyncTaskScheduler& task_scheduler,
+                   scheduler::TimerStore& timer_store,
+                   diagnostic::BasicCounterHolder& counter_holder,
+                   const char* sensor_id,
+                   const char* sensor_task_id,
+                   const char* task_id,
+                   Params params);
 
 private:
     std::unique_ptr<scheduler::ITask> relay_sensor_;
 };
 
+} // namespace yl69
 } // namespace sensor
 } // namespace ocs

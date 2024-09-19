@@ -15,15 +15,16 @@
 
 namespace ocs {
 namespace sensor {
+namespace ldr {
 
 //! Various sensor characteristics.
-struct LdrSensorData {
+struct SensorData {
     int raw { 0 };
     int voltage { 0 };
     int lightness { 0 };
 };
 
-class LdrSensor : public BasicSensor<LdrSensorData>, public core::NonCopyable<> {
+class Sensor : public BasicSensor<SensorData>, public core::NonCopyable<> {
 public:
     struct Params {
         unsigned value_min { 0 };
@@ -32,7 +33,7 @@ public:
     };
 
     //! Initialize.
-    LdrSensor(io::AdcStore& adc_store, const char* id, Params params);
+    Sensor(io::AdcStore& adc_store, const char* id, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
@@ -47,5 +48,6 @@ private:
     io::IAdc* adc_ { nullptr };
 };
 
+} // namespace ldr
 } // namespace sensor
 } // namespace ocs
