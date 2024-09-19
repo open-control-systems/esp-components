@@ -17,7 +17,7 @@ SensorTask::SensorTask(io::AdcStore& adc_store,
                        scheduler::AsyncTaskScheduler& task_scheduler,
                        scheduler::TimerStore& timer_store,
                        const char* sensor_id,
-                       const char* task_id,
+                       const char* task_timer_id,
                        SensorTask::Params params) {
     sensor_.reset(new (std::nothrow) Sensor(adc_store, sensor_id, params.sensor));
     configASSERT(sensor_);
@@ -26,7 +26,7 @@ SensorTask::SensorTask(io::AdcStore& adc_store,
     configASSERT(async_task_);
 
     async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *async_task_, task_id, params.read_interval));
+        *async_task_, task_timer_id, params.read_interval));
     configASSERT(async_task_timer_);
 
     timer_store.add(*async_task_timer_);

@@ -22,12 +22,12 @@ SafeSensorTask::SafeSensorTask(core::IClock& clock,
                                scheduler::TimerStore& timer_store,
                                diagnostic::BasicCounterHolder& counter_holder,
                                const char* sensor_id,
-                               const char* sensor_task_id,
-                               const char* task_id,
+                               const char* sensor_task_timer_id,
+                               const char* task_timer_id,
                                SafeSensorTask::Params params) {
-    sensor_.reset(new (std::nothrow) Sensor(clock, adc_store, storage, reboot_handler,
-                                            task_scheduler, timer_store, counter_holder,
-                                            sensor_id, sensor_task_id, params.sensor));
+    sensor_.reset(new (std::nothrow) Sensor(
+        clock, adc_store, storage, reboot_handler, task_scheduler, timer_store,
+        counter_holder, sensor_id, sensor_task_timer_id, params.sensor));
     configASSERT(sensor_);
 
     relay_sensor_.reset(new (std::nothrow) RelaySensor(*sensor_, params.relay_gpio,
@@ -38,7 +38,7 @@ SafeSensorTask::SafeSensorTask(core::IClock& clock,
     configASSERT(async_task_);
 
     async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *async_task_, task_id, params.read_interval));
+        *async_task_, task_timer_id, params.read_interval));
     configASSERT(async_task_timer_);
 
     timer_store.add(*async_task_timer_);

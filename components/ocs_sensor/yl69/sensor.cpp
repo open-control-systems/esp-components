@@ -39,7 +39,7 @@ Sensor::Sensor(core::IClock& clock,
                scheduler::TimerStore& timer_store,
                diagnostic::BasicCounterHolder& counter_holder,
                const char* sensor_id,
-               const char* task_id,
+               const char* task_timer_id,
                Params params)
     : BasicSensor(sensor_id)
     , params_(params) {
@@ -74,7 +74,7 @@ Sensor::Sensor(core::IClock& clock,
     configASSERT(fanout_task_async_);
 
     task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *fanout_task_async_, task_id, core::Minute * 30));
+        *fanout_task_async_, task_timer_id, core::Minute * 30));
     configASSERT(task_timer_);
 
     timer_store.add(*task_timer_);
