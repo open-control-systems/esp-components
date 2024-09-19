@@ -32,7 +32,7 @@ public:
                scheduler::AsyncTaskScheduler& task_scheduler,
                scheduler::TimerStore& timer_store,
                const char* sensor_id,
-               const char* task_id,
+               const char* task_timer_id,
                Params params);
 };
 

@@ -33,7 +33,7 @@ public:
                storage::IStorage& storage,
                Store& sensor_store,
                const char* sensor_id,
-               const char* timer_id,
+               const char* task_timer_id,
                Params params);
 };
 
