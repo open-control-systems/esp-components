@@ -6,13 +6,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/relay_sensor.h"
+#include "ocs_sensor/yl69/relay_sensor.h"
 #include "ocs_io/default_gpio.h"
 #include "ocs_io/delay_gpio.h"
 #include "ocs_io/oneshot_gpio.h"
 
 namespace ocs {
 namespace sensor {
+namespace yl69 {
 
 RelaySensor::RelaySensor(scheduler::ITask& task,
                          gpio_num_t gpio,
@@ -37,5 +38,6 @@ status::StatusCode RelaySensor::run() {
     return task_->run();
 }
 
+} // namespace yl69
 } // namespace sensor
 } // namespace ocs

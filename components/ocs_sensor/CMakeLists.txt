@@ -1,11 +1,11 @@
 idf_component_register(
     SRCS
-    "yl69_sensor.cpp"
-    "relay_sensor.cpp"
-    "default_yl69_sensor_task.cpp"
-    "safe_yl69_sensor_task.cpp"
-    "ldr_sensor.cpp"
-    "ldr_sensor_task.cpp"
+    "yl69/sensor.cpp"
+    "yl69/relay_sensor.cpp"
+    "yl69/default_sensor_task.cpp"
+    "yl69/safe_sensor_task.cpp"
+    "ldr/sensor.cpp"
+    "ldr/sensor_task.cpp"
     "ds18b20/store.cpp"
     "ds18b20/sensor.cpp"
     "ds18b20/scratchpad.cpp"

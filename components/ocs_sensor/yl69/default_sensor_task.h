@@ -19,35 +19,36 @@
 #include "ocs_scheduler/itimer.h"
 #include "ocs_scheduler/timer_store.h"
 #include "ocs_sensor/basic_sensor_task.h"
-#include "ocs_sensor/yl69_sensor.h"
+#include "ocs_sensor/yl69/sensor.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
 namespace ocs {
 namespace sensor {
+namespace yl69 {
 
 //! Periodically read the soil moisture data.
-class DefaultYL69SensorTask : public BasicSensorTask<YL69Sensor>,
-                              public core::NonCopyable<> {
+class DefaultSensorTask : public BasicSensorTask<Sensor>, public core::NonCopyable<> {
 public:
     struct Params {
-        YL69Sensor::Params sensor;
+        Sensor::Params sensor;
         core::microseconds_t read_interval { 0 };
     };
 
     //! Initialize.
-    DefaultYL69SensorTask(core::IClock& clock,
-                          io::AdcStore& adc_store,
-                          storage::IStorage& storage,
-                          system::FanoutRebootHandler& reboot_handler,
-                          scheduler::AsyncTaskScheduler& task_scheduler,
-                          scheduler::TimerStore& timer_store,
-                          diagnostic::BasicCounterHolder& counter_holder,
-                          const char* sensor_id,
-                          const char* sensor_task_id,
-                          const char* task_id,
-                          Params params);
+    DefaultSensorTask(core::IClock& clock,
+                      io::AdcStore& adc_store,
+                      storage::IStorage& storage,
+                      system::FanoutRebootHandler& reboot_handler,
+                      scheduler::AsyncTaskScheduler& task_scheduler,
+                      scheduler::TimerStore& timer_store,
+                      diagnostic::BasicCounterHolder& counter_holder,
+                      const char* sensor_id,
+                      const char* sensor_task_id,
+                      const char* task_id,
+                      Params params);
 };
 
+} // namespace yl69
 } // namespace sensor
 } // namespace ocs

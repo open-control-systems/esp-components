@@ -14,26 +14,28 @@
 #include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_scheduler/timer_store.h"
 #include "ocs_sensor/basic_sensor_task.h"
-#include "ocs_sensor/ldr_sensor.h"
+#include "ocs_sensor/ldr/sensor.h"
 
 namespace ocs {
 namespace sensor {
+namespace ldr {
 
-class LdrSensorTask : public BasicSensorTask<LdrSensor>, public core::NonCopyable<> {
+class SensorTask : public BasicSensorTask<Sensor>, public core::NonCopyable<> {
 public:
     struct Params {
-        LdrSensor::Params sensor;
+        Sensor::Params sensor;
         core::microseconds_t read_interval { 0 };
     };
 
     //! Initialize.
-    LdrSensorTask(io::AdcStore& adc_store,
-                  scheduler::AsyncTaskScheduler& task_scheduler,
-                  scheduler::TimerStore& timer_store,
-                  const char* sensor_id,
-                  const char* task_id,
-                  Params params);
+    SensorTask(io::AdcStore& adc_store,
+               scheduler::AsyncTaskScheduler& task_scheduler,
+               scheduler::TimerStore& timer_store,
+               const char* sensor_id,
+               const char* task_id,
+               Params params);
 };
 
+} // namespace ldr
 } // namespace sensor
 } // namespace ocs

@@ -13,7 +13,7 @@ namespace ocs {
 namespace pipeline {
 namespace ldr {
 
-JsonFormatter::JsonFormatter(sensor::LdrSensor& sensor, bool flat_formatting)
+JsonFormatter::JsonFormatter(sensor::ldr::Sensor& sensor, bool flat_formatting)
     : BasicFormatter(flat_formatting)
     , sensor_(sensor) {
 }

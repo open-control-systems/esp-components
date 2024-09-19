@@ -6,19 +6,20 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/ldr_sensor_task.h"
+#include "ocs_sensor/ldr/sensor_task.h"
 #include "ocs_scheduler/high_resolution_timer.h"
 
 namespace ocs {
 namespace sensor {
+namespace ldr {
 
-LdrSensorTask::LdrSensorTask(io::AdcStore& adc_store,
-                             scheduler::AsyncTaskScheduler& task_scheduler,
-                             scheduler::TimerStore& timer_store,
-                             const char* sensor_id,
-                             const char* task_id,
-                             LdrSensorTask::Params params) {
-    sensor_.reset(new (std::nothrow) LdrSensor(adc_store, sensor_id, params.sensor));
+SensorTask::SensorTask(io::AdcStore& adc_store,
+                       scheduler::AsyncTaskScheduler& task_scheduler,
+                       scheduler::TimerStore& timer_store,
+                       const char* sensor_id,
+                       const char* task_id,
+                       SensorTask::Params params) {
+    sensor_.reset(new (std::nothrow) Sensor(adc_store, sensor_id, params.sensor));
     configASSERT(sensor_);
 
     async_task_ = task_scheduler.add(*sensor_);
@@ -31,5 +32,6 @@ LdrSensorTask::LdrSensorTask(io::AdcStore& adc_store,
     timer_store.add(*async_task_timer_);
 }
 
+} // namespace ldr
 } // namespace sensor
 } // namespace ocs

@@ -18,6 +18,7 @@
 
 namespace ocs {
 namespace sensor {
+namespace yl69 {
 
 //! Activate the sensor only when the relay is energized.
 class RelaySensor : public scheduler::ITask, public core::NonCopyable<> {
@@ -40,5 +41,6 @@ private:
     std::unique_ptr<scheduler::ITask> task_;
 };
 
+} // namespace yl69
 } // namespace sensor
 } // namespace ocs

@@ -13,7 +13,7 @@ namespace ocs {
 namespace pipeline {
 namespace yl69 {
 
-JsonFormatter::JsonFormatter(sensor::YL69Sensor& sensor, bool flat_formatting)
+JsonFormatter::JsonFormatter(sensor::yl69::Sensor& sensor, bool flat_formatting)
     : BasicFormatter(flat_formatting)
     , sensor_(sensor) {
 }
@@ -38,7 +38,7 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
 
         if (!formatter.add_string_ref_cs(
                 "sensor_yl69_status",
-                sensor::YL69SensorData::soil_status_to_str(data.status))) {
+                sensor::yl69::SensorData::soil_status_to_str(data.status))) {
             return status::StatusCode::NoMem;
         }
     } else {
@@ -55,7 +55,7 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
         }
 
         if (!formatter.add_string_ref_cs(
-                "status", sensor::YL69SensorData::soil_status_to_str(data.status))) {
+                "status", sensor::yl69::SensorData::soil_status_to_str(data.status))) {
             return status::StatusCode::NoMem;
         }
     }
