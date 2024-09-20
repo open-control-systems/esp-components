@@ -12,23 +12,23 @@
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/log.h"
-#include "ocs_storage/ns_storage.h"
+#include "ocs_storage/nvs_storage.h"
 
 namespace ocs {
 namespace storage {
 
 namespace {
 
-const char* log_tag = "ns-storage";
+const char* log_tag = "nvs-storage";
 
 } // namespace
 
-NsStorage::NsStorage(const char* ns) {
+NvsStorage::NvsStorage(const char* ns) {
     memset(ns_, 0, sizeof(ns_));
     strncpy(ns_, ns, std::min(bufsize_, strlen(ns)));
 }
 
-status::StatusCode NsStorage::read(const char* key, void* value, size_t size) {
+status::StatusCode NvsStorage::read(const char* key, void* value, size_t size) {
     configASSERT(key);
     configASSERT(value);
     configASSERT(size);
@@ -42,7 +42,7 @@ status::StatusCode NsStorage::read(const char* key, void* value, size_t size) {
     return code;
 }
 
-status::StatusCode NsStorage::write(const char* key, const void* value, size_t size) {
+status::StatusCode NvsStorage::write(const char* key, const void* value, size_t size) {
     configASSERT(key);
     configASSERT(value);
     configASSERT(size);
@@ -56,7 +56,7 @@ status::StatusCode NsStorage::write(const char* key, const void* value, size_t s
     return code;
 }
 
-status::StatusCode NsStorage::erase(const char* key) {
+status::StatusCode NvsStorage::erase(const char* key) {
     configASSERT(key);
 
     auto [handle, code] = open_(NVS_READWRITE);
@@ -68,7 +68,7 @@ status::StatusCode NsStorage::erase(const char* key) {
     return code;
 }
 
-std::pair<nvs_handle_t, status::StatusCode> NsStorage::open_(nvs_open_mode_t mode) {
+std::pair<nvs_handle_t, status::StatusCode> NvsStorage::open_(nvs_open_mode_t mode) {
     nvs_handle_t handle = 0;
 
     const auto err = nvs_open(ns_, mode, &handle);
@@ -85,7 +85,7 @@ std::pair<nvs_handle_t, status::StatusCode> NsStorage::open_(nvs_open_mode_t mod
 }
 
 status::StatusCode
-NsStorage::read_(nvs_handle_t handle, const char* key, void* value, size_t size) {
+NvsStorage::read_(nvs_handle_t handle, const char* key, void* value, size_t size) {
     const auto err = nvs_get_blob(handle, key, value, &size);
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         return status::StatusCode::NoData;
@@ -102,7 +102,7 @@ NsStorage::read_(nvs_handle_t handle, const char* key, void* value, size_t size)
 }
 
 status::StatusCode
-NsStorage::write_(nvs_handle_t handle, const char* key, const void* value, size_t size) {
+NvsStorage::write_(nvs_handle_t handle, const char* key, const void* value, size_t size) {
     auto err = nvs_set_blob(handle, key, value, size);
     if (err != ESP_OK) {
         ocs_loge(log_tag, "failed to write: nvs_set_blob(): key=%s err=%s", key,
@@ -122,7 +122,7 @@ NsStorage::write_(nvs_handle_t handle, const char* key, const void* value, size_
     return status::StatusCode::OK;
 }
 
-status::StatusCode NsStorage::erase_(nvs_handle_t handle, const char* key) {
+status::StatusCode NvsStorage::erase_(nvs_handle_t handle, const char* key) {
     auto err = nvs_erase_key(handle, key);
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         return status::StatusCode::NoData;
