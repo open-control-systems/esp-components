@@ -43,7 +43,8 @@ SystemCounterPipeline::SystemCounterPipeline(
         new (std::nothrow) diagnostic::PersistentCounter(storage, *lifetime_counter_));
     configASSERT(lifetime_persistent_counter_);
 
-    lifetime_counter_task_async_ = task_scheduler.add(*lifetime_persistent_counter_);
+    lifetime_counter_task_async_ =
+        task_scheduler.add(*lifetime_persistent_counter_, "lifetime-counter-task");
     configASSERT(lifetime_counter_task_async_);
 
     lifetime_counter_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(

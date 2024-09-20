@@ -34,7 +34,7 @@ SafeSensorTask::SafeSensorTask(core::IClock& clock,
                                                        params.power_on_delay_interval));
     configASSERT(relay_sensor_);
 
-    async_task_ = task_scheduler.add(*relay_sensor_);
+    async_task_ = task_scheduler.add(*relay_sensor_, task_timer_id);
     configASSERT(async_task_);
 
     async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(

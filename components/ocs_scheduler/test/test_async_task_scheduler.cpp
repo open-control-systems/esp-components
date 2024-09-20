@@ -22,7 +22,7 @@ TEST_CASE("Async task scheduler: wait for events",
     AsyncTaskScheduler scheduler;
     test::TestTask task(status::StatusCode::OK);
 
-    auto async_task = scheduler.add(task);
+    auto async_task = scheduler.add(task, "test-task");
     TEST_ASSERT_NOT_NULL(async_task);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, async_task->run());
@@ -36,8 +36,8 @@ TEST_CASE("Async task scheduler: register same task multiple times",
     AsyncTaskScheduler scheduler;
     test::TestTask task(status::StatusCode::OK);
 
-    auto async_task1 = scheduler.add(task);
-    auto async_task2 = scheduler.add(task);
+    auto async_task1 = scheduler.add(task, "test-task-1");
+    auto async_task2 = scheduler.add(task, "test-task-2");
     TEST_ASSERT_NOT_NULL(async_task1);
     TEST_ASSERT_NULL(async_task2);
 }
@@ -59,7 +59,7 @@ TEST_CASE("Async task scheduler: register maximum tasks",
     std::vector<ITask*> async_tasks;
 
     for (auto& task : tasks) {
-        auto async_task = scheduler.add(*task);
+        auto async_task = scheduler.add(*task, "test-task");
         TEST_ASSERT_NOT_NULL(async_task);
 
         async_tasks.push_back(async_task);
@@ -98,7 +98,7 @@ TEST_CASE("Async task scheduler: register maximum tasks: some failed",
     std::vector<ITask*> async_tasks;
 
     for (auto& task : tasks) {
-        auto async_task = scheduler.add(*task);
+        auto async_task = scheduler.add(*task, "test-task");
         TEST_ASSERT_NOT_NULL(async_task);
 
         async_tasks.push_back(async_task);
@@ -129,13 +129,13 @@ TEST_CASE("Async task scheduler: register tasks overflow",
     }
 
     for (auto& task : tasks) {
-        auto async_task = scheduler.add(*task);
+        auto async_task = scheduler.add(*task, "test-task");
         TEST_ASSERT_NOT_NULL(async_task);
     }
 
     test::TestTask task(status::StatusCode::OK);
 
-    auto async_task = scheduler.add(task);
+    auto async_task = scheduler.add(task, "test-task");
     TEST_ASSERT_NULL(async_task);
 }
 

@@ -28,7 +28,7 @@ SensorTask::SensorTask(scheduler::TimerStore& timer_store,
     configASSERT(sensor_store.add(*sensor_, params.data_pin, "GPIO-DS18B20-onewire")
                  == status::StatusCode::OK);
 
-    async_task_ = task_scheduler.add(*sensor_);
+    async_task_ = task_scheduler.add(*sensor_, task_timer_id);
     configASSERT(async_task_);
 
     async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
