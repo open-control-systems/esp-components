@@ -7,7 +7,7 @@
  */
 
 #include "ocs_storage/storage_builder.h"
-#include "ocs_storage/ns_storage.h"
+#include "ocs_storage/nvs_storage.h"
 
 namespace ocs {
 namespace storage {
@@ -18,7 +18,7 @@ StoragePtr StorageBuilder::make(const char* id) {
         return nullptr;
     }
 
-    return StoragePtr(new (std::nothrow) NsStorage(id));
+    return StoragePtr(new (std::nothrow) NvsStorage(id));
 }
 
 } // namespace storage

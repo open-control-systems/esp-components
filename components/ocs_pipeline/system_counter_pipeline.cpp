@@ -12,7 +12,7 @@
 #include "ocs_diagnostic/time_counter.h"
 #include "ocs_pipeline/system_counter_pipeline.h"
 #include "ocs_scheduler/high_resolution_timer.h"
-#include "ocs_storage/ns_storage.h"
+#include "ocs_storage/nvs_storage.h"
 
 namespace ocs {
 namespace pipeline {

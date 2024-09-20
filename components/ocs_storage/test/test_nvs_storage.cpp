@@ -12,19 +12,19 @@
 #include "unity.h"
 
 #include "ocs_storage/flash_initializer.h"
-#include "ocs_storage/ns_storage.h"
+#include "ocs_storage/nvs_storage.h"
 
 namespace ocs {
 namespace storage {
 
-TEST_CASE("NsStorage: write-read-erase", "[ocs_storage], [ns_storage]") {
+TEST_CASE("NvsStorage: write-read-erase", "[ocs_storage], [nvs_storage]") {
     FlashInitializer initializer;
 
     const char* id = "foo";
     const unsigned write_value = 42;
     unsigned read_value = 0;
 
-    NsStorage storage("tests");
+    NvsStorage storage("tests");
 
     // Test writing data
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
@@ -43,27 +43,27 @@ TEST_CASE("NsStorage: write-read-erase", "[ocs_storage], [ns_storage]") {
                       storage.read(id, &read_value, sizeof(read_value)));
 }
 
-TEST_CASE("NsStorage: read: no data", "[ocs_storage], [ns_storage]") {
+TEST_CASE("NvsStorage: read: no data", "[ocs_storage], [nvs_storage]") {
     FlashInitializer initializer;
 
     const char* id = "foo";
     unsigned value = 0;
 
-    NsStorage storage("tests");
+    NvsStorage storage("tests");
     TEST_ASSERT_EQUAL(status::StatusCode::NoData,
                       storage.read(id, &value, sizeof(value)));
 }
 
-TEST_CASE("NsStorage: erase: no data", "[ocs_storage], [ns_storage]") {
+TEST_CASE("NvsStorage: erase: no data", "[ocs_storage], [nvs_storage]") {
     FlashInitializer initializer;
 
     const char* id = "foo";
 
-    NsStorage storage("tests");
+    NvsStorage storage("tests");
     TEST_ASSERT_EQUAL(status::StatusCode::NoData, storage.erase(id));
 }
 
-TEST_CASE("NsStorage: write-read large value", "[ocs_storage], [ns_storage]") {
+TEST_CASE("NvsStorage: write-read large value", "[ocs_storage], [nvs_storage]") {
     FlashInitializer initializer;
 
     using Buffer = std::unique_ptr<uint8_t[]>;
@@ -81,7 +81,7 @@ TEST_CASE("NsStorage: write-read large value", "[ocs_storage], [ns_storage]") {
         write_value[i] = static_cast<uint8_t>(i % 256);
     }
 
-    NsStorage storage("tests");
+    NvsStorage storage("tests");
 
     // Test writing large data
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
@@ -96,7 +96,7 @@ TEST_CASE("NsStorage: write-read large value", "[ocs_storage], [ns_storage]") {
     TEST_ASSERT_EQUAL(status::StatusCode::OK, storage.erase(id));
 }
 
-TEST_CASE("NsStorage: overwrite key", "[ocs_storage], [ns_storage]") {
+TEST_CASE("NvsStorage: overwrite key", "[ocs_storage], [nvs_storage]") {
     FlashInitializer initializer;
 
     const char* id = "overwrite";
@@ -104,7 +104,7 @@ TEST_CASE("NsStorage: overwrite key", "[ocs_storage], [ns_storage]") {
     const unsigned updated_value = 20;
     unsigned read_value = 0;
 
-    NsStorage storage("tests");
+    NvsStorage storage("tests");
 
     // Write initial value
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
@@ -123,7 +123,7 @@ TEST_CASE("NsStorage: overwrite key", "[ocs_storage], [ns_storage]") {
     TEST_ASSERT_EQUAL(status::StatusCode::OK, storage.erase(id));
 }
 
-TEST_CASE("NsStorage: write-read string", "[ocs_storage], [ns_storage]") {
+TEST_CASE("NvsStorage: write-read string", "[ocs_storage], [nvs_storage]") {
     FlashInitializer initializer;
 
     const char* id = "string";
@@ -132,7 +132,7 @@ TEST_CASE("NsStorage: write-read string", "[ocs_storage], [ns_storage]") {
     char read_str[20];
     memset(read_str, 0, sizeof(read_str));
 
-    NsStorage storage("tests");
+    NvsStorage storage("tests");
 
     // Test writing string
     TEST_ASSERT_EQUAL(status::StatusCode::OK,

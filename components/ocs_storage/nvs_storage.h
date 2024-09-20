@@ -19,7 +19,7 @@
 namespace ocs {
 namespace storage {
 
-class NsStorage : public IStorage, public core::NonCopyable<> {
+class NvsStorage : public IStorage, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -28,7 +28,7 @@ public:
     //!
     //! @remarks
     //!  NVS should be initialized.
-    explicit NsStorage(const char* ns);
+    explicit NvsStorage(const char* ns);
 
     //! Read data from the configured namespace.
     status::StatusCode read(const char* key, void* value, size_t size) override;
