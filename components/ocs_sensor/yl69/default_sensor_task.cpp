@@ -29,7 +29,7 @@ DefaultSensorTask::DefaultSensorTask(core::IClock& clock,
         counter_holder, sensor_id, sensor_task_timer_id, params.sensor));
     configASSERT(sensor_);
 
-    async_task_ = task_scheduler.add(*sensor_);
+    async_task_ = task_scheduler.add(*sensor_, task_timer_id);
     configASSERT(async_task_);
 
     async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(

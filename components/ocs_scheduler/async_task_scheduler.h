@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <string>
 #include <vector>
 
 #include "ocs_core/noncopyable.h"
@@ -31,24 +32,34 @@ public:
     //! Return number of registered tasks to which asynchronous events are delivered.
     unsigned count() const;
 
-    //! Register a new task to which asynchronous events should be scheduled.
+    //! Register a new task.
+    //!
+    //! @params
+    //!  - @p task to which asynchronous events should be scheduled.
+    //!  - @p id to distinguish one task from another.
     //!
     //! @return
     //!  A valid pointer if the task was registered properly,
     //!  nullptr if task was already registered,
     //!  nullptr if maximum number of tasks were already registered.
-    ITask* add(ITask& task);
+    ITask* add(ITask& task, const char* id);
 
     //! Wait for the asynchronous events.
     status::StatusCode wait(TickType_t wait = portMAX_DELAY);
 
 private:
     struct TaskNode {
-        TaskNode(ITask* task, EventGroupHandle_t event_group, ITask::Event event)
-            : task(task)
+        TaskNode(ITask* task,
+                 EventGroupHandle_t event_group,
+                 ITask::Event event,
+                 const char* id)
+            : id(id)
+            , task(task)
             , event(event)
             , async_task(event_group, event) {
         }
+
+        const std::string id;
 
         ITask* task { nullptr };
         ITask::Event event { 0 };

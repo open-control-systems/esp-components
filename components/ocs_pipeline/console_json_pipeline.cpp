@@ -24,7 +24,8 @@ ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::AsyncTaskScheduler& task_sch
         telemetry_formatter, "console-telemetry-task", params.telemetry.buffer_size));
     configASSERT(telemetry_task_);
 
-    telemetry_task_async_ = task_scheduler.add(*telemetry_task_);
+    telemetry_task_async_ =
+        task_scheduler.add(*telemetry_task_, "console-telemetry-task");
     configASSERT(telemetry_task_async_);
 
     telemetry_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
@@ -38,7 +39,8 @@ ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::AsyncTaskScheduler& task_sch
         params.registration.buffer_size));
     configASSERT(registration_task_);
 
-    registration_task_async_ = task_scheduler.add(*registration_task_);
+    registration_task_async_ =
+        task_scheduler.add(*registration_task_, "console-registration-task");
     configASSERT(registration_task_async_);
 
     registration_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(

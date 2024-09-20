@@ -54,7 +54,7 @@ SystemPipeline::SystemPipeline() {
     reboot_task_.reset(new (std::nothrow) system::RebootTask(*delay_rebooter_));
     configASSERT(reboot_task_);
 
-    reboot_task_async_ = task_scheduler_->add(*reboot_task_);
+    reboot_task_async_ = task_scheduler_->add(*reboot_task_, "reboot-task");
     configASSERT(reboot_task_async_);
 }
 

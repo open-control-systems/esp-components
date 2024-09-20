@@ -70,7 +70,7 @@ Sensor::Sensor(core::IClock& clock,
     fanout_task_->add(*dry_state_task_);
     fanout_task_->add(*wet_state_task_);
 
-    fanout_task_async_ = task_scheduler.add(*fanout_task_);
+    fanout_task_async_ = task_scheduler.add(*fanout_task_, task_timer_id);
     configASSERT(fanout_task_async_);
 
     task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(

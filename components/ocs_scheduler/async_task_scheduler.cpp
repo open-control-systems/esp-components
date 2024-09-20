@@ -33,7 +33,7 @@ unsigned AsyncTaskScheduler::count() const {
     return nodes_.size();
 }
 
-ITask* AsyncTaskScheduler::add(ITask& task) {
+ITask* AsyncTaskScheduler::add(ITask& task, const char* id) {
     if (nodes_.size() == max_task_count) {
         return nullptr;
     }
@@ -47,7 +47,7 @@ ITask* AsyncTaskScheduler::add(ITask& task) {
 
     const ITask::Event event = core::BitOps::mask(nodes_.size());
 
-    TaskNode node(&task, event_group_.get(), event);
+    TaskNode node(&task, event_group_.get(), event, id);
     nodes_.emplace_back(node);
 
     bits_all_ |= event;
@@ -69,7 +69,7 @@ status::StatusCode AsyncTaskScheduler::handle_events_(EventBits_t bits) {
         if (bits & node.event) {
             const auto code = node.task->run();
             if (code != status::StatusCode::OK) {
-                ocs_loge(log_tag, "failed to run task: event=%lu code=%s", node.event,
+                ocs_loge(log_tag, "failed to run task: id=%s code=%s", node.id.c_str(),
                          status::code_to_str(code));
             }
         }
