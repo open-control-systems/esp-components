@@ -1,4 +1,4 @@
-menu "OCS IoT Configuration"
+menu "OCS Pipeline Configuration"
     menu "OCS HTTP Pipeline Configuration"
         config OCS_PIPELINE_HTTP_PIPELINE_TELEMETRY_BUFFER_SIZE
             int "Buffer size to hold the formatted telemetry JSON data"
