@@ -11,15 +11,18 @@
 namespace ocs {
 namespace pipeline {
 
-JsonDataPipeline::JsonDataPipeline(core::IClock& clock,
-                                   storage::StorageBuilder& storage_builder,
-                                   scheduler::AsyncTaskScheduler& task_scheduler,
-                                   scheduler::TimerStore& timer_store,
-                                   system::FanoutRebootHandler& reboot_handler) {
+JsonDataPipeline::JsonDataPipeline(
+    core::IClock& clock,
+    storage::StorageBuilder& storage_builder,
+    scheduler::AsyncTaskScheduler& task_scheduler,
+    scheduler::TimerStore& timer_store,
+    system::FanoutRebootHandler& reboot_handler,
+    RegistrationJsonFormatter::Params registration_params) {
     telemetry_formatter_.reset(new (std::nothrow) TelemetryJsonFormatter());
     configASSERT(telemetry_formatter_);
 
-    registration_formatter_.reset(new (std::nothrow) RegistrationJsonFormatter());
+    registration_formatter_.reset(new (std::nothrow)
+                                      RegistrationJsonFormatter(registration_params));
     configASSERT(registration_formatter_);
 
     system_counter_storage_ = storage_builder.make("system_counter");
