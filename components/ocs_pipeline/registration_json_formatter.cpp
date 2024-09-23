@@ -22,13 +22,14 @@ const char* log_tag = "registration-json-formatter";
 
 } // namespace
 
-RegistrationJsonFormatter::RegistrationJsonFormatter() {
+RegistrationJsonFormatter::RegistrationJsonFormatter(
+    RegistrationJsonFormatter::Params params) {
     fanout_formatter_.reset(new (std::nothrow) fmt::json::FanoutFormatter());
     configASSERT(fanout_formatter_);
 
     core::Version version;
-    if (!version.parse(CONFIG_OCS_CORE_FW_VERSION)) {
-        ocs_loge(log_tag, "failed to parse FW version: %s", CONFIG_OCS_CORE_FW_VERSION);
+    if (!version.parse(params.fw_version.c_str())) {
+        ocs_loge(log_tag, "failed to parse FW version: %s", params.fw_version.c_str());
     }
 
     core::version_to_str version_str(version);
@@ -36,7 +37,7 @@ RegistrationJsonFormatter::RegistrationJsonFormatter() {
     version_formatter_.reset(new (std::nothrow) VersionJsonFormatter());
     configASSERT(version_formatter_);
 
-    version_formatter_->add("version_scs", version_str.c_str());
+    version_formatter_->add(params.fw_name.c_str(), version_str.c_str());
     fanout_formatter_->add(*version_formatter_);
 }
 

@@ -32,7 +32,8 @@ public:
                      storage::StorageBuilder& storage_builder,
                      scheduler::AsyncTaskScheduler& task_scheduler,
                      scheduler::TimerStore& timer_store,
-                     system::FanoutRebootHandler& reboot_handler);
+                     system::FanoutRebootHandler& reboot_handler,
+                     RegistrationJsonFormatter::Params registration_params);
 
     fmt::json::FanoutFormatter& get_telemetry_formatter();
     fmt::json::FanoutFormatter& get_registration_formatter();
