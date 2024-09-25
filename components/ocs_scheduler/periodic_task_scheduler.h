@@ -58,7 +58,7 @@ public:
     //!    minimum periodic interval.
     status::StatusCode add(ITask& task, const char* id, core::microseconds_t interval);
 
-    //! Start task scheduling.
+    //! Start tasks scheduling.
     status::StatusCode start() override;
 
     //! Run all periodic tasks.
