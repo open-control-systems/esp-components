@@ -6,6 +6,7 @@ idf_component_register(
     "test_cond.cpp"
     "test_string_ops.cpp"
     "test_time_ops.cpp"
+    "test_rate_limiter.cpp"
 
     REQUIRES
     "unity"
