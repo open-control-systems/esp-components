@@ -16,6 +16,7 @@ idf_component_register(
     "bit_ops.cpp"
     "future.cpp"
     "string_ops.cpp"
+    "rate_limiter.cpp"
 
     REQUIRES
     "json"
