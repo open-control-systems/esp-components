@@ -37,6 +37,9 @@ public:
     //!  - @p id - human readable counter identifier.
     //!  - @p resolution - time resolution for the counting value.
     //!  - @p required_state - to count the time in this state, can't be zero.
+    //!
+    //! @remarks
+    //!  All operations should be scheduled on the same task scheduler.
     StateCounter(storage::IStorage& storage,
                  core::IClock& clock,
                  const char* id,

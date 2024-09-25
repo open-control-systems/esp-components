@@ -8,19 +8,19 @@
 
 #pragma once
 
+#include <memory>
+
 #include "driver/gpio.h"
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_scheduler/async_task_scheduler.h"
-#include "ocs_scheduler/timer_store.h"
-#include "ocs_sensor/basic_sensor_task.h"
+#include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/ds18b20/store.h"
 
 namespace ocs {
 namespace sensor {
 namespace ds18b20 {
 
-class SensorTask : public BasicSensorTask<Sensor>, public core::NonCopyable<> {
+class SensorTask : public core::NonCopyable<> {
 public:
     struct Params {
         core::microseconds_t read_interval { 0 };
@@ -28,13 +28,18 @@ public:
     };
 
     //! Initialize.
-    SensorTask(scheduler::TimerStore& timer_store,
-               scheduler::AsyncTaskScheduler& task_scheduler,
+    SensorTask(scheduler::ITaskScheduler& task_scheduler,
                storage::IStorage& storage,
                Store& sensor_store,
                const char* sensor_id,
-               const char* task_timer_id,
+               const char* task_id,
                Params params);
+
+    //! Return the underlying sensor.
+    Sensor& get_sensor();
+
+private:
+    std::unique_ptr<Sensor> sensor_;
 };
 
 } // namespace ds18b20

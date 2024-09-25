@@ -6,9 +6,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include "freertos/FreeRTOSConfig.h"
+
 #include "ocs_pipeline/system_pipeline.h"
-#include "ocs_core/log.h"
-#include "ocs_scheduler/high_resolution_timer.h"
+#include "ocs_scheduler/async_func.h"
+#include "ocs_scheduler/constant_delay_estimator.h"
+#include "ocs_scheduler/periodic_task_scheduler.h"
 #include "ocs_status/code_to_str.h"
 #include "ocs_system/default_clock.h"
 #include "ocs_system/default_rebooter.h"
@@ -17,12 +20,6 @@
 
 namespace ocs {
 namespace pipeline {
-
-namespace {
-
-const char* log_tag = "system-pipeline";
-
-} // namespace
 
 SystemPipeline::SystemPipeline() {
     flash_initializer_.reset(new (std::nothrow) storage::FlashInitializer());
@@ -34,11 +31,20 @@ SystemPipeline::SystemPipeline() {
     default_clock_.reset(new (std::nothrow) system::DefaultClock());
     configASSERT(default_clock_);
 
-    task_scheduler_.reset(new (std::nothrow) scheduler::AsyncTaskScheduler());
+    delay_estimator_.reset(new (std::nothrow)
+                               scheduler::ConstantDelayEstimator(pdMS_TO_TICKS(100)));
+    configASSERT(delay_estimator_);
+
+    task_scheduler_.reset(new (std::nothrow) scheduler::PeriodicTaskScheduler(
+        *default_clock_, *delay_estimator_, 16));
     configASSERT(task_scheduler_);
 
-    timer_store_.reset(new (std::nothrow) scheduler::TimerStore());
-    configASSERT(timer_store_);
+    func_scheduler_.reset(new (std::nothrow) scheduler::AsyncFuncScheduler(16));
+    configASSERT(func_scheduler_);
+
+    configASSERT(task_scheduler_->add(*func_scheduler_, "system-async-func-scheduler",
+                                      core::Second)
+                 == status::StatusCode::OK);
 
     fanout_reboot_handler_.reset(new (std::nothrow) system::FanoutRebootHandler());
     configASSERT(fanout_reboot_handler_);
@@ -54,25 +60,16 @@ SystemPipeline::SystemPipeline() {
     reboot_task_.reset(new (std::nothrow) system::RebootTask(*delay_rebooter_));
     configASSERT(reboot_task_);
 
-    reboot_task_async_ = task_scheduler_->add(*reboot_task_, "reboot-task");
+    reboot_task_async_.reset(new (std::nothrow)
+                                 scheduler::AsyncFunc(*func_scheduler_, *reboot_task_));
     configASSERT(reboot_task_async_);
 }
 
 status::StatusCode SystemPipeline::start() {
-    const auto code = timer_store_->start();
-    if (code != status::StatusCode::OK) {
-        return code;
-    }
-
-    ocs_logi(log_tag, "start handling tasks: count=%u max=%u", task_scheduler_->count(),
-             scheduler::AsyncTaskScheduler::max_task_count);
+    configASSERT(task_scheduler_->start() == status::StatusCode::OK);
 
     while (true) {
-        const auto code = task_scheduler_->wait();
-        if (code != status::StatusCode::OK) {
-            ocs_logw(log_tag, "failed to wait for asynchronous events: %s",
-                     status::code_to_str(code));
-        }
+        configASSERT(task_scheduler_->run() == status::StatusCode::OK);
     }
 
     return status::StatusCode::OK;
@@ -86,12 +83,8 @@ storage::StorageBuilder& SystemPipeline::get_storage_builder() {
     return *storage_builder_;
 }
 
-scheduler::AsyncTaskScheduler& SystemPipeline::get_task_scheduler() {
+scheduler::ITaskScheduler& SystemPipeline::get_task_scheduler() {
     return *task_scheduler_;
-}
-
-scheduler::TimerStore& SystemPipeline::get_timer_store() {
-    return *timer_store_;
 }
 
 scheduler::ITask& SystemPipeline::get_reboot_task() {

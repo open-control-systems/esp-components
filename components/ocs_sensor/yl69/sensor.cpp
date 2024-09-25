@@ -9,7 +9,6 @@
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/time.h"
-#include "ocs_scheduler/high_resolution_timer.h"
 #include "ocs_sensor/yl69/sensor.h"
 
 namespace ocs {
@@ -35,11 +34,10 @@ Sensor::Sensor(core::IClock& clock,
                io::AdcStore& adc_store,
                storage::IStorage& storage,
                system::FanoutRebootHandler& reboot_handler,
-               scheduler::AsyncTaskScheduler& task_scheduler,
-               scheduler::TimerStore& timer_store,
+               scheduler::ITaskScheduler& task_scheduler,
                diagnostic::BasicCounterHolder& counter_holder,
                const char* sensor_id,
-               const char* task_timer_id,
+               const char* task_id,
                Params params)
     : BasicSensor(sensor_id)
     , params_(params) {
@@ -70,14 +68,8 @@ Sensor::Sensor(core::IClock& clock,
     fanout_task_->add(*dry_state_task_);
     fanout_task_->add(*wet_state_task_);
 
-    fanout_task_async_ = task_scheduler.add(*fanout_task_, task_timer_id);
-    configASSERT(fanout_task_async_);
-
-    task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *fanout_task_async_, task_timer_id, core::Minute * 30));
-    configASSERT(task_timer_);
-
-    timer_store.add(*task_timer_);
+    configASSERT(task_scheduler.add(*fanout_task_, task_id, core::Minute * 30)
+                 == status::StatusCode::OK);
 }
 
 status::StatusCode Sensor::run() {

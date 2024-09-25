@@ -8,19 +8,19 @@
 
 #pragma once
 
+#include <memory>
+
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/time.h"
 #include "ocs_io/adc_store.h"
-#include "ocs_scheduler/async_task_scheduler.h"
-#include "ocs_scheduler/timer_store.h"
-#include "ocs_sensor/basic_sensor_task.h"
+#include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/ldr/sensor.h"
 
 namespace ocs {
 namespace sensor {
 namespace ldr {
 
-class SensorTask : public BasicSensorTask<Sensor>, public core::NonCopyable<> {
+class SensorTask : public core::NonCopyable<> {
 public:
     struct Params {
         Sensor::Params sensor;
@@ -29,11 +29,16 @@ public:
 
     //! Initialize.
     SensorTask(io::AdcStore& adc_store,
-               scheduler::AsyncTaskScheduler& task_scheduler,
-               scheduler::TimerStore& timer_store,
+               scheduler::ITaskScheduler& task_scheduler,
                const char* sensor_id,
-               const char* task_timer_id,
+               const char* task_id,
                Params params);
+
+    //! Return the underlying sensor.
+    Sensor& get_sensor();
+
+private:
+    std::unique_ptr<Sensor> sensor_;
 };
 
 } // namespace ldr

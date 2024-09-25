@@ -27,6 +27,9 @@ public:
     //! @params
     //!  - @p storage to persist counter values when reboot is happened.
     //!  - @p counter to handle actual counting value.
+    //!
+    //! @remarks
+    //!  All operations should be scheduled on the same task scheduler.
     PersistentCounter(storage::IStorage& storage, ICounter& counter);
 
     //! Destroy.

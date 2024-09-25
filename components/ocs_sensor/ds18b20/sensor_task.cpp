@@ -8,19 +8,17 @@
 
 #include "ocs_sensor/ds18b20/sensor_task.h"
 #include "ocs_io/default_gpio.h"
-#include "ocs_scheduler/high_resolution_timer.h"
 #include "ocs_system/delayer_configuration.h"
 
 namespace ocs {
 namespace sensor {
 namespace ds18b20 {
 
-SensorTask::SensorTask(scheduler::TimerStore& timer_store,
-                       scheduler::AsyncTaskScheduler& task_scheduler,
+SensorTask::SensorTask(scheduler::ITaskScheduler& task_scheduler,
                        storage::IStorage& storage,
                        Store& sensor_store,
                        const char* sensor_id,
-                       const char* task_timer_id,
+                       const char* task_id,
                        SensorTask::Params params) {
     sensor_.reset(new (std::nothrow) Sensor(storage, sensor_id));
     configASSERT(sensor_);
@@ -28,14 +26,12 @@ SensorTask::SensorTask(scheduler::TimerStore& timer_store,
     configASSERT(sensor_store.add(*sensor_, params.data_pin, "GPIO-DS18B20-onewire")
                  == status::StatusCode::OK);
 
-    async_task_ = task_scheduler.add(*sensor_, task_timer_id);
-    configASSERT(async_task_);
+    configASSERT(task_scheduler.add(*sensor_, task_id, params.read_interval)
+                 == status::StatusCode::OK);
+}
 
-    async_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *async_task_, task_timer_id, params.read_interval));
-    configASSERT(async_task_timer_);
-
-    timer_store.add(*async_task_timer_);
+Sensor& SensorTask::get_sensor() {
+    return *sensor_;
 }
 
 } // namespace ds18b20

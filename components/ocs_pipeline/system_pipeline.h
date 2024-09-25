@@ -12,8 +12,9 @@
 
 #include "ocs_core/iclock.h"
 #include "ocs_core/noncopyable.h"
-#include "ocs_scheduler/async_task_scheduler.h"
-#include "ocs_scheduler/timer_store.h"
+#include "ocs_scheduler/async_func_scheduler.h"
+#include "ocs_scheduler/idelay_estimator.h"
+#include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_status/code.h"
 #include "ocs_storage/flash_initializer.h"
 #include "ocs_storage/storage_builder.h"
@@ -36,8 +37,7 @@ public:
 
     core::IClock& get_clock();
     storage::StorageBuilder& get_storage_builder();
-    scheduler::AsyncTaskScheduler& get_task_scheduler();
-    scheduler::TimerStore& get_timer_store();
+    scheduler::ITaskScheduler& get_task_scheduler();
     scheduler::ITask& get_reboot_task();
     system::FanoutRebootHandler& get_reboot_handler();
 
@@ -47,15 +47,16 @@ private:
 
     std::unique_ptr<core::IClock> default_clock_;
 
-    std::unique_ptr<scheduler::AsyncTaskScheduler> task_scheduler_;
-    std::unique_ptr<scheduler::TimerStore> timer_store_;
+    std::unique_ptr<scheduler::IDelayEstimator> delay_estimator_;
+    std::unique_ptr<scheduler::ITaskScheduler> task_scheduler_;
+    std::unique_ptr<scheduler::AsyncFuncScheduler> func_scheduler_;
 
     std::unique_ptr<system::FanoutRebootHandler> fanout_reboot_handler_;
     std::unique_ptr<system::IRebooter> default_rebooter_;
     std::unique_ptr<system::IRebooter> delay_rebooter_;
 
     std::unique_ptr<scheduler::ITask> reboot_task_;
-    scheduler::ITask* reboot_task_async_ { nullptr };
+    std::unique_ptr<scheduler::ITask> reboot_task_async_;
 };
 
 } // namespace pipeline

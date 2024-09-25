@@ -11,7 +11,6 @@
 #include "ocs_diagnostic/live_counter.h"
 #include "ocs_diagnostic/time_counter.h"
 #include "ocs_pipeline/system_counter_pipeline.h"
-#include "ocs_scheduler/high_resolution_timer.h"
 #include "ocs_storage/nvs_storage.h"
 
 namespace ocs {
@@ -21,8 +20,7 @@ SystemCounterPipeline::SystemCounterPipeline(
     core::IClock& clock,
     storage::IStorage& storage,
     system::FanoutRebootHandler& reboot_handler,
-    scheduler::AsyncTaskScheduler& task_scheduler,
-    scheduler::TimerStore& timer_store,
+    scheduler::ITaskScheduler& task_scheduler,
     diagnostic::BasicCounterHolder& counter_holder) {
     uptime_counter_.reset(
         new (std::nothrow) diagnostic::TimeCounter(clock, "c_sys_uptime", core::Second));
@@ -43,15 +41,9 @@ SystemCounterPipeline::SystemCounterPipeline(
         new (std::nothrow) diagnostic::PersistentCounter(storage, *lifetime_counter_));
     configASSERT(lifetime_persistent_counter_);
 
-    lifetime_counter_task_async_ =
-        task_scheduler.add(*lifetime_persistent_counter_, "lifetime-counter-task");
-    configASSERT(lifetime_counter_task_async_);
-
-    lifetime_counter_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *lifetime_counter_task_async_, lifetime_persistent_counter_->id(), core::Hour));
-    configASSERT(lifetime_counter_timer_);
-
-    timer_store.add(*lifetime_counter_timer_);
+    configASSERT(task_scheduler.add(*lifetime_persistent_counter_,
+                                    "lifetime-counter-task", core::Hour)
+                 == status::StatusCode::OK);
 
     reboot_handler.add(*lifetime_persistent_counter_);
     counter_holder.add(*lifetime_persistent_counter_);
