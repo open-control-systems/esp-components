@@ -19,16 +19,12 @@
 namespace ocs {
 namespace scheduler {
 
-namespace {
-
-const char* log_tag = "periodic-task-scheduler";
-
-} // namespace
-
 PeriodicTaskScheduler::PeriodicTaskScheduler(core::IClock& clock,
                                              IDelayEstimator& estimator,
+                                             const char* id,
                                              unsigned max_count)
     : max_count_(max_count)
+    , log_tag_(id)
     , clock_(clock)
     , estimator_(estimator) {
     configASSERT(max_count_);
@@ -69,8 +65,9 @@ PeriodicTaskScheduler::add(ITask& task, const char* id, core::microseconds_t int
 }
 
 status::StatusCode PeriodicTaskScheduler::start() {
-    ocs_logi(log_tag, "start handling tasks: count=%u/%u task_min_interval=%lli(ms)",
-             count(), max_count(), task_min_interval_ / core::Millisecond);
+    ocs_logi(log_tag_.c_str(),
+             "start handling tasks: count=%u/%u task_min_interval=%lli(ms)", count(),
+             max_count(), task_min_interval_ / core::Millisecond);
 
     return status::StatusCode::OK;
 }
@@ -87,7 +84,7 @@ status::StatusCode PeriodicTaskScheduler::run() {
 
     const auto estimated_delay = estimator_.estimate();
 
-    ocs_logd(log_tag,
+    ocs_logd(log_tag_.c_str(),
              "delay estimating: total=%lli(usec) total_min=%lli(usec) "
              "total_max=%lli(usec) task_min=%lli(ms) estimated=%lu(ms)",
              total_ts, total_ts_min_, total_ts_max_,
@@ -102,7 +99,7 @@ void PeriodicTaskScheduler::run_() {
     for (auto& node : nodes_) {
         const auto code = node->run();
         if (code != status::StatusCode::OK) {
-            ocs_loge(log_tag, "failed to run task: id=%s code=%s", node->id(),
+            ocs_loge(log_tag_.c_str(), "failed to run task: id=%s code=%s", node->id(),
                      status::code_to_str(code));
         }
     }

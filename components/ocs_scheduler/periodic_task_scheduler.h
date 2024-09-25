@@ -10,6 +10,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include "ocs_core/iclock.h"
@@ -29,9 +30,11 @@ public:
     //! @params
     //!  - @p clock to check if it's a time to run a task.
     //!  - @p estimator to estimate the required delay after each round of execution.
+    //!  - @p id to distinguish one scheduler from another.
     //!  - @p max_count - maximum number of tasks the scheduler can handle.
     PeriodicTaskScheduler(core::IClock& clock,
                           IDelayEstimator& estimator,
+                          const char* id,
                           unsigned max_count);
 
     //! Return the maximum configured number of tasks a scheduler can handle.
@@ -89,6 +92,7 @@ private:
     void run_();
 
     const unsigned max_count_ { 0 };
+    const std::string log_tag_;
 
     core::microseconds_t task_min_interval_ { INT64_MAX };
 
