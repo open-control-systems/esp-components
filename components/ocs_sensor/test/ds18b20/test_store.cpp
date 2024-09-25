@@ -24,7 +24,7 @@ using TestStorage = test::TestStorage<Sensor::Configuration>;
 
 } // namespace
 
-TEST_CASE("DS18B20-Store: schedule: empty store", "[ocs_sensor], [ds18b20_store]") {
+TEST_CASE("DS18B20 store: schedule: empty store", "[ocs_sensor], [ds18b20_store]") {
     const gpio_num_t gpio = GPIO_NUM_26;
 
     Store store(16);
@@ -35,7 +35,7 @@ TEST_CASE("DS18B20-Store: schedule: empty store", "[ocs_sensor], [ds18b20_store]
     TEST_ASSERT_NULL(future);
 }
 
-TEST_CASE("DS18B20-Store: schedule: invalid GPIO", "[ocs_sensor], [ds18b20_store]") {
+TEST_CASE("DS18B20 store: schedule: invalid GPIO", "[ocs_sensor], [ds18b20_store]") {
     const char* sensor_id = "test-sensor";
     const char* gpio_id = "test-gpio-id";
     const gpio_num_t gpio = GPIO_NUM_26;
@@ -56,7 +56,7 @@ TEST_CASE("DS18B20-Store: schedule: invalid GPIO", "[ocs_sensor], [ds18b20_store
     TEST_ASSERT_NULL(future);
 }
 
-TEST_CASE("DS18B20-Store: add sensor", "[ocs_sensor], [ds18b20_store]") {
+TEST_CASE("DS18B20 store: add sensor", "[ocs_sensor], [ds18b20_store]") {
     const char* sensor_id = "test-sensor";
     const gpio_num_t gpio = GPIO_NUM_26;
     const char* gpio_id = "test-gpio-id";
@@ -79,7 +79,7 @@ TEST_CASE("DS18B20-Store: add sensor", "[ocs_sensor], [ds18b20_store]") {
     TEST_ASSERT_EQUAL(status::StatusCode::OK, future->code());
 }
 
-TEST_CASE("DS18B20-Store: read sensor configuration: non-configured",
+TEST_CASE("DS18B20 store: read sensor configuration: non-configured",
           "[ocs_sensor], [ds18b20_store]") {
     const char* sensor_id = "test-sensor";
     const gpio_num_t gpio = GPIO_NUM_26;
