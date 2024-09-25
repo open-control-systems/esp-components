@@ -33,6 +33,13 @@ bool TestTask::was_run_called() const {
     return run_called_;
 }
 
+void TestTask::reset(status::StatusCode code) {
+    core::LockGuard lock(mu_);
+
+    code_ = code;
+    run_called_ = false;
+}
+
 status::StatusCode TestTask::wait(TickType_t wait) {
     core::LockGuard lock(mu_);
 
