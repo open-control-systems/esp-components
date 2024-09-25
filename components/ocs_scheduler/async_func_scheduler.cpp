@@ -38,7 +38,7 @@ status::StatusCode AsyncFuncScheduler::run() {
         core::LockGuard lock(mu_);
 
         if (!write_queue_->size()) {
-            return status::StatusCode::NoData;
+            return status::StatusCode::OK;
         }
 
         std::swap(write_queue_, read_queue_);
