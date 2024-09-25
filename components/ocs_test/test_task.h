@@ -24,6 +24,9 @@ public:
 
     bool was_run_called() const;
 
+    //! Reset to initial state.
+    void reset(status::StatusCode code);
+
     //! Wait for the task to be called.
     status::StatusCode wait(TickType_t wait = portMAX_DELAY);
 
