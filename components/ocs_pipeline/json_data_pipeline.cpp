@@ -14,8 +14,7 @@ namespace pipeline {
 JsonDataPipeline::JsonDataPipeline(
     core::IClock& clock,
     storage::StorageBuilder& storage_builder,
-    scheduler::AsyncTaskScheduler& task_scheduler,
-    scheduler::TimerStore& timer_store,
+    scheduler::ITaskScheduler& task_scheduler,
     system::FanoutRebootHandler& reboot_handler,
     RegistrationJsonFormatter::Params registration_params) {
     telemetry_formatter_.reset(new (std::nothrow) TelemetryJsonFormatter());
@@ -32,7 +31,7 @@ JsonDataPipeline::JsonDataPipeline(
     configASSERT(counter_json_formatter_);
 
     system_counter_pipeline_.reset(new (std::nothrow) SystemCounterPipeline(
-        clock, *system_counter_storage_, reboot_handler, task_scheduler, timer_store,
+        clock, *system_counter_storage_, reboot_handler, task_scheduler,
         *counter_json_formatter_));
     configASSERT(system_counter_pipeline_);
 

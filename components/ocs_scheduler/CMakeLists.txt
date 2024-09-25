@@ -7,6 +7,8 @@ idf_component_register(
     "fanout_task.cpp"
     "async_func_scheduler.cpp"
     "async_func.cpp"
+    "periodic_task_scheduler.cpp"
+    "constant_delay_estimator.cpp"
 
     REQUIRES
     "freertos"

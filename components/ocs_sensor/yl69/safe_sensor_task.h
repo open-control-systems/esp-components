@@ -16,10 +16,8 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_diagnostic/basic_counter_holder.h"
 #include "ocs_io/adc_store.h"
-#include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_scheduler/itask.h"
-#include "ocs_scheduler/timer_store.h"
-#include "ocs_sensor/basic_sensor_task.h"
+#include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/yl69/sensor.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
@@ -29,7 +27,7 @@ namespace sensor {
 namespace yl69 {
 
 //! The sensor is only powered when the relay is activated.
-class SafeSensorTask : public BasicSensorTask<Sensor>, public core::NonCopyable<> {
+class SafeSensorTask : public core::NonCopyable<> {
 public:
     struct Params {
         Sensor::Params sensor;
@@ -43,15 +41,18 @@ public:
                    io::AdcStore& adc_store,
                    storage::IStorage& storage,
                    system::FanoutRebootHandler& reboot_handler,
-                   scheduler::AsyncTaskScheduler& task_scheduler,
-                   scheduler::TimerStore& timer_store,
+                   scheduler::ITaskScheduler& task_scheduler,
                    diagnostic::BasicCounterHolder& counter_holder,
                    const char* sensor_id,
-                   const char* sensor_task_timer_id,
-                   const char* task_timer_id,
+                   const char* sensor_task_id,
+                   const char* task_id,
                    Params params);
 
+    //! Return the underlying sensor.
+    Sensor& get_sensor();
+
 private:
+    std::unique_ptr<Sensor> sensor_;
     std::unique_ptr<scheduler::ITask> relay_sensor_;
 };
 

@@ -13,8 +13,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/time.h"
 #include "ocs_fmt/json/iformatter.h"
-#include "ocs_scheduler/async_task_scheduler.h"
-#include "ocs_scheduler/timer_store.h"
+#include "ocs_scheduler/itask_scheduler.h"
 
 namespace ocs {
 namespace pipeline {
@@ -40,20 +39,14 @@ public:
     //! @params
     //!  - @p telemetry_formatter to format telemetry data.
     //!  - @p registration_formatter to format registration data.
-    ConsoleJsonPipeline(scheduler::AsyncTaskScheduler& task_scheduler,
-                        scheduler::TimerStore& timer_store,
+    ConsoleJsonPipeline(scheduler::ITaskScheduler& task_scheduler,
                         fmt::json::IFormatter& telemetry_formatter,
                         fmt::json::IFormatter& registration_formatter,
                         Params params);
 
 private:
     std::unique_ptr<scheduler::ITask> telemetry_task_;
-    scheduler::ITask* telemetry_task_async_ { nullptr };
-    std::unique_ptr<scheduler::ITimer> telemetry_task_timer_;
-
     std::unique_ptr<scheduler::ITask> registration_task_;
-    scheduler::ITask* registration_task_async_ { nullptr };
-    std::unique_ptr<scheduler::ITimer> registration_task_timer_;
 };
 
 } // namespace pipeline

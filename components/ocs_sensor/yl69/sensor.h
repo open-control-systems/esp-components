@@ -18,10 +18,9 @@
 #include "ocs_diagnostic/state_counter.h"
 #include "ocs_io/adc_store.h"
 #include "ocs_io/iadc.h"
-#include "ocs_scheduler/async_task_scheduler.h"
 #include "ocs_scheduler/fanout_task.h"
+#include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_scheduler/itimer.h"
-#include "ocs_scheduler/timer_store.h"
 #include "ocs_sensor/basic_sensor.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
@@ -62,11 +61,10 @@ public:
            io::AdcStore& adc_store,
            storage::IStorage& storage,
            system::FanoutRebootHandler& reboot_handler,
-           scheduler::AsyncTaskScheduler& task_scheduler,
-           scheduler::TimerStore& timer_store,
+           scheduler::ITaskScheduler& task_scheduler,
            diagnostic::BasicCounterHolder& counter_holder,
            const char* sensor_id,
-           const char* task_timer_id,
+           const char* task_id,
            Params params);
 
     //! Read sensor data.
@@ -85,8 +83,6 @@ private:
     std::unique_ptr<diagnostic::StateCounter> wet_state_task_;
 
     std::unique_ptr<scheduler::FanoutTask> fanout_task_;
-    scheduler::ITask* fanout_task_async_ { nullptr };
-    std::unique_ptr<scheduler::ITimer> task_timer_;
 };
 
 } // namespace yl69

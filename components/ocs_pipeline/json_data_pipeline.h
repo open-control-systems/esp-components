@@ -16,8 +16,7 @@
 #include "ocs_pipeline/registration_json_formatter.h"
 #include "ocs_pipeline/system_counter_pipeline.h"
 #include "ocs_pipeline/telemetry_json_formatter.h"
-#include "ocs_scheduler/async_task_scheduler.h"
-#include "ocs_scheduler/timer_store.h"
+#include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_storage/storage_builder.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
@@ -30,8 +29,7 @@ public:
     //! Initialize.
     JsonDataPipeline(core::IClock& clock,
                      storage::StorageBuilder& storage_builder,
-                     scheduler::AsyncTaskScheduler& task_scheduler,
-                     scheduler::TimerStore& timer_store,
+                     scheduler::ITaskScheduler& task_scheduler,
                      system::FanoutRebootHandler& reboot_handler,
                      RegistrationJsonFormatter::Params registration_params);
 

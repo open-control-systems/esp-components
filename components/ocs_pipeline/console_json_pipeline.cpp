@@ -10,13 +10,11 @@
 
 #include "ocs_pipeline/console_json_pipeline.h"
 #include "ocs_pipeline/console_json_task.h"
-#include "ocs_scheduler/high_resolution_timer.h"
 
 namespace ocs {
 namespace pipeline {
 
-ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::AsyncTaskScheduler& task_scheduler,
-                                         scheduler::TimerStore& timer_store,
+ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::ITaskScheduler& task_scheduler,
                                          fmt::json::IFormatter& telemetry_formatter,
                                          fmt::json::IFormatter& registration_formatter,
                                          Params params) {
@@ -24,30 +22,18 @@ ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::AsyncTaskScheduler& task_sch
         telemetry_formatter, "console-telemetry-task", params.telemetry.buffer_size));
     configASSERT(telemetry_task_);
 
-    telemetry_task_async_ =
-        task_scheduler.add(*telemetry_task_, "console-telemetry-task");
-    configASSERT(telemetry_task_async_);
-
-    telemetry_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *telemetry_task_async_, "console-telemetry", params.telemetry.interval));
-    configASSERT(telemetry_task_timer_);
-
-    timer_store.add(*telemetry_task_timer_);
+    configASSERT(task_scheduler.add(*telemetry_task_, "console-telemetry",
+                                    params.telemetry.interval)
+                 == status::StatusCode::OK);
 
     registration_task_.reset(new (std::nothrow) ConsoleJsonTask(
         registration_formatter, "console-registration-task",
         params.registration.buffer_size));
     configASSERT(registration_task_);
 
-    registration_task_async_ =
-        task_scheduler.add(*registration_task_, "console-registration-task");
-    configASSERT(registration_task_async_);
-
-    registration_task_timer_.reset(new (std::nothrow) scheduler::HighResolutionTimer(
-        *registration_task_async_, "console-registration", params.registration.interval));
-    configASSERT(registration_task_timer_);
-
-    timer_store.add(*registration_task_timer_);
+    configASSERT(task_scheduler.add(*registration_task_, "console-registration",
+                                    params.registration.interval)
+                 == status::StatusCode::OK);
 }
 
 } // namespace pipeline
