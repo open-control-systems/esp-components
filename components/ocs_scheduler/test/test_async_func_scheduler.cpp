@@ -15,7 +15,7 @@ namespace scheduler {
 
 TEST_CASE("Async func scheduler: no events", "[ocs_scheduler], [async_func_scheduler]") {
     AsyncFuncScheduler func_scheduler(1);
-    TEST_ASSERT_EQUAL(status::StatusCode::NoData, func_scheduler.run());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, func_scheduler.run());
 }
 
 TEST_CASE("Async func scheduler: number events overflow",
