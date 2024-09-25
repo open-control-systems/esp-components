@@ -6,6 +6,7 @@ idf_component_register(
     "timer_store.cpp"
     "fanout_task.cpp"
     "async_func_scheduler.cpp"
+    "async_func.cpp"
 
     REQUIRES
     "freertos"
