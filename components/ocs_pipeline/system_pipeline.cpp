@@ -36,7 +36,7 @@ SystemPipeline::SystemPipeline() {
     configASSERT(delay_estimator_);
 
     task_scheduler_.reset(new (std::nothrow) scheduler::PeriodicTaskScheduler(
-        *default_clock_, *delay_estimator_, 16));
+        *default_clock_, *delay_estimator_, "system-pipeline-scheduler", 16));
     configASSERT(task_scheduler_);
 
     func_scheduler_.reset(new (std::nothrow) scheduler::AsyncFuncScheduler(16));
