@@ -113,15 +113,7 @@ Store::Node::Node(gpio_num_t gpio, const char* gpio_id, unsigned max_event_count
 }
 
 status::StatusCode Store::Node::run() {
-    const auto code = func_scheduler_.run();
-    if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
-        ocs_logw(log_tag, "failed to handle async func events: %s",
-                 status::code_to_str(code));
-
-        return code;
-    }
-
-    return status::StatusCode::OK;
+    return func_scheduler_.run();
 }
 
 status::StatusCode Store::Node::add(Sensor& sensor) {
