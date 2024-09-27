@@ -27,8 +27,15 @@ namespace pipeline {
 
 class SystemPipeline : public core::NonCopyable<> {
 public:
+    struct Params {
+        struct TaskScheduler {
+            //! Delay after all tasks have been run.
+            TickType_t delay { 0 };
+        } task_scheduler;
+    };
+
     //! Initialize.
-    SystemPipeline();
+    explicit SystemPipeline(Params params);
 
     //! Start the pipeline.
     //!

@@ -21,7 +21,9 @@
 namespace ocs {
 namespace pipeline {
 
-SystemPipeline::SystemPipeline() {
+SystemPipeline::SystemPipeline(SystemPipeline::Params params) {
+    configASSERT(params.task_scheduler.delay);
+
     flash_initializer_.reset(new (std::nothrow) storage::FlashInitializer());
     configASSERT(flash_initializer_);
 
@@ -31,8 +33,8 @@ SystemPipeline::SystemPipeline() {
     default_clock_.reset(new (std::nothrow) system::DefaultClock());
     configASSERT(default_clock_);
 
-    delay_estimator_.reset(new (std::nothrow)
-                               scheduler::ConstantDelayEstimator(pdMS_TO_TICKS(100)));
+    delay_estimator_.reset(new (std::nothrow) scheduler::ConstantDelayEstimator(
+        params.task_scheduler.delay));
     configASSERT(delay_estimator_);
 
     task_scheduler_.reset(new (std::nothrow) scheduler::PeriodicTaskScheduler(
