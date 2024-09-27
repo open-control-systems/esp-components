@@ -40,6 +40,7 @@ public:
 
 private:
     std::unique_ptr<Sensor> sensor_;
+    std::unique_ptr<scheduler::ITask> sensor_task_;
 };
 
 } // namespace ds18b20
