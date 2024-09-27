@@ -15,6 +15,7 @@
 #include "ocs_http/server.h"
 #include "ocs_net/mdns_provider.h"
 #include "ocs_sensor/ds18b20/store.h"
+#include "ocs_system/isuspender.h"
 
 namespace ocs {
 namespace pipeline {
@@ -27,9 +28,11 @@ public:
     //! @params
     //!  - @p server to register endpoints.
     //!  - @p provider to register mDNS txt records.
+    //!  - @p suspender to suspend the system during sensors operations.
     //!  - @p store to perform operations on sensors.
     HttpHandler(http::Server& server,
                 net::MdnsProvider& prover,
+                system::ISuspender& suspender,
                 sensor::ds18b20::Store& store);
 
 private:
@@ -53,7 +56,7 @@ private:
                              onewire::Bus& bus,
                              const sensor::ds18b20::Store::SensorList& sensors);
 
-    status::StatusCode format_rom_codes_(cJSON* json, onewire::Bus& bus);
+    status::StatusCode scan_rom_code_(cJSON* json, onewire::Bus& bus);
 
     status::StatusCode format_sensors_(cJSON* json,
                                        fmt::json::CjsonUniqueBuilder& builder,
@@ -80,10 +83,16 @@ private:
                                             const std::string_view& serial_number,
                                             const std::string_view& resolution);
 
+    status::StatusCode
+    find_rom_code_(onewire::Bus& bus,
+                   sensor::ds18b20::Sensor::Configuration& configuration);
+
     status::StatusCode erase_configuration_(cJSON* json, sensor::ds18b20::Sensor& sensor);
 
     status::StatusCode
     send_response_(unsigned buffer_size, cJSON* json, httpd_req_t* req);
+
+    system::ISuspender& suspender_;
 };
 
 } // namespace ds18b20

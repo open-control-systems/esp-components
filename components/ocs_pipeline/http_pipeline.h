@@ -14,6 +14,7 @@
 #include "ocs_pipeline/http_server_pipeline.h"
 #include "ocs_pipeline/http_system_handler.h"
 #include "ocs_scheduler/itask.h"
+#include "ocs_system/fanout_suspender.h"
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
 #include "ocs_pipeline/http_system_state_handler.h"
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
@@ -35,6 +36,7 @@ public:
 
     //! Initialize.
     HttpPipeline(scheduler::ITask& reboot_task,
+                 system::FanoutSuspender& suspender,
                  fmt::json::IFormatter& telemetry_formatter,
                  fmt::json::FanoutFormatter& registration_formatter,
                  Params params);

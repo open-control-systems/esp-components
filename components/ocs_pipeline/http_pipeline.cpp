@@ -21,11 +21,15 @@ const char* log_tag = "http-pipeline";
 } // namespace
 
 HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
+                           system::FanoutSuspender& suspender,
                            fmt::json::IFormatter& telemetry_formatter,
                            fmt::json::FanoutFormatter& registration_formatter,
                            Params params) {
     http_server_pipeline_.reset(new (std::nothrow) HttpServerPipeline());
     configASSERT(http_server_pipeline_);
+
+    configASSERT(suspender.add(*http_server_pipeline_, "http-server-pipeline")
+                 == status::StatusCode::OK);
 
     http_telemetry_handler_.reset(new (std::nothrow) HttpDataHandler(
         http_server_pipeline_->server(), http_server_pipeline_->mdns(),

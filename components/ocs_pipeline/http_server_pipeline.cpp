@@ -59,6 +59,14 @@ void HttpServerPipeline::handle_disconnected() {
     }
 }
 
+status::StatusCode HttpServerPipeline::handle_suspend() {
+    return mdns_provider_->stop();
+}
+
+status::StatusCode HttpServerPipeline::handle_resume() {
+    return try_start_mdns_();
+}
+
 status::StatusCode HttpServerPipeline::start() {
     auto code = try_start_wifi_();
     if (code != status::StatusCode::OK) {
@@ -68,8 +76,7 @@ status::StatusCode HttpServerPipeline::start() {
 
     code = try_start_mdns_();
     if (code != status::StatusCode::OK) {
-        stop_mdns_();
-        return code;
+        return mdns_provider_->stop();
     }
 
     return status::StatusCode::OK;
@@ -127,14 +134,6 @@ void HttpServerPipeline::stop_wifi_() {
     const auto code = wifi_network_->stop();
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to stop the WiFi connection process: code=%s",
-                 status::code_to_str(code));
-    }
-}
-
-void HttpServerPipeline::stop_mdns_() {
-    const auto code = mdns_provider_->stop();
-    if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to stop the mDNS service: code=%s",
                  status::code_to_str(code));
     }
 }
