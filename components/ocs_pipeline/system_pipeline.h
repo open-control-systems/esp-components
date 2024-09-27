@@ -19,6 +19,7 @@
 #include "ocs_storage/flash_initializer.h"
 #include "ocs_storage/storage_builder.h"
 #include "ocs_system/fanout_reboot_handler.h"
+#include "ocs_system/fanout_suspender.h"
 #include "ocs_system/irebooter.h"
 
 namespace ocs {
@@ -40,6 +41,7 @@ public:
     scheduler::ITaskScheduler& get_task_scheduler();
     scheduler::ITask& get_reboot_task();
     system::FanoutRebootHandler& get_reboot_handler();
+    system::FanoutSuspender& get_suspender();
 
 private:
     std::unique_ptr<storage::FlashInitializer> flash_initializer_;
@@ -57,6 +59,8 @@ private:
 
     std::unique_ptr<scheduler::ITask> reboot_task_;
     std::unique_ptr<scheduler::ITask> reboot_task_async_;
+
+    std::unique_ptr<system::FanoutSuspender> fanout_suspender_;
 };
 
 } // namespace pipeline

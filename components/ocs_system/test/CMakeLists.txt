@@ -3,6 +3,7 @@ idf_component_register(
     "test_default_delayer.cpp"
     "test_busy_loop_delayer.cpp"
     "test_low_power_delayer.cpp"
+    "test_fanout_suspender.cpp"
 
     REQUIRES
     "unity"
