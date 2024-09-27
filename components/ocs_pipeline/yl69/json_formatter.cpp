@@ -8,6 +8,7 @@
 
 #include "ocs_pipeline/yl69/json_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
+#include "ocs_sensor/yl69/soil_status_to_str.h"
 
 namespace ocs {
 namespace pipeline {
@@ -36,9 +37,8 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_string_ref_cs(
-                "sensor_yl69_status",
-                sensor::yl69::SensorData::soil_status_to_str(data.status))) {
+        if (!formatter.add_string_ref_cs("sensor_yl69_status",
+                                         sensor::yl69::soil_status_to_str(data.status))) {
             return status::StatusCode::NoMem;
         }
     } else {
@@ -54,8 +54,8 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_string_ref_cs(
-                "status", sensor::yl69::SensorData::soil_status_to_str(data.status))) {
+        if (!formatter.add_string_ref_cs("status",
+                                         sensor::yl69::soil_status_to_str(data.status))) {
             return status::StatusCode::NoMem;
         }
     }
