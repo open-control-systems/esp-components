@@ -8,6 +8,7 @@
 
 #include "ocs_sensor/ds18b20/sensor_task.h"
 #include "ocs_io/default_gpio.h"
+#include "ocs_scheduler/operation_guard_task.h"
 #include "ocs_system/delayer_configuration.h"
 
 namespace ocs {
@@ -23,10 +24,13 @@ SensorTask::SensorTask(scheduler::ITaskScheduler& task_scheduler,
     sensor_.reset(new (std::nothrow) Sensor(storage, sensor_id));
     configASSERT(sensor_);
 
+    sensor_task_.reset(new (std::nothrow) scheduler::OperationGuardTask(*sensor_));
+    configASSERT(sensor_task_);
+
     configASSERT(sensor_store.add(*sensor_, params.data_pin, "GPIO-DS18B20-onewire")
                  == status::StatusCode::OK);
 
-    configASSERT(task_scheduler.add(*sensor_, task_id, params.read_interval)
+    configASSERT(task_scheduler.add(*sensor_task_, task_id, params.read_interval)
                  == status::StatusCode::OK);
 }
 
