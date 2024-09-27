@@ -17,6 +17,7 @@ idf_component_register(
     "future.cpp"
     "string_ops.cpp"
     "rate_limiter.cpp"
+    "operation_guard.cpp"
 
     REQUIRES
     "json"

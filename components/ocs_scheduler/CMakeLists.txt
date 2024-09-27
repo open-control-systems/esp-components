@@ -9,6 +9,7 @@ idf_component_register(
     "async_func.cpp"
     "periodic_task_scheduler.cpp"
     "constant_delay_estimator.cpp"
+    "operation_guard_task.cpp"
 
     REQUIRES
     "freertos"
