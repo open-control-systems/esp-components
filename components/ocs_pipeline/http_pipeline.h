@@ -15,6 +15,7 @@
 #include "ocs_pipeline/http_system_handler.h"
 #include "ocs_scheduler/itask.h"
 #include "ocs_system/fanout_suspender.h"
+
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
 #include "ocs_pipeline/http_system_state_handler.h"
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
