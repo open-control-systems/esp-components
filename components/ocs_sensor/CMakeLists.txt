@@ -4,6 +4,7 @@ idf_component_register(
     "yl69/relay_sensor.cpp"
     "yl69/default_sensor_task.cpp"
     "yl69/safe_sensor_task.cpp"
+    "yl69/soil_status_to_str.cpp"
     "ldr/sensor.cpp"
     "ldr/sensor_task.cpp"
     "ds18b20/store.cpp"

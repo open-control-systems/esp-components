@@ -22,6 +22,7 @@
 #include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_scheduler/itimer.h"
 #include "ocs_sensor/basic_sensor.h"
+#include "ocs_sensor/yl69/soil_status.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
@@ -31,17 +32,6 @@ namespace yl69 {
 
 //! Various sensor characteristics.
 struct SensorData {
-    //! Known soil statuses.
-    enum class SoilStatus {
-        None,
-        Dry,
-        Wet,
-        Last,
-    };
-
-    //! Convert soil moisture status to human-readable description.
-    static const char* soil_status_to_str(SoilStatus);
-
     int raw { 0 };
     int voltage { 0 };
     int moisture { 0 };
@@ -72,8 +62,11 @@ public:
 
 private:
     int calculate_moisture_(int raw) const;
-    SensorData::SoilStatus calculate_status_(int raw) const;
-    SensorData::SoilStatus update_data_(int raw, int voltage);
+    SoilStatus calculate_status_(int raw) const;
+    SoilStatus update_data_(int raw, int voltage);
+
+    // Saturated, Wet, Depletion, Dry.
+    static const unsigned interval_count_ { 4 };
 
     const Params params_;
 

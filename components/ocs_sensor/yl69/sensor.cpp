@@ -15,21 +15,6 @@ namespace ocs {
 namespace sensor {
 namespace yl69 {
 
-const char* SensorData::soil_status_to_str(SensorData::SoilStatus status) {
-    switch (status) {
-    case SensorData::SoilStatus::Dry:
-        return "dry";
-
-    case SensorData::SoilStatus::Wet:
-        return "wet";
-
-    default:
-        break;
-    }
-
-    return "<none>";
-}
-
 Sensor::Sensor(core::IClock& clock,
                io::AdcStore& adc_store,
                storage::IStorage& storage,
@@ -48,7 +33,7 @@ Sensor::Sensor(core::IClock& clock,
 
     dry_state_task_.reset(new (std::nothrow) diagnostic::StateCounter(
         storage, clock, "c_sen_yl69_dry", core::Second,
-        static_cast<diagnostic::StateCounter::State>(SensorData::SoilStatus::Dry)));
+        static_cast<diagnostic::StateCounter::State>(SoilStatus::Dry)));
     configASSERT(dry_state_task_);
 
     counter_holder.add(*dry_state_task_);
@@ -56,7 +41,7 @@ Sensor::Sensor(core::IClock& clock,
 
     wet_state_task_.reset(new (std::nothrow) diagnostic::StateCounter(
         storage, clock, "c_sen_yl69_wet", core::Second,
-        static_cast<diagnostic::StateCounter::State>(SensorData::SoilStatus::Wet)));
+        static_cast<diagnostic::StateCounter::State>(SoilStatus::Wet)));
     configASSERT(wet_state_task_);
 
     counter_holder.add(*wet_state_task_);
@@ -92,11 +77,11 @@ status::StatusCode Sensor::run() {
 }
 
 int Sensor::calculate_moisture_(int raw) const {
-    if (raw >= params_.value_max) {
+    if (raw > params_.value_max) {
         return 0;
     }
 
-    if (raw <= params_.value_min) {
+    if (raw < params_.value_min) {
         return 100;
     }
 
@@ -108,15 +93,28 @@ int Sensor::calculate_moisture_(int raw) const {
     return 100 * remain;
 }
 
-SensorData::SoilStatus Sensor::calculate_status_(int raw) const {
-    if (raw >= params_.value_max) {
-        return SensorData::SoilStatus::Dry;
+SoilStatus Sensor::calculate_status_(int raw) const {
+    if (raw < params_.value_min || raw > params_.value_max) {
+        return SoilStatus::Error;
     }
 
-    return SensorData::SoilStatus::Wet;
+    const unsigned interval_len =
+        (params_.value_max - params_.value_min) / interval_count_;
+
+    if (raw < params_.value_min + interval_len) {
+        return SoilStatus::Saturated;
+    }
+    if (raw < params_.value_min + interval_len + interval_len) {
+        return SoilStatus::Wet;
+    }
+    if (raw < params_.value_min + interval_len + interval_len + interval_len) {
+        return SoilStatus::Depletion;
+    }
+
+    return SoilStatus::Dry;
 }
 
-SensorData::SoilStatus Sensor::update_data_(int raw, int voltage) {
+SoilStatus Sensor::update_data_(int raw, int voltage) {
     SensorData data;
 
     data.raw = raw;
