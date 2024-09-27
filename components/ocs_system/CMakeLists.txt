@@ -14,6 +14,8 @@ idf_component_register(
     "busy_loop_delayer.cpp"
     "low_power_delayer.cpp"
     "default_randomizer.cpp"
+    "fanout_suspender.cpp"
+    "suspender_guard.cpp"
 
     REQUIRES
     "esp_timer"

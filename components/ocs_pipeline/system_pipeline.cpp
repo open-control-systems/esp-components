@@ -63,6 +63,9 @@ SystemPipeline::SystemPipeline() {
     reboot_task_async_.reset(new (std::nothrow)
                                  scheduler::AsyncFunc(*func_scheduler_, *reboot_task_));
     configASSERT(reboot_task_async_);
+
+    fanout_suspender_.reset(new (std::nothrow) system::FanoutSuspender());
+    configASSERT(fanout_suspender_);
 }
 
 status::StatusCode SystemPipeline::start() {
@@ -93,6 +96,10 @@ scheduler::ITask& SystemPipeline::get_reboot_task() {
 
 system::FanoutRebootHandler& SystemPipeline::get_reboot_handler() {
     return *fanout_reboot_handler_;
+}
+
+system::FanoutSuspender& SystemPipeline::get_suspender() {
+    return *fanout_suspender_;
 }
 
 } // namespace pipeline
