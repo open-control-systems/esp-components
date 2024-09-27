@@ -32,7 +32,7 @@ TEST_CASE("Periodic task scheduler: add task",
     test::TestTask task(status::StatusCode::OK);
     ConstantDelayEstimator estimator(delay);
 
-    PeriodicTaskScheduler task_scheduler(clock, estimator, 16);
+    PeriodicTaskScheduler task_scheduler(clock, estimator, "scheduler", 16);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
                       task_scheduler.add(task, task_id, interval));
@@ -65,7 +65,7 @@ TEST_CASE("Periodic task scheduler: add same task twice",
     test::TestTask task(status::StatusCode::OK);
     ConstantDelayEstimator estimator(delay);
 
-    PeriodicTaskScheduler task_scheduler(clock, estimator, 16);
+    PeriodicTaskScheduler task_scheduler(clock, estimator, "scheduler", 16);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
                       task_scheduler.add(task, "test-task", core::Second));
@@ -84,7 +84,7 @@ TEST_CASE("Periodic task scheduler: add multiple tasks",
 
     ConstantDelayEstimator estimator(delay);
 
-    PeriodicTaskScheduler task_scheduler(clock, estimator, 16);
+    PeriodicTaskScheduler task_scheduler(clock, estimator, "scheduler", 16);
 
     using TaskPtr = std::shared_ptr<test::TestTask>;
     using TaskList = std::vector<TaskPtr>;
@@ -142,7 +142,7 @@ TEST_CASE("Periodic task scheduler: max number of tasks overflow",
     clock.value = 42;
 
     ConstantDelayEstimator estimator(delay);
-    PeriodicTaskScheduler task_scheduler(clock, estimator, 1);
+    PeriodicTaskScheduler task_scheduler(clock, estimator, "scheduler", 1);
 
     test::TestTask task1(status::StatusCode::OK);
     test::TestTask task2(status::StatusCode::OK);
