@@ -49,7 +49,7 @@ private:
     static const TickType_t write_wait_interval_ { pdMS_TO_TICKS(5 * 1000) };
     static const TickType_t erase_wait_interval_ { pdMS_TO_TICKS(5 * 1000) };
 
-    status::StatusCode handle_scan_(sensor::ds18b20::Store& store, httpd_req_t* req);
+    status::StatusCode handle_scan_(httpd_req_t* req);
 
     status::StatusCode scan_(cJSON* json,
                              fmt::json::CjsonUniqueBuilder& builder,
@@ -66,16 +66,14 @@ private:
                                       fmt::json::CjsonUniqueBuilder& builder,
                                       const sensor::ds18b20::Sensor& sensors);
 
-    status::StatusCode handle_configuration_(sensor::ds18b20::Store& store,
-                                             httpd_req_t* req,
+    status::StatusCode handle_configuration_(httpd_req_t* req,
                                              unsigned wait_interval,
                                              unsigned response_size,
                                              HandleConfigurationFunc func);
 
     status::StatusCode read_configuration_(cJSON* json, sensor::ds18b20::Sensor&);
 
-    status::StatusCode handle_write_configuration_(sensor::ds18b20::Store& store,
-                                                   httpd_req_t* req);
+    status::StatusCode handle_write_configuration_(httpd_req_t* req);
 
     status::StatusCode write_configuration_(cJSON* json,
                                             onewire::Bus& bus,
@@ -93,6 +91,7 @@ private:
     send_response_(unsigned buffer_size, cJSON* json, httpd_req_t* req);
 
     system::ISuspender& suspender_;
+    sensor::ds18b20::Store& store_;
 };
 
 } // namespace ds18b20

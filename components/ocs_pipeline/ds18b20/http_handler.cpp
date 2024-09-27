@@ -113,30 +113,28 @@ HttpHandler::HttpHandler(http::Server& server,
                          net::MdnsProvider& provider,
                          system::ISuspender& suspender,
                          sensor::ds18b20::Store& store)
-    : suspender_(suspender) {
-    server.add_GET("/sensor/ds18b20/scan", [this, &store](httpd_req_t* req) {
-        return handle_scan_(store, req);
+    : suspender_(suspender)
+    , store_(store) {
+    server.add_GET("/sensor/ds18b20/scan", [this](httpd_req_t* req) {
+        return handle_scan_(req);
     });
-    server.add_GET("/sensor/ds18b20/read_configuration",
-                   [this, &store](httpd_req_t* req) {
-                       return handle_configuration_(
-                           store, req, read_wait_interval_, read_response_buffer_size_,
-                           [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
-                               return read_configuration_(json, sensor);
-                           });
-                   });
-    server.add_GET("/sensor/ds18b20/write_configuration",
-                   [this, &store](httpd_req_t* req) {
-                       return handle_write_configuration_(store, req);
-                   });
-    server.add_GET("/sensor/ds18b20/erase_configuration",
-                   [this, &store](httpd_req_t* req) {
-                       return handle_configuration_(
-                           store, req, erase_wait_interval_, erase_response_buffer_size_,
-                           [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
-                               return erase_configuration_(json, sensor);
-                           });
-                   });
+    server.add_GET("/sensor/ds18b20/read_configuration", [this](httpd_req_t* req) {
+        return handle_configuration_(
+            req, read_wait_interval_, read_response_buffer_size_,
+            [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
+                return read_configuration_(json, sensor);
+            });
+    });
+    server.add_GET("/sensor/ds18b20/write_configuration", [this](httpd_req_t* req) {
+        return handle_write_configuration_(req);
+    });
+    server.add_GET("/sensor/ds18b20/erase_configuration", [this](httpd_req_t* req) {
+        return handle_configuration_(
+            req, erase_wait_interval_, erase_response_buffer_size_,
+            [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
+                return erase_configuration_(json, sensor);
+            });
+    });
 
     provider.add_txt_records(net::MdnsProvider::Service::Http,
                              net::MdnsProvider::Proto::Tcp,
@@ -160,8 +158,7 @@ HttpHandler::HttpHandler(http::Server& server,
                              });
 }
 
-status::StatusCode HttpHandler::handle_scan_(sensor::ds18b20::Store& store,
-                                             httpd_req_t* req) {
+status::StatusCode HttpHandler::handle_scan_(httpd_req_t* req) {
     const auto values = http::UriOps::parse_query(req->uri);
     const auto it = values.find("gpio");
     if (it == values.end()) {
@@ -183,7 +180,7 @@ status::StatusCode HttpHandler::handle_scan_(sensor::ds18b20::Store& store,
         return status::StatusCode::NoMem;
     }
 
-    auto future = store.schedule(
+    auto future = store_.schedule(
         static_cast<gpio_num_t>(gpio),
         [this, &json, &builder](onewire::Bus& bus,
                                 sensor::ds18b20::Store::SensorList& sensors) {
@@ -287,8 +284,7 @@ status::StatusCode HttpHandler::format_sensor_(cJSON* array,
 }
 
 status::StatusCode
-HttpHandler::handle_configuration_(sensor::ds18b20::Store& store,
-                                   httpd_req_t* req,
+HttpHandler::handle_configuration_(httpd_req_t* req,
                                    unsigned wait_interval,
                                    unsigned response_size,
                                    HttpHandler::HandleConfigurationFunc func) {
@@ -319,7 +315,7 @@ HttpHandler::handle_configuration_(sensor::ds18b20::Store& store,
         return status::StatusCode::NoMem;
     }
 
-    auto future = store.schedule(
+    auto future = store_.schedule(
         static_cast<gpio_num_t>(gpio),
         [this, &json, &sensor_id, func](onewire::Bus& bus,
                                         sensor::ds18b20::Store::SensorList& sensors) {
@@ -359,8 +355,7 @@ status::StatusCode HttpHandler::read_configuration_(cJSON* json,
     return status::StatusCode::OK;
 }
 
-status::StatusCode HttpHandler::handle_write_configuration_(sensor::ds18b20::Store& store,
-                                                            httpd_req_t* req) {
+status::StatusCode HttpHandler::handle_write_configuration_(httpd_req_t* req) {
     const auto values = http::UriOps::parse_query(req->uri);
 
     const auto gpio_it = values.find("gpio");
@@ -398,7 +393,7 @@ status::StatusCode HttpHandler::handle_write_configuration_(sensor::ds18b20::Sto
         return status::StatusCode::NoMem;
     }
 
-    auto future = store.schedule(
+    auto future = store_.schedule(
         static_cast<gpio_num_t>(gpio),
         [this, &json, &sensor_id, &serial_number,
          &resolution](onewire::Bus& bus, sensor::ds18b20::Store::SensorList& sensors) {
