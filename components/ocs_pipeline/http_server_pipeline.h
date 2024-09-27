@@ -15,11 +15,14 @@
 #include "ocs_net/basic_network.h"
 #include "ocs_net/inetwork_handler.h"
 #include "ocs_net/mdns_provider.h"
+#include "ocs_system/isuspend_handler.h"
 
 namespace ocs {
 namespace pipeline {
 
-class HttpServerPipeline : public net::INetworkHandler, public core::NonCopyable<> {
+class HttpServerPipeline : public net::INetworkHandler,
+                           public system::ISuspendHandler,
+                           public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -32,6 +35,12 @@ public:
 
     //! Stop HTTP server.
     void handle_disconnected() override;
+
+    //! Disable mDNS.
+    status::StatusCode handle_suspend() override;
+
+    //! Enable mDNS.
+    status::StatusCode handle_resume() override;
 
     //! Start network services.
     status::StatusCode start();
@@ -50,7 +59,6 @@ private:
     void stop_wifi_();
 
     status::StatusCode try_start_mdns_();
-    void stop_mdns_();
 
     std::unique_ptr<net::BasicNetwork> wifi_network_;
     std::unique_ptr<http::Server> http_server_;

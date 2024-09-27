@@ -9,6 +9,7 @@
 #include <charconv>
 #include <cstring>
 
+#include "ocs_core/operation_guard.h"
 #include "ocs_fmt/json/cjson_array_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 #include "ocs_fmt/json/dynamic_formatter.h"
@@ -19,6 +20,7 @@
 #include "ocs_pipeline/ds18b20/http_handler.h"
 #include "ocs_sensor/ds18b20/parse_configuration.h"
 #include "ocs_sensor/ds18b20/resolution_to_str.h"
+#include "ocs_system/suspender_guard.h"
 
 namespace ocs {
 namespace pipeline {
@@ -57,11 +59,61 @@ format_configuration(cJSON* json,
     return status::StatusCode::OK;
 }
 
+status::StatusCode scan_rom_codes(fmt::json::CjsonArrayFormatter& formatter,
+                                  onewire::Bus& bus) {
+    onewire::RomCodeScanner scanner(bus);
+
+    while (true) {
+        onewire::RomCode rom_code;
+
+        const auto code = scanner.scan(rom_code);
+        if (code != status::StatusCode::OK) {
+            if (code != status::StatusCode::NoData) {
+                return code;
+            }
+
+            break;
+        }
+
+        onewire::serial_number_to_str str(rom_code.serial_number);
+        if (!formatter.append_string(str.c_str())) {
+            return status::StatusCode::NoMem;
+        }
+    }
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode find_rom_code(onewire::Bus& bus,
+                                 sensor::ds18b20::Sensor::Configuration& configuration) {
+    onewire::RomCodeScanner scanner(bus);
+
+    while (true) {
+        onewire::RomCode rom_code;
+
+        const auto code = scanner.scan(rom_code);
+        if (code != status::StatusCode::OK) {
+            return code;
+        }
+
+        if (memcmp(rom_code.serial_number, configuration.rom_code.serial_number,
+                   sizeof(rom_code.serial_number))
+            == 0) {
+            configuration.rom_code = rom_code;
+            break;
+        }
+    }
+
+    return status::StatusCode::OK;
+}
+
 } // namespace
 
 HttpHandler::HttpHandler(http::Server& server,
                          net::MdnsProvider& provider,
-                         sensor::ds18b20::Store& store) {
+                         system::ISuspender& suspender,
+                         sensor::ds18b20::Store& store)
+    : suspender_(suspender) {
     server.add_GET("/sensor/ds18b20/scan", [this, &store](httpd_req_t* req) {
         return handle_scan_(store, req);
     });
@@ -154,7 +206,7 @@ status::StatusCode HttpHandler::scan_(cJSON* json,
                                       fmt::json::CjsonUniqueBuilder& builder,
                                       onewire::Bus& bus,
                                       const sensor::ds18b20::Store::SensorList& sensors) {
-    auto code = format_rom_codes_(json, bus);
+    auto code = scan_rom_code_(json, bus);
     if (code != status::StatusCode::OK) {
         return code;
     }
@@ -167,7 +219,7 @@ status::StatusCode HttpHandler::scan_(cJSON* json,
     return status::StatusCode::OK;
 }
 
-status::StatusCode HttpHandler::format_rom_codes_(cJSON* json, onewire::Bus& bus) {
+status::StatusCode HttpHandler::scan_rom_code_(cJSON* json, onewire::Bus& bus) {
     auto array = cJSON_AddArrayToObject(json, "rom_codes");
     if (!array) {
         return status::StatusCode::NoMem;
@@ -175,27 +227,10 @@ status::StatusCode HttpHandler::format_rom_codes_(cJSON* json, onewire::Bus& bus
 
     fmt::json::CjsonArrayFormatter formatter(array);
 
-    onewire::RomCodeScanner scanner(bus);
+    system::SuspenderGuard suspender_guard(suspender_);
+    core::OperationGuard operation_guard;
 
-    while (true) {
-        onewire::RomCode rom_code;
-
-        const auto code = scanner.scan(rom_code);
-        if (code != status::StatusCode::OK) {
-            if (code != status::StatusCode::NoData) {
-                return code;
-            }
-
-            break;
-        }
-
-        onewire::serial_number_to_str str(rom_code.serial_number);
-        if (!formatter.append_string(str.c_str())) {
-            return status::StatusCode::NoMem;
-        }
-    }
-
-    return status::StatusCode::OK;
+    return scan_rom_codes(formatter, bus);
 }
 
 status::StatusCode
@@ -402,27 +437,9 @@ HttpHandler::write_configuration_(cJSON* json,
         return code;
     }
 
-    onewire::RomCodeScanner scanner(bus);
-
-    while (true) {
-        onewire::RomCode rom_code;
-
-        const auto code = scanner.scan(rom_code);
-        if (code != status::StatusCode::OK) {
-            if (code != status::StatusCode::NoData) {
-                return code;
-            }
-
-            // Required rom code wasn't found.
-            return status::StatusCode::InvalidArg;
-        }
-
-        if (memcmp(rom_code.serial_number, configuration.rom_code.serial_number,
-                   sizeof(rom_code.serial_number))
-            == 0) {
-            configuration.rom_code = rom_code;
-            break;
-        }
+    code = find_rom_code_(bus, configuration);
+    if (code != status::StatusCode::OK) {
+        return code;
     }
 
     code = sensor->write_configuration(bus, configuration);
@@ -436,6 +453,16 @@ HttpHandler::write_configuration_(cJSON* json,
     }
 
     return status::StatusCode::OK;
+}
+
+status::StatusCode
+HttpHandler::find_rom_code_(onewire::Bus& bus,
+                            sensor::ds18b20::Sensor::Configuration& configuration) {
+    system::SuspenderGuard suspender_guard(suspender_);
+
+    core::OperationGuard operation_guard;
+
+    return find_rom_code(bus, configuration);
 }
 
 status::StatusCode HttpHandler::erase_configuration_(cJSON* json,
