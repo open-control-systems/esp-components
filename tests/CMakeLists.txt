@@ -16,6 +16,7 @@ set(TEST_COMPONENTS
     ocs_system
     ocs_sensor
     ocs_http
+    ocs_control
 )
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
