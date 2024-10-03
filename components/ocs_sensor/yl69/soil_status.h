@@ -17,6 +17,7 @@ namespace yl69 {
 //! @reference
 //!  - https://connectedcrops.ca/the-ultimate-guide-to-soil-moisture/
 enum class SoilStatus {
+    //! Default status.
     None,
 
     //! Completely wet soil, the soil is happy.
@@ -31,8 +32,11 @@ enum class SoilStatus {
     //! Totally dry soil, needs watering.
     Dry,
 
-    //! Sensor is broken, or disconnected, or reported invalid values.
+    //! Sensor is broken, disconnected or reporting invalid values.
     Error,
+
+    //! Invalid status.
+    Last,
 };
 
 } // namespace yl69
