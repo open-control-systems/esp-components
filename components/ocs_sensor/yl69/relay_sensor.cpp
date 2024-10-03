@@ -9,7 +9,7 @@
 #include "ocs_sensor/yl69/relay_sensor.h"
 #include "ocs_io/default_gpio.h"
 #include "ocs_io/delay_gpio.h"
-#include "ocs_io/oneshot_gpio.h"
+#include "ocs_io/gpio_guard.h"
 
 namespace ocs {
 namespace sensor {
@@ -17,7 +17,8 @@ namespace yl69 {
 
 RelaySensor::RelaySensor(scheduler::ITask& task,
                          gpio_num_t gpio,
-                         TickType_t turn_on_delay_interval) {
+                         TickType_t turn_on_delay_interval)
+    : task_(task) {
     default_gpio_.reset(new (std::nothrow) io::DefaultGpio("relay-sensor", gpio));
     configASSERT(default_gpio_);
 
@@ -30,12 +31,14 @@ RelaySensor::RelaySensor(scheduler::ITask& task,
         }));
     configASSERT(delay_gpio_);
 
-    task_.reset(new (std::nothrow) io::OneshotGpio(task, *delay_gpio_));
-    configASSERT(task_);
+    gpio_ = delay_gpio_.get();
+    configASSERT(gpio_);
 }
 
 status::StatusCode RelaySensor::run() {
-    return task_->run();
+    io::GpioGuard gpio(*gpio_);
+
+    return task_.run();
 }
 
 } // namespace yl69

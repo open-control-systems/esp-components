@@ -29,16 +29,20 @@ public:
     //!  - @p task to perform actual sensor reading.
     //!  - @p gpio - relay GPIO.
     //!  - @p turn_on_delay_interval - how long to wait after the relay is activated.
-    RelaySensor(ITask& task, gpio_num_t gpio, TickType_t turn_on_delay_interval);
+    RelaySensor(scheduler::ITask& task,
+                gpio_num_t gpio,
+                TickType_t turn_on_delay_interval);
 
     //! Energize the relay, run the underlying task, de-energized the relay.
     status::StatusCode run() override;
 
 private:
+    scheduler::ITask& task_;
+
     std::unique_ptr<io::IGpio> default_gpio_;
     std::unique_ptr<io::IGpio> delay_gpio_;
 
-    std::unique_ptr<scheduler::ITask> task_;
+    io::IGpio* gpio_ { nullptr };
 };
 
 } // namespace yl69

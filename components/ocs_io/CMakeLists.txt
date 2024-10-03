@@ -1,9 +1,9 @@
 idf_component_register(
     SRCS
-    "oneshot_gpio.cpp"
     "default_gpio.cpp"
     "basic_gpio.cpp"
     "delay_gpio.cpp"
+    "gpio_guard.cpp"
     "oneshot_adc.cpp"
     "adc_store.cpp"
 

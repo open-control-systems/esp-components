@@ -33,6 +33,7 @@ idf_component_register(
     "ocs_diagnostic"
     "ocs_storage"
     "ocs_fmt"
+    "ocs_control"
 
     INCLUDE_DIRS
     ".."

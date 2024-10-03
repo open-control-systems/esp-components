@@ -8,53 +8,41 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_core/log.h"
 #include "ocs_core/time.h"
 #include "ocs_sensor/yl69/sensor.h"
+#include "ocs_status/code_to_str.h"
 
 namespace ocs {
 namespace sensor {
 namespace yl69 {
 
-Sensor::Sensor(core::IClock& clock,
-               io::AdcStore& adc_store,
-               storage::IStorage& storage,
-               system::FanoutRebootHandler& reboot_handler,
-               scheduler::ITaskScheduler& task_scheduler,
-               diagnostic::BasicCounterHolder& counter_holder,
+namespace {
+
+SoilStatus parse_status(control::FsmBlock::State state) {
+    if (state < static_cast<control::FsmBlock::State>(SoilStatus::None)
+        && state >= static_cast<control::FsmBlock::State>(SoilStatus::Last)) {
+        return SoilStatus::None;
+    }
+
+    return static_cast<SoilStatus>(state);
+}
+
+const char* log_tag = "sensor-yl69";
+
+} // namespace
+
+Sensor::Sensor(io::AdcStore& adc_store,
+               control::FsmBlock& fsm_block,
                const char* sensor_id,
-               const char* task_id,
                Params params)
     : BasicSensor(sensor_id)
-    , params_(params) {
+    , params_(params)
+    , fsm_block_(fsm_block) {
     configASSERT(params_.value_min < params_.value_max);
 
     adc_ = adc_store.add(params_.adc_channel);
     configASSERT(adc_);
-
-    dry_state_task_.reset(new (std::nothrow) diagnostic::StateCounter(
-        storage, clock, "c_sen_yl69_dry", core::Second,
-        static_cast<diagnostic::StateCounter::State>(SoilStatus::Dry)));
-    configASSERT(dry_state_task_);
-
-    counter_holder.add(*dry_state_task_);
-    reboot_handler.add(*dry_state_task_);
-
-    wet_state_task_.reset(new (std::nothrow) diagnostic::StateCounter(
-        storage, clock, "c_sen_yl69_wet", core::Second,
-        static_cast<diagnostic::StateCounter::State>(SoilStatus::Wet)));
-    configASSERT(wet_state_task_);
-
-    counter_holder.add(*wet_state_task_);
-    reboot_handler.add(*wet_state_task_);
-
-    fanout_task_.reset(new (std::nothrow) scheduler::FanoutTask());
-    configASSERT(fanout_task_);
-
-    fanout_task_->add(*dry_state_task_);
-    fanout_task_->add(*wet_state_task_);
-
-    configASSERT(task_scheduler.add(*fanout_task_, task_id, core::Minute * 30)
-                 == status::StatusCode::OK);
 }
 
 status::StatusCode Sensor::run() {
@@ -68,10 +56,25 @@ status::StatusCode Sensor::run() {
         return conv_result.code;
     }
 
-    const auto status = update_data_(read_result.value, conv_result.value);
+    fsm_block_.update();
 
-    dry_state_task_->update(static_cast<diagnostic::StateCounter::State>(status));
-    wet_state_task_->update(static_cast<diagnostic::StateCounter::State>(status));
+    fsm_block_.set_next(
+        static_cast<control::FsmBlock::State>(calculate_status_(read_result.value)));
+
+    if (fsm_block_.is_in_transit()) {
+        const auto code = fsm_block_.transit();
+        if (code != status::StatusCode::OK) {
+            ocs_logw(
+                log_tag,
+                "failed to transit block to the next state: id=%s code=%s prev_state=%u "
+                "curr_state=%u prev_dur=%lli curr_dur=%lli",
+                id(), status::code_to_str(code), fsm_block_.previous_state(),
+                fsm_block_.current_state(), fsm_block_.previous_state_duration(),
+                fsm_block_.current_state_duration());
+        }
+    }
+
+    update_data_(read_result.value, conv_result.value);
 
     return status::StatusCode::OK;
 }
@@ -98,8 +101,11 @@ SoilStatus Sensor::calculate_status_(int raw) const {
         return SoilStatus::Error;
     }
 
+    // Saturated, Wet, Depletion, Dry.
+    const unsigned interval_count { 4 };
+
     const unsigned interval_len =
-        (params_.value_max - params_.value_min) / interval_count_;
+        (params_.value_max - params_.value_min) / interval_count;
 
     if (raw < params_.value_min + interval_len) {
         return SoilStatus::Saturated;
@@ -114,17 +120,19 @@ SoilStatus Sensor::calculate_status_(int raw) const {
     return SoilStatus::Dry;
 }
 
-SoilStatus Sensor::update_data_(int raw, int voltage) {
+void Sensor::update_data_(int raw, int voltage) {
     SensorData data;
 
     data.raw = raw;
     data.voltage = voltage;
     data.moisture = calculate_moisture_(raw);
-    data.status = calculate_status_(raw);
+    data.prev_status = parse_status(fsm_block_.previous_state());
+    data.curr_status = parse_status(fsm_block_.current_state());
+    data.prev_status_duration = fsm_block_.previous_state_duration();
+    data.curr_status_duration = fsm_block_.current_state_duration();
+    data.write_count = fsm_block_.write_count();
 
     set_data_(data);
-
-    return data.status;
 }
 
 } // namespace yl69

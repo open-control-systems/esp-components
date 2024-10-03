@@ -10,21 +10,19 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_io/igpio.h"
-#include "ocs_scheduler/itask.h"
 
 namespace ocs {
 namespace io {
 
-class OneshotGpio : public scheduler::ITask, public core::NonCopyable<> {
+class GpioGuard : public core::NonCopyable<> {
 public:
-    //! Initialize.
-    OneshotGpio(scheduler::ITask& task, IGpio& gpio);
+    //! Turn on @p gpio on initialization.
+    explicit GpioGuard(IGpio& gpio);
 
-    //! Switch the GPIO once.
-    status::StatusCode run() override;
+    //! Turn off gpio on de-initialization.
+    ~GpioGuard();
 
 private:
-    scheduler::ITask& task_;
     IGpio& gpio_;
 };
 

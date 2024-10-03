@@ -11,20 +11,13 @@
 #include <atomic>
 #include <memory>
 
-#include "ocs_core/iclock.h"
+#include "ocs_control/fsm_block.h"
+#include "ocs_control/ifsm_handler.h"
 #include "ocs_core/noncopyable.h"
-#include "ocs_diagnostic/basic_counter_holder.h"
-#include "ocs_diagnostic/icounter.h"
-#include "ocs_diagnostic/state_counter.h"
 #include "ocs_io/adc_store.h"
 #include "ocs_io/iadc.h"
-#include "ocs_scheduler/fanout_task.h"
-#include "ocs_scheduler/itask_scheduler.h"
-#include "ocs_scheduler/itimer.h"
 #include "ocs_sensor/basic_sensor.h"
 #include "ocs_sensor/yl69/soil_status.h"
-#include "ocs_storage/istorage.h"
-#include "ocs_system/fanout_reboot_handler.h"
 
 namespace ocs {
 namespace sensor {
@@ -35,10 +28,16 @@ struct SensorData {
     int raw { 0 };
     int voltage { 0 };
     int moisture { 0 };
-    SoilStatus status { SoilStatus::None };
+    SoilStatus prev_status { SoilStatus::None };
+    SoilStatus curr_status { SoilStatus::None };
+    core::microseconds_t prev_status_duration { 0 };
+    core::microseconds_t curr_status_duration { 0 };
+    uint64_t write_count { 0 };
 };
 
-class Sensor : public BasicSensor<SensorData>, public core::NonCopyable<> {
+class Sensor : public scheduler::ITask,
+               public BasicSensor<SensorData>,
+               public core::NonCopyable<> {
 public:
     struct Params {
         unsigned value_min { 0 };
@@ -47,14 +46,9 @@ public:
     };
 
     //! Initialize.
-    Sensor(core::IClock& clock,
-           io::AdcStore& adc_store,
-           storage::IStorage& storage,
-           system::FanoutRebootHandler& reboot_handler,
-           scheduler::ITaskScheduler& task_scheduler,
-           diagnostic::BasicCounterHolder& counter_holder,
+    Sensor(io::AdcStore& adc_store,
+           control::FsmBlock& fsm_block,
            const char* sensor_id,
-           const char* task_id,
            Params params);
 
     //! Read sensor data.
@@ -63,19 +57,13 @@ public:
 private:
     int calculate_moisture_(int raw) const;
     SoilStatus calculate_status_(int raw) const;
-    SoilStatus update_data_(int raw, int voltage);
 
-    // Saturated, Wet, Depletion, Dry.
-    static const unsigned interval_count_ { 4 };
+    void update_data_(int raw, int voltage);
 
     const Params params_;
 
+    control::FsmBlock& fsm_block_;
     io::IAdc* adc_ { nullptr };
-
-    std::unique_ptr<diagnostic::StateCounter> dry_state_task_;
-    std::unique_ptr<diagnostic::StateCounter> wet_state_task_;
-
-    std::unique_ptr<scheduler::FanoutTask> fanout_task_;
 };
 
 } // namespace yl69
