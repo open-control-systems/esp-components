@@ -76,24 +76,20 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
         }
 
         if (!formatter.add_string_ref_cs(
-                "sensor_yl69_prev_status",
-                sensor::yl69::soil_status_to_str(data.prev_status))) {
+                "prev_status", sensor::yl69::soil_status_to_str(data.prev_status))) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_number_cs("sensor_yl69_prev_status_dur",
-                                     data.prev_status_duration)) {
+        if (!formatter.add_number_cs("prev_status_dur", data.prev_status_duration)) {
             return status::StatusCode::NoMem;
         }
 
         if (!formatter.add_string_ref_cs(
-                "sensor_yl69_curr_status",
-                sensor::yl69::soil_status_to_str(data.curr_status))) {
+                "curr_status", sensor::yl69::soil_status_to_str(data.curr_status))) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_number_cs("sensor_yl69_curr_status_dur",
-                                     data.curr_status_duration)) {
+        if (!formatter.add_number_cs("curr_status_dur", data.curr_status_duration)) {
             return status::StatusCode::NoMem;
         }
 
