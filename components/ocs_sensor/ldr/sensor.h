@@ -11,6 +11,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_io/adc_store.h"
 #include "ocs_io/iadc.h"
+#include "ocs_scheduler/itask.h"
 #include "ocs_sensor/basic_sensor.h"
 
 namespace ocs {
@@ -24,7 +25,9 @@ struct SensorData {
     int lightness { 0 };
 };
 
-class Sensor : public BasicSensor<SensorData>, public core::NonCopyable<> {
+class Sensor : public scheduler::ITask,
+               public BasicSensor<SensorData>,
+               public core::NonCopyable<> {
 public:
     struct Params {
         unsigned value_min { 0 };

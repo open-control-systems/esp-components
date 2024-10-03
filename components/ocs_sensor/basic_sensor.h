@@ -12,13 +12,11 @@
 #include <string>
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_scheduler/itask.h"
 
 namespace ocs {
 namespace sensor {
 
-template <typename T>
-class BasicSensor : public scheduler::ITask, public core::NonCopyable<BasicSensor<T>> {
+template <typename T> class BasicSensor : public core::NonCopyable<BasicSensor<T>> {
 public:
     //! Initialize.
     //!
