@@ -14,7 +14,7 @@
 namespace ocs {
 namespace core {
 
-TEST_CASE("Lock/unlock static mutex", "[ocs_core], [static_mutex]") {
+TEST_CASE("Static mutex: lock/unlock", "[ocs_core], [static_mutex]") {
     StaticMutex mu;
     LockGuard lock(mu);
 }
