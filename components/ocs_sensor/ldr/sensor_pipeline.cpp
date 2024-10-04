@@ -14,13 +14,15 @@ namespace ldr {
 
 SensorPipeline::SensorPipeline(io::AdcStore& adc_store,
                                scheduler::ITaskScheduler& task_scheduler,
-                               const char* sensor_id,
-                               const char* task_id,
-                               SensorPipeline::Params params) {
-    sensor_.reset(new (std::nothrow) Sensor(adc_store, sensor_id, params.sensor));
+                               const char* id,
+                               SensorPipeline::Params params)
+    : sensor_id_(std::string(id) + "-sensor")
+    , task_id_(std::string(id) + "-task") {
+    sensor_.reset(new (std::nothrow)
+                      Sensor(adc_store, sensor_id_.c_str(), params.sensor));
     configASSERT(sensor_);
 
-    configASSERT(task_scheduler.add(*sensor_, task_id, params.read_interval)
+    configASSERT(task_scheduler.add(*sensor_, task_id_.c_str(), params.read_interval)
                  == status::StatusCode::OK);
 }
 
