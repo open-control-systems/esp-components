@@ -7,6 +7,7 @@ idf_component_register(
     "json/fanout_formatter.cpp"
     "json/field_formatter.cpp"
     "json/string_formatter.cpp"
+    "json/func_formatter.cpp"
 
     REQUIRES
     "json"
