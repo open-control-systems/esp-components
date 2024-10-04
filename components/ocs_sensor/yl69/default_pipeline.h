@@ -9,6 +9,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
 #include "ocs_control/fsm_block_pipeline.h"
 #include "ocs_core/iclock.h"
@@ -37,14 +38,16 @@ public:
                     storage::StorageBuilder& storage_builder,
                     system::FanoutRebootHandler& reboot_handler,
                     scheduler::ITaskScheduler& task_scheduler,
-                    const char* sensor_id,
-                    const char* task_id,
+                    const char* id,
                     Params params);
 
     //! Return the underlying sensor.
     Sensor& get_sensor();
 
 private:
+    const std::string sensor_id_;
+    const std::string task_id_;
+
     std::unique_ptr<control::FsmBlockPipeline> fsm_block_pipeline_;
     std::unique_ptr<Sensor> sensor_;
 };

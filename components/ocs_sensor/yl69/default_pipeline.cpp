@@ -17,9 +17,10 @@ DefaultPipeline::DefaultPipeline(core::IClock& clock,
                                  storage::StorageBuilder& storage_builder,
                                  system::FanoutRebootHandler& reboot_handler,
                                  scheduler::ITaskScheduler& task_scheduler,
-                                 const char* sensor_id,
-                                 const char* task_id,
-                                 DefaultPipeline::Params params) {
+                                 const char* id,
+                                 DefaultPipeline::Params params)
+    : sensor_id_(std::string(id) + "-sensor")
+    , task_id_(std::string(id) + "-task") {
     fsm_block_pipeline_.reset(new (std::nothrow) control::FsmBlockPipeline(
         clock, reboot_handler, task_scheduler, storage_builder, "soil-fsm",
         control::FsmBlockPipeline::Params {
@@ -29,10 +30,10 @@ DefaultPipeline::DefaultPipeline(core::IClock& clock,
     configASSERT(fsm_block_pipeline_);
 
     sensor_.reset(new (std::nothrow) Sensor(adc_store, fsm_block_pipeline_->get_block(),
-                                            sensor_id, params.sensor));
+                                            sensor_id_.c_str(), params.sensor));
     configASSERT(sensor_);
 
-    configASSERT(task_scheduler.add(*sensor_, task_id, params.read_interval)
+    configASSERT(task_scheduler.add(*sensor_, task_id_.c_str(), params.read_interval)
                  == status::StatusCode::OK);
 }
 
