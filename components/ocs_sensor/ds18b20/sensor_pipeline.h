@@ -28,6 +28,12 @@ public:
     };
 
     //! Initialize.
+    //!
+    //! @params
+    //!  - @p task_scheduler to schedule periodic sensor readings.
+    //!  - @p storage to persist sensor configuration.
+    //!  - @p sensor_store to configure sensor.
+    //!  - @p id to distinguish one sensor from another.
     SensorPipeline(scheduler::ITaskScheduler& task_scheduler,
                    storage::IStorage& storage,
                    Store& sensor_store,
@@ -38,7 +44,6 @@ public:
     Sensor& get_sensor();
 
 private:
-    const std::string sensor_id_;
     const std::string task_id_;
 
     std::unique_ptr<Sensor> sensor_;
