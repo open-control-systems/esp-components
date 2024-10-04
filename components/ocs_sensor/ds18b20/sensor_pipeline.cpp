@@ -20,9 +20,8 @@ SensorPipeline::SensorPipeline(scheduler::ITaskScheduler& task_scheduler,
                                Store& sensor_store,
                                const char* id,
                                SensorPipeline::Params params)
-    : sensor_id_(std::string(id) + "-sensor")
-    , task_id_(std::string(id) + "-task") {
-    sensor_.reset(new (std::nothrow) Sensor(storage, sensor_id_.c_str()));
+    : task_id_(std::string(id) + "-task") {
+    sensor_.reset(new (std::nothrow) Sensor(storage, id));
     configASSERT(sensor_);
 
     sensor_task_.reset(new (std::nothrow) scheduler::OperationGuardTask(*sensor_));
