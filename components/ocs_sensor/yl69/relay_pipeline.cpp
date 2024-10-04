@@ -19,9 +19,10 @@ RelayPipeline::RelayPipeline(core::IClock& clock,
                              storage::StorageBuilder& storage_builder,
                              system::FanoutRebootHandler& reboot_handler,
                              scheduler::ITaskScheduler& task_scheduler,
-                             const char* sensor_id,
-                             const char* task_id,
-                             RelayPipeline::Params params) {
+                             const char* id,
+                             RelayPipeline::Params params)
+    : sensor_id_(std::string(id) + "-sensor")
+    , task_id_(std::string(id) + "-task") {
     fsm_block_pipeline_.reset(new (std::nothrow) control::FsmBlockPipeline(
         clock, reboot_handler, task_scheduler, storage_builder, "soil-fsm",
         control::FsmBlockPipeline::Params {
@@ -31,15 +32,16 @@ RelayPipeline::RelayPipeline(core::IClock& clock,
     configASSERT(fsm_block_pipeline_);
 
     sensor_.reset(new (std::nothrow) Sensor(adc_store, fsm_block_pipeline_->get_block(),
-                                            sensor_id, params.sensor));
+                                            sensor_id_.c_str(), params.sensor));
     configASSERT(sensor_);
 
     relay_sensor_.reset(new (std::nothrow) RelaySensor(*sensor_, params.relay_gpio,
                                                        params.power_on_delay_interval));
     configASSERT(relay_sensor_);
 
-    configASSERT(task_scheduler.add(*relay_sensor_, task_id, params.read_interval)
-                 == status::StatusCode::OK);
+    configASSERT(
+        task_scheduler.add(*relay_sensor_, task_id_.c_str(), params.read_interval)
+        == status::StatusCode::OK);
 }
 
 Sensor& RelayPipeline::get_sensor() {
