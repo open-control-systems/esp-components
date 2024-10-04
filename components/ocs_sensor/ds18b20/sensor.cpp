@@ -58,7 +58,7 @@ void configuration_resolution_to_proto(uint8_t& r0,
     }
 }
 
-const char* log_tag = "ds18b20-sensor";
+const char* log_tag = "ds18b20_sensor";
 
 } // namespace
 

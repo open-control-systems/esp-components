@@ -30,7 +30,7 @@ using namespace ocs;
 
 namespace {
 
-const char* log_tag = "ds18b20-verifier";
+const char* log_tag = "ds18b20_verifier";
 
 struct VerifyParams {
     gpio_num_t gpio { GPIO_NUM_NC };
@@ -143,7 +143,7 @@ void verify_bus_operations(VerifyParams verify_params, onewire::Bus::Params bus_
 
     format_bus_params(formatter, bus_params);
 
-    io::DefaultGpio gpio("test-GPIO-onewire-bus", verify_params.gpio);
+    io::DefaultGpio gpio("test_GPIO_onewire_bus", verify_params.gpio);
     system::DefaultDelayer delayer;
 
     onewire::Bus bus(delayer, gpio, bus_params);

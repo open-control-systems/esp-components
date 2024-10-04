@@ -18,7 +18,7 @@ namespace http {
 
 namespace {
 
-const char* log_tag = "http-server";
+const char* log_tag = "http_server";
 
 httpd_err_code_t status_code_to_http_code(status::StatusCode code) {
     switch (code) {

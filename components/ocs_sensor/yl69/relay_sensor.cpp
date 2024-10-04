@@ -19,7 +19,7 @@ RelaySensor::RelaySensor(scheduler::ITask& task,
                          gpio_num_t gpio,
                          TickType_t turn_on_delay_interval)
     : task_(task) {
-    default_gpio_.reset(new (std::nothrow) io::DefaultGpio("relay-sensor", gpio));
+    default_gpio_.reset(new (std::nothrow) io::DefaultGpio("relay_sensor", gpio));
     configASSERT(default_gpio_);
 
     delay_gpio_.reset(new (std::nothrow) io::DelayGpio(

@@ -16,7 +16,7 @@ namespace net {
 
 namespace {
 
-const char* log_tag = "mDNS-provider";
+const char* log_tag = "mDNS_provider";
 
 static const char* service_to_str(MdnsProvider::Service service) {
     switch (service) {

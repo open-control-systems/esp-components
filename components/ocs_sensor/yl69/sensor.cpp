@@ -28,7 +28,7 @@ SoilStatus parse_status(control::FsmBlock::State state) {
     return static_cast<SoilStatus>(state);
 }
 
-const char* log_tag = "sensor-yl69";
+const char* log_tag = "sensor_yl69";
 
 } // namespace
 

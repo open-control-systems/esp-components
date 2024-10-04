@@ -19,7 +19,7 @@ namespace scheduler {
 
 namespace {
 
-const char* log_tag = "async-task-scheduler";
+const char* log_tag = "async_task_scheduler";
 
 } // namespace
 

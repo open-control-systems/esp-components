@@ -21,9 +21,9 @@ FsmBlockPipeline::FsmBlockPipeline(core::IClock& clock,
                                    storage::StorageBuilder& storage_builder,
                                    const char* id,
                                    FsmBlockPipeline::Params params)
-    : log_tag_(std::string(id) + "-block-pipeline")
-    , block_id_(std::string(id) + "-block")
-    , storage_id_(std::string(id) + "-nvs") {
+    : log_tag_(std::string(id) + "_block_pipeline")
+    , block_id_(std::string(id) + "_block")
+    , storage_id_(std::string(id) + "_nvs") {
     configASSERT(params.state_save_interval);
     configASSERT(params.state_interval_resolution);
 

@@ -24,7 +24,7 @@ namespace ds18b20 {
 
 namespace {
 
-const char* log_tag = "ds18b20-store";
+const char* log_tag = "ds18b20_store";
 
 } // namespace
 

@@ -21,7 +21,7 @@ namespace net {
 
 namespace {
 
-const char* log_tag = "wifi-network";
+const char* log_tag = "wifi_network";
 
 int8_t get_rssi() {
     wifi_ap_record_t record;

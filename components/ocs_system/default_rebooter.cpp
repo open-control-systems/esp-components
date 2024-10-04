@@ -16,7 +16,7 @@ namespace system {
 
 namespace {
 
-const char* log_tag = "default-rebooter";
+const char* log_tag = "default_rebooter";
 
 } // namespace
 

@@ -19,7 +19,7 @@ namespace scheduler {
 
 namespace {
 
-const char* log_tag = "high-resolution-timer";
+const char* log_tag = "high_resolution_timer";
 
 } // namespace
 

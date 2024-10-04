@@ -51,7 +51,7 @@ HttpSystemStateHandler::HttpSystemStateHandler(http::Server& server,
                              net::MdnsProvider::Proto::Tcp,
                              net::MdnsProvider::TxtRecordList {
                                  {
-                                     "system-report",
+                                     "system_report",
                                      "/system/report",
                                  },
                              });

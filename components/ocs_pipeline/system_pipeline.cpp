@@ -38,13 +38,13 @@ SystemPipeline::SystemPipeline(SystemPipeline::Params params) {
     configASSERT(delay_estimator_);
 
     task_scheduler_.reset(new (std::nothrow) scheduler::PeriodicTaskScheduler(
-        *default_clock_, *delay_estimator_, "system-pipeline-scheduler", 16));
+        *default_clock_, *delay_estimator_, "system_pipeline_scheduler", 16));
     configASSERT(task_scheduler_);
 
     func_scheduler_.reset(new (std::nothrow) scheduler::AsyncFuncScheduler(16));
     configASSERT(func_scheduler_);
 
-    configASSERT(task_scheduler_->add(*func_scheduler_, "system-async-func-scheduler",
+    configASSERT(task_scheduler_->add(*func_scheduler_, "system_async_func_scheduler",
                                       core::Second)
                  == status::StatusCode::OK);
 

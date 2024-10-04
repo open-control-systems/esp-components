@@ -50,8 +50,8 @@ TEST_CASE("Fanout suspender: suspend/resume component: all succeeded",
     TestHandler handler1(status::StatusCode::OK, status::StatusCode::OK);
     TestHandler handler2(status::StatusCode::OK, status::StatusCode::OK);
 
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.add(handler1, "handler-1"));
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.add(handler2, "handler-2"));
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.add(handler1, "handler_1"));
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.add(handler2, "handler_2"));
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.suspend());
     TEST_ASSERT_EQUAL(1, handler1.suspend_count);
@@ -72,8 +72,8 @@ TEST_CASE("Fanout suspender: suspend/resume component: one failed",
     TestHandler handler1(status::StatusCode::OK, status::StatusCode::Error);
     TestHandler handler2(status::StatusCode::Error, status::StatusCode::OK);
 
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.add(handler1, "handler-1"));
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.add(handler2, "handler-2"));
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.add(handler1, "handler_1"));
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.add(handler2, "handler_2"));
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, suspender.suspend());
     TEST_ASSERT_EQUAL(1, handler1.suspend_count);

@@ -42,7 +42,7 @@ SystemCounterPipeline::SystemCounterPipeline(
     configASSERT(lifetime_persistent_counter_);
 
     configASSERT(task_scheduler.add(*lifetime_persistent_counter_,
-                                    "lifetime-counter-task", core::Hour)
+                                    "lifetime_counter_task", core::Hour)
                  == status::StatusCode::OK);
 
     reboot_handler.add(*lifetime_persistent_counter_);

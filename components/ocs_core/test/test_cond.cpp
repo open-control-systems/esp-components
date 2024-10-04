@@ -93,7 +93,7 @@ TEST_CASE("Condition variable: wait multiple tasks", "[ocs_core], [cond]") {
     std::vector<TaskPtr> tasks;
 
     for (unsigned n = 0; n < task_count; ++n) {
-        const std::string id = "task-" + std::to_string(n);
+        const std::string id = "task_" + std::to_string(n);
 
         TaskPtr task(new (std::nothrow) TestTask(mutex, cond, id.c_str(), stack_size));
         TEST_ASSERT_NOT_NULL(task);

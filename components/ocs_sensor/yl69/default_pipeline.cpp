@@ -19,10 +19,10 @@ DefaultPipeline::DefaultPipeline(core::IClock& clock,
                                  scheduler::ITaskScheduler& task_scheduler,
                                  const char* id,
                                  DefaultPipeline::Params params)
-    : sensor_id_(std::string(id) + "-sensor")
-    , task_id_(std::string(id) + "-task") {
+    : sensor_id_(std::string(id) + "_sensor")
+    , task_id_(std::string(id) + "_task") {
     fsm_block_pipeline_.reset(new (std::nothrow) control::FsmBlockPipeline(
-        clock, reboot_handler, task_scheduler, storage_builder, "soil-fsm",
+        clock, reboot_handler, task_scheduler, storage_builder, "soil_fsm",
         control::FsmBlockPipeline::Params {
             .state_save_interval = core::Minute * 30,
             .state_interval_resolution = core::Second,

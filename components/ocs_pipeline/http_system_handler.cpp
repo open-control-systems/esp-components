@@ -16,7 +16,7 @@ namespace pipeline {
 
 namespace {
 
-const char* log_tag = "http-system-handler";
+const char* log_tag = "http_system_handler";
 
 } // namespace
 
@@ -37,7 +37,7 @@ HttpSystemHandler::HttpSystemHandler(http::Server& server,
                              net::MdnsProvider::Proto::Tcp,
                              net::MdnsProvider::TxtRecordList {
                                  {
-                                     "system-reboot",
+                                     "system_reboot",
                                      "/system/reboot",
                                  },
                              });

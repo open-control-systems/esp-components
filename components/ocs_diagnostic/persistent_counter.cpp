@@ -15,7 +15,7 @@ namespace diagnostic {
 
 namespace {
 
-const char* log_tag = "persistent-counter";
+const char* log_tag = "persistent_counter";
 
 } // namespace
 

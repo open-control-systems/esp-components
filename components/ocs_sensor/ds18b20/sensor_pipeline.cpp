@@ -20,14 +20,14 @@ SensorPipeline::SensorPipeline(scheduler::ITaskScheduler& task_scheduler,
                                Store& sensor_store,
                                const char* id,
                                SensorPipeline::Params params)
-    : task_id_(std::string(id) + "-task") {
+    : task_id_(std::string(id) + "_task") {
     sensor_.reset(new (std::nothrow) Sensor(storage, id));
     configASSERT(sensor_);
 
     sensor_task_.reset(new (std::nothrow) scheduler::OperationGuardTask(*sensor_));
     configASSERT(sensor_task_);
 
-    configASSERT(sensor_store.add(*sensor_, params.data_pin, "GPIO-DS18B20-onewire")
+    configASSERT(sensor_store.add(*sensor_, params.data_pin, "gpio_ds18b20_onewire")
                  == status::StatusCode::OK);
 
     configASSERT(task_scheduler.add(*sensor_task_, task_id_.c_str(), params.read_interval)
