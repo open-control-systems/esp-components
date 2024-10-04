@@ -43,6 +43,8 @@ Sensor::Sensor(io::AdcStore& adc_store,
 
     adc_ = adc_store.add(params_.adc_channel);
     configASSERT(adc_);
+
+    status_len_ = (params_.value_max - params_.value_min) / status_count_;
 }
 
 status::StatusCode Sensor::run() {
@@ -101,23 +103,29 @@ SoilStatus Sensor::calculate_status_(int raw) const {
         return SoilStatus::Error;
     }
 
-    // Saturated, Wet, Depletion, Dry.
-    const unsigned interval_count { 4 };
-
-    const unsigned interval_len =
-        (params_.value_max - params_.value_min) / interval_count;
-
-    if (raw < params_.value_min + interval_len) {
+    if (raw < params_.value_min + status_len_) {
         return SoilStatus::Saturated;
     }
-    if (raw < params_.value_min + interval_len + interval_len) {
+    if (raw < params_.value_min + status_len_ + status_len_) {
         return SoilStatus::Wet;
     }
-    if (raw < params_.value_min + interval_len + interval_len + interval_len) {
+    if (raw < params_.value_min + status_len_ + status_len_ + status_len_) {
         return SoilStatus::Depletion;
     }
 
     return SoilStatus::Dry;
+}
+
+int16_t Sensor::calculate_status_position_(int raw) const {
+    if (raw < params_.value_min) {
+        return -1;
+    }
+
+    const auto offset = raw - params_.value_min;
+    const auto count = offset / status_len_;
+    const auto pos = offset - (status_len_ * count);
+
+    return pos;
 }
 
 void Sensor::update_data_(int raw, int voltage) {
@@ -131,6 +139,8 @@ void Sensor::update_data_(int raw, int voltage) {
     data.prev_status_duration = fsm_block_.previous_state_duration();
     data.curr_status_duration = fsm_block_.current_state_duration();
     data.write_count = fsm_block_.write_count();
+    data.status_len = status_len_;
+    data.status_pos = calculate_status_position_(raw);
 
     set_data_(data);
 }

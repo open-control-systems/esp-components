@@ -33,6 +33,8 @@ struct SensorData {
     core::microseconds_t prev_status_duration { 0 };
     core::microseconds_t curr_status_duration { 0 };
     uint64_t write_count { 0 };
+    uint16_t status_len { 0 };
+    int16_t status_pos { 0 };
 };
 
 class Sensor : public scheduler::ITask,
@@ -57,13 +59,19 @@ public:
 private:
     int calculate_moisture_(int raw) const;
     SoilStatus calculate_status_(int raw) const;
+    int16_t calculate_status_position_(int raw) const;
 
     void update_data_(int raw, int voltage);
+
+    // Saturated, Wet, Depletion, Dry.
+    static const uint8_t status_count_ { 4 };
 
     const Params params_;
 
     control::FsmBlock& fsm_block_;
     io::IAdc* adc_ { nullptr };
+
+    uint16_t status_len_ { 0 };
 };
 
 } // namespace yl69

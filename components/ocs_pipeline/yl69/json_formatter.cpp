@@ -62,6 +62,14 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
         if (!formatter.add_number_cs("sensor_yl69_write_count", data.write_count)) {
             return status::StatusCode::NoMem;
         }
+
+        if (!formatter.add_number_cs("sensor_yl69_status_len", data.status_len)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("sensor_yl69_status_pos", data.status_pos)) {
+            return status::StatusCode::NoMem;
+        }
     } else {
         if (!formatter.add_number_cs("raw", data.raw)) {
             return status::StatusCode::NoMem;
@@ -94,6 +102,14 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
         }
 
         if (!formatter.add_number_cs("write_count", data.write_count)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("status_len", data.status_len)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("status_pos", data.status_pos)) {
             return status::StatusCode::NoMem;
         }
     }
