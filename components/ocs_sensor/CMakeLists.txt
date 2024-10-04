@@ -6,7 +6,7 @@ idf_component_register(
     "yl69/relay_pipeline.cpp"
     "yl69/soil_status_to_str.cpp"
     "ldr/sensor.cpp"
-    "ldr/sensor_task.cpp"
+    "ldr/sensor_pipeline.cpp"
     "ds18b20/store.cpp"
     "ds18b20/sensor.cpp"
     "ds18b20/scratchpad.cpp"

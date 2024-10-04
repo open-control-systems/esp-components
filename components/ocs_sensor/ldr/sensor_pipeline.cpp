@@ -6,17 +6,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/ldr/sensor_task.h"
+#include "ocs_sensor/ldr/sensor_pipeline.h"
 
 namespace ocs {
 namespace sensor {
 namespace ldr {
 
-SensorTask::SensorTask(io::AdcStore& adc_store,
-                       scheduler::ITaskScheduler& task_scheduler,
-                       const char* sensor_id,
-                       const char* task_id,
-                       SensorTask::Params params) {
+SensorPipeline::SensorPipeline(io::AdcStore& adc_store,
+                               scheduler::ITaskScheduler& task_scheduler,
+                               const char* sensor_id,
+                               const char* task_id,
+                               SensorPipeline::Params params) {
     sensor_.reset(new (std::nothrow) Sensor(adc_store, sensor_id, params.sensor));
     configASSERT(sensor_);
 
@@ -24,7 +24,7 @@ SensorTask::SensorTask(io::AdcStore& adc_store,
                  == status::StatusCode::OK);
 }
 
-Sensor& SensorTask::get_sensor() {
+Sensor& SensorPipeline::get_sensor() {
     return *sensor_;
 }
 
