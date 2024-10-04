@@ -20,7 +20,7 @@ namespace ocs {
 namespace sensor {
 namespace ldr {
 
-class SensorTask : public core::NonCopyable<> {
+class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         Sensor::Params sensor;
@@ -28,11 +28,11 @@ public:
     };
 
     //! Initialize.
-    SensorTask(io::AdcStore& adc_store,
-               scheduler::ITaskScheduler& task_scheduler,
-               const char* sensor_id,
-               const char* task_id,
-               Params params);
+    SensorPipeline(io::AdcStore& adc_store,
+                   scheduler::ITaskScheduler& task_scheduler,
+                   const char* sensor_id,
+                   const char* task_id,
+                   Params params);
 
     //! Return the underlying sensor.
     Sensor& get_sensor();
