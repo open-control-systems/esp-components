@@ -20,7 +20,7 @@ namespace ocs {
 namespace sensor {
 namespace ds18b20 {
 
-class SensorTask : public core::NonCopyable<> {
+class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         core::microseconds_t read_interval { 0 };
@@ -28,12 +28,12 @@ public:
     };
 
     //! Initialize.
-    SensorTask(scheduler::ITaskScheduler& task_scheduler,
-               storage::IStorage& storage,
-               Store& sensor_store,
-               const char* sensor_id,
-               const char* task_id,
-               Params params);
+    SensorPipeline(scheduler::ITaskScheduler& task_scheduler,
+                   storage::IStorage& storage,
+                   Store& sensor_store,
+                   const char* sensor_id,
+                   const char* task_id,
+                   Params params);
 
     //! Return the underlying sensor.
     Sensor& get_sensor();

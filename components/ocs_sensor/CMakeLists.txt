@@ -10,7 +10,7 @@ idf_component_register(
     "ds18b20/store.cpp"
     "ds18b20/sensor.cpp"
     "ds18b20/scratchpad.cpp"
-    "ds18b20/sensor_task.cpp"
+    "ds18b20/sensor_pipeline.cpp"
     "ds18b20/resolution_to_str.cpp"
     "ds18b20/parse_configuration.cpp"
 

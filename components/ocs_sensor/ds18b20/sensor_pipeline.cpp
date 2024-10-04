@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/ds18b20/sensor_task.h"
+#include "ocs_sensor/ds18b20/sensor_pipeline.h"
 #include "ocs_io/default_gpio.h"
 #include "ocs_scheduler/operation_guard_task.h"
 #include "ocs_system/delayer_configuration.h"
@@ -15,12 +15,12 @@ namespace ocs {
 namespace sensor {
 namespace ds18b20 {
 
-SensorTask::SensorTask(scheduler::ITaskScheduler& task_scheduler,
-                       storage::IStorage& storage,
-                       Store& sensor_store,
-                       const char* sensor_id,
-                       const char* task_id,
-                       SensorTask::Params params) {
+SensorPipeline::SensorPipeline(scheduler::ITaskScheduler& task_scheduler,
+                               storage::IStorage& storage,
+                               Store& sensor_store,
+                               const char* sensor_id,
+                               const char* task_id,
+                               SensorPipeline::Params params) {
     sensor_.reset(new (std::nothrow) Sensor(storage, sensor_id));
     configASSERT(sensor_);
 
@@ -34,7 +34,7 @@ SensorTask::SensorTask(scheduler::ITaskScheduler& task_scheduler,
                  == status::StatusCode::OK);
 }
 
-Sensor& SensorTask::get_sensor() {
+Sensor& SensorPipeline::get_sensor() {
     return *sensor_;
 }
 
