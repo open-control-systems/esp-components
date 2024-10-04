@@ -16,7 +16,7 @@ namespace pipeline {
 
 namespace {
 
-const char* log_tag = "http-server-pipeline";
+const char* log_tag = "http_server_pipeline";
 
 } // namespace
 

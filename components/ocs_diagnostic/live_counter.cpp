@@ -15,7 +15,7 @@ namespace diagnostic {
 
 namespace {
 
-const char* log_tag = "live-counter";
+const char* log_tag = "live_counter";
 
 } // namespace
 

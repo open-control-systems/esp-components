@@ -39,7 +39,7 @@ TEST_CASE("FSM block: initialization: no persistent state",
 
     test::TestClock clock;
     const core::microseconds_t resolution = core::Second;
-    const char* id = "block-id";
+    const char* id = "block_id";
 
     FsmBlock block(clock, storage, resolution, id);
 
@@ -62,7 +62,7 @@ TEST_CASE("FSM block: initialization: failed to read persistent state",
     test::TestClock clock;
 
     const core::microseconds_t resolution = core::Second;
-    const char* id = "block-id";
+    const char* id = "block_id";
 
     FsmBlock block(clock, storage, resolution, id);
 
@@ -85,7 +85,7 @@ TEST_CASE("FSM block: initialization: properly read persistent state",
     test::TestClock clock;
 
     const core::microseconds_t resolution = core::Second;
-    const char* id = "block-id";
+    const char* id = "block_id";
 
     FsmBlock block(clock, storage, resolution, id);
 
@@ -98,7 +98,7 @@ TEST_CASE("FSM block: initialization: properly read persistent state",
 
 TEST_CASE("FSM block: transit: save state", "[ocs_control], [fsm_block]") {
     const core::microseconds_t resolution = core::Second;
-    const char* id = "block-id";
+    const char* id = "block_id";
     uint64_t write_count = 17;
     const unsigned state_duration = 42;
 
@@ -142,7 +142,7 @@ TEST_CASE("FSM block: transit: save state", "[ocs_control], [fsm_block]") {
 
 TEST_CASE("FSM block: transit: failed to save state", "[ocs_control], [fsm_block]") {
     const core::microseconds_t resolution = core::Second;
-    const char* id = "block-id";
+    const char* id = "block_id";
     const uint64_t write_count = 17;
     const unsigned state_duration = 42;
 
@@ -181,7 +181,7 @@ TEST_CASE("FSM block: transit: failed to save state", "[ocs_control], [fsm_block
 
 TEST_CASE("FSM block: transit: reset previously saved current state duration",
           "[ocs_control], [fsm_block]") {
-    const char* id = "block-id";
+    const char* id = "block_id";
     const uint64_t write_count = 17;
 
     const core::microseconds_t resolution = core::Second;
@@ -217,7 +217,7 @@ TEST_CASE("FSM block: transit: reset previously saved current state duration",
 
 TEST_CASE("FSM block: save state on reboot", "[ocs_control], [fsm_block]") {
     const core::microseconds_t resolution = core::Second;
-    const char* id = "block-id";
+    const char* id = "block_id";
     const uint64_t write_count = 17;
 
     TestFsmBlockStorage storage;
@@ -233,7 +233,7 @@ TEST_CASE("FSM block: save state on reboot", "[ocs_control], [fsm_block]") {
 
 TEST_CASE("FSM block: save state on run", "[ocs_control], [fsm_block]") {
     const core::microseconds_t resolution = core::Second;
-    const char* id = "block-id";
+    const char* id = "block_id";
     const uint64_t write_count = 17;
 
     TestFsmBlockStorage storage;
@@ -248,7 +248,7 @@ TEST_CASE("FSM block: save state on run", "[ocs_control], [fsm_block]") {
 }
 
 TEST_CASE("FSM block: update current state duration", "[ocs_control], [fsm_block]") {
-    const char* id = "block-id";
+    const char* id = "block_id";
     const uint64_t write_count = 17;
 
     const core::microseconds_t resolution = core::Second;

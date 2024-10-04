@@ -17,7 +17,7 @@ namespace system {
 
 namespace {
 
-const char* log_tag = "fanout-suspender";
+const char* log_tag = "fanout_suspender";
 
 } // namespace
 

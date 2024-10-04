@@ -15,7 +15,7 @@ namespace core {
 
 namespace {
 
-const char* log_tag = "lock-guard";
+const char* log_tag = "lock_guard";
 
 } // namespace
 

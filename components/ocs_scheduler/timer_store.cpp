@@ -16,7 +16,7 @@ namespace scheduler {
 
 namespace {
 
-const char* log_tag = "timer-store";
+const char* log_tag = "timer_store";
 
 } // namespace
 

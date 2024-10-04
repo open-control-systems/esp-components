@@ -18,7 +18,7 @@ namespace pipeline {
 
 namespace {
 
-const char* log_tag = "registration-json-formatter";
+const char* log_tag = "registration_json_formatter";
 
 } // namespace
 

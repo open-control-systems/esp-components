@@ -24,7 +24,7 @@ TEST_CASE("Periodic task scheduler: add task",
           "[ocs_scheduler], [periodic_task_scheduler]") {
     const core::microseconds_t interval = core::Second;
     const TickType_t delay = pdMS_TO_TICKS(10);
-    const char* task_id = "test-task";
+    const char* task_id = "test_task";
 
     test::TestClock clock;
     clock.value = 42;
@@ -68,9 +68,9 @@ TEST_CASE("Periodic task scheduler: add same task twice",
     PeriodicTaskScheduler task_scheduler(clock, estimator, "scheduler", 16);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
-                      task_scheduler.add(task, "test-task", core::Second));
+                      task_scheduler.add(task, "test_task", core::Second));
     TEST_ASSERT_EQUAL(status::StatusCode::InvalidArg,
-                      task_scheduler.add(task, "test-task", core::Second));
+                      task_scheduler.add(task, "test_task", core::Second));
 }
 
 TEST_CASE("Periodic task scheduler: add multiple tasks",
@@ -98,7 +98,7 @@ TEST_CASE("Periodic task scheduler: add multiple tasks",
     }
 
     for (unsigned n = 0; n < task_count; ++n) {
-        const std::string id = "test-task-" + std::to_string(n);
+        const std::string id = "test_task_" + std::to_string(n);
         TEST_ASSERT_EQUAL(status::StatusCode::OK,
                           task_scheduler.add(*tasks[n], id.c_str(), interval));
     }
@@ -148,10 +148,10 @@ TEST_CASE("Periodic task scheduler: max number of tasks overflow",
     test::TestTask task2(status::StatusCode::OK);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
-                      task_scheduler.add(task1, "task-1", interval));
+                      task_scheduler.add(task1, "task_1", interval));
 
     TEST_ASSERT_EQUAL(status::StatusCode::Error,
-                      task_scheduler.add(task2, "task-2", interval));
+                      task_scheduler.add(task2, "task_2", interval));
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
     TEST_ASSERT_TRUE(task1.was_run_called());

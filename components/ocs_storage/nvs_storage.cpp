@@ -19,7 +19,7 @@ namespace storage {
 
 namespace {
 
-const char* log_tag = "nvs-storage";
+const char* log_tag = "nvs_storage";
 
 } // namespace
 

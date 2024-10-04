@@ -28,7 +28,7 @@ using namespace ocs;
 
 namespace {
 
-const char* log_tag = "ds-rom-code-scanner";
+const char* log_tag = "ds_rom_code_scanner";
 
 struct ScanParams {
     gpio_num_t gpio { GPIO_NUM_NC };
@@ -92,7 +92,7 @@ void scan_rom_codes(ScanParams scan_params, onewire::Bus::Params bus_params) {
     fmt::json::CjsonObjectFormatter formatter(json.get());
     format_bus_params(formatter, bus_params);
 
-    io::DefaultGpio gpio("test-GPIO-onewire-bus", scan_params.gpio);
+    io::DefaultGpio gpio("test_gpio_onewire_bus", scan_params.gpio);
     system::DefaultDelayer delayer;
 
     onewire::Bus bus(delayer, gpio, bus_params);

@@ -16,8 +16,8 @@ SensorPipeline::SensorPipeline(io::AdcStore& adc_store,
                                scheduler::ITaskScheduler& task_scheduler,
                                const char* id,
                                SensorPipeline::Params params)
-    : sensor_id_(std::string(id) + "-sensor")
-    , task_id_(std::string(id) + "-task") {
+    : sensor_id_(std::string(id) + "_sensor")
+    , task_id_(std::string(id) + "_task") {
     sensor_.reset(new (std::nothrow)
                       Sensor(adc_store, sensor_id_.c_str(), params.sensor));
     configASSERT(sensor_);

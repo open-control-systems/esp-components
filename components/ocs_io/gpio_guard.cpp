@@ -15,7 +15,7 @@ namespace io {
 
 namespace {
 
-const char* log_tag = "gpio-guard";
+const char* log_tag = "gpio_guard";
 
 } // namespace
 

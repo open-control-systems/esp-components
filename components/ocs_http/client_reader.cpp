@@ -18,7 +18,7 @@ namespace http {
 
 namespace {
 
-const char* log_tag = "http-client-reader";
+const char* log_tag = "http_client_reader";
 
 } // namespace
 

@@ -140,19 +140,19 @@ HttpHandler::HttpHandler(http::Server& server,
                              net::MdnsProvider::Proto::Tcp,
                              net::MdnsProvider::TxtRecordList {
                                  {
-                                     "sensor-ds18b20-scan",
+                                     "sensor_ds18b20_scan",
                                      "/sensor/ds18b20/scan",
                                  },
                                  {
-                                     "sensor-ds18b20-read-configuration",
+                                     "sensor_ds18b20_read_configuration",
                                      "/sensor/ds18b20/read_configuration",
                                  },
                                  {
-                                     "sensor-ds18b20-write-configuration",
+                                     "sensor_ds18b20_write_configuration",
                                      "/sensor/ds18b20/write_configuration",
                                  },
                                  {
-                                     "sensor-ds18b20-erase-configuration",
+                                     "sensor_ds18b20_erase_configuration",
                                      "/sensor/ds18b20/erase_configuration",
                                  },
                              });

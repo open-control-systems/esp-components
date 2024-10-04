@@ -18,7 +18,7 @@ namespace io {
 
 namespace {
 
-const char* log_tag = "adc-store";
+const char* log_tag = "adc_store";
 
 } // namespace
 

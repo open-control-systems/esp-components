@@ -105,7 +105,7 @@ TEST_CASE("Parse version: overflow", "[ocs_core], [version]") {
 
 TEST_CASE("Parse version: omit non-core characters", "[ocs_core], [version]") {
     Version version;
-    TEST_ASSERT_TRUE(version.parse("9.1.1-<rc|beta|alpha|etc|-123>"));
+    TEST_ASSERT_TRUE(version.parse("9.1.1_<rc|beta|alpha|etc|_123>"));
     TEST_ASSERT_EQUAL(9, version.major);
     TEST_ASSERT_EQUAL(1, version.minor);
     TEST_ASSERT_EQUAL(1, version.patch);

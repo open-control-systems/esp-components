@@ -16,7 +16,7 @@ namespace pipeline {
 
 namespace {
 
-const char* log_tag = "http-pipeline";
+const char* log_tag = "http_pipeline";
 
 } // namespace
 
@@ -28,18 +28,18 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     http_server_pipeline_.reset(new (std::nothrow) HttpServerPipeline());
     configASSERT(http_server_pipeline_);
 
-    configASSERT(suspender.add(*http_server_pipeline_, "http-server-pipeline")
+    configASSERT(suspender.add(*http_server_pipeline_, "http_server_pipeline")
                  == status::StatusCode::OK);
 
     http_telemetry_handler_.reset(new (std::nothrow) HttpDataHandler(
         http_server_pipeline_->server(), http_server_pipeline_->mdns(),
-        telemetry_formatter, "/telemetry", "http-telemetry-handler",
+        telemetry_formatter, "/telemetry", "http_telemetry_handler",
         params.telemetry.buffer_size));
     configASSERT(http_telemetry_handler_);
 
     http_registration_handler_.reset(new (std::nothrow) HttpDataHandler(
         http_server_pipeline_->server(), http_server_pipeline_->mdns(),
-        registration_formatter, "/registration", "http-registration-handler",
+        registration_formatter, "/registration", "http_registration_handler",
         params.registration.buffer_size));
     configASSERT(http_registration_handler_);
 

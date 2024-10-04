@@ -19,19 +19,19 @@ ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::ITaskScheduler& task_schedul
                                          fmt::json::IFormatter& registration_formatter,
                                          Params params) {
     telemetry_task_.reset(new (std::nothrow) ConsoleJsonTask(
-        telemetry_formatter, "console-telemetry-task", params.telemetry.buffer_size));
+        telemetry_formatter, "console_telemetry_task", params.telemetry.buffer_size));
     configASSERT(telemetry_task_);
 
-    configASSERT(task_scheduler.add(*telemetry_task_, "console-telemetry",
+    configASSERT(task_scheduler.add(*telemetry_task_, "console_telemetry",
                                     params.telemetry.interval)
                  == status::StatusCode::OK);
 
     registration_task_.reset(new (std::nothrow) ConsoleJsonTask(
-        registration_formatter, "console-registration-task",
+        registration_formatter, "console_registration_task",
         params.registration.buffer_size));
     configASSERT(registration_task_);
 
-    configASSERT(task_scheduler.add(*registration_task_, "console-registration",
+    configASSERT(task_scheduler.add(*registration_task_, "console_registration",
                                     params.registration.interval)
                  == status::StatusCode::OK);
 }

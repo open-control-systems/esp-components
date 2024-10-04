@@ -36,8 +36,8 @@ TEST_CASE("DS18B20 store: schedule: empty store", "[ocs_sensor], [ds18b20_store]
 }
 
 TEST_CASE("DS18B20 store: schedule: invalid GPIO", "[ocs_sensor], [ds18b20_store]") {
-    const char* sensor_id = "test-sensor";
-    const char* gpio_id = "test-gpio-id";
+    const char* sensor_id = "test_sensor";
+    const char* gpio_id = "test_gpio_id";
     const gpio_num_t gpio = GPIO_NUM_26;
     const gpio_num_t invalid_gpio = GPIO_NUM_27;
 
@@ -57,9 +57,9 @@ TEST_CASE("DS18B20 store: schedule: invalid GPIO", "[ocs_sensor], [ds18b20_store
 }
 
 TEST_CASE("DS18B20 store: add sensor", "[ocs_sensor], [ds18b20_store]") {
-    const char* sensor_id = "test-sensor";
+    const char* sensor_id = "test_sensor";
     const gpio_num_t gpio = GPIO_NUM_26;
-    const char* gpio_id = "test-gpio-id";
+    const char* gpio_id = "test_gpio_id";
 
     Store store(16);
     TestStorage storage;
@@ -81,9 +81,9 @@ TEST_CASE("DS18B20 store: add sensor", "[ocs_sensor], [ds18b20_store]") {
 
 TEST_CASE("DS18B20 store: read sensor configuration: non-configured",
           "[ocs_sensor], [ds18b20_store]") {
-    const char* sensor_id = "test-sensor";
+    const char* sensor_id = "test_sensor";
     const gpio_num_t gpio = GPIO_NUM_26;
-    const char* gpio_id = "test-gpio-id";
+    const char* gpio_id = "test_gpio_id";
 
     Store store(16);
     TestStorage storage;
