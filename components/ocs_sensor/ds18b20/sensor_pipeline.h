@@ -31,14 +31,16 @@ public:
     SensorPipeline(scheduler::ITaskScheduler& task_scheduler,
                    storage::IStorage& storage,
                    Store& sensor_store,
-                   const char* sensor_id,
-                   const char* task_id,
+                   const char* id,
                    Params params);
 
     //! Return the underlying sensor.
     Sensor& get_sensor();
 
 private:
+    const std::string sensor_id_;
+    const std::string task_id_;
+
     std::unique_ptr<Sensor> sensor_;
     std::unique_ptr<scheduler::ITask> sensor_task_;
 };
