@@ -18,10 +18,11 @@ namespace ds18b20 {
 SensorPipeline::SensorPipeline(scheduler::ITaskScheduler& task_scheduler,
                                storage::IStorage& storage,
                                Store& sensor_store,
-                               const char* sensor_id,
-                               const char* task_id,
-                               SensorPipeline::Params params) {
-    sensor_.reset(new (std::nothrow) Sensor(storage, sensor_id));
+                               const char* id,
+                               SensorPipeline::Params params)
+    : sensor_id_(std::string(id) + "-sensor")
+    , task_id_(std::string(id) + "-task") {
+    sensor_.reset(new (std::nothrow) Sensor(storage, sensor_id_.c_str()));
     configASSERT(sensor_);
 
     sensor_task_.reset(new (std::nothrow) scheduler::OperationGuardTask(*sensor_));
@@ -30,7 +31,7 @@ SensorPipeline::SensorPipeline(scheduler::ITaskScheduler& task_scheduler,
     configASSERT(sensor_store.add(*sensor_, params.data_pin, "GPIO-DS18B20-onewire")
                  == status::StatusCode::OK);
 
-    configASSERT(task_scheduler.add(*sensor_task_, task_id, params.read_interval)
+    configASSERT(task_scheduler.add(*sensor_task_, task_id_.c_str(), params.read_interval)
                  == status::StatusCode::OK);
 }
 
