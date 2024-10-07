@@ -23,10 +23,7 @@ DefaultPipeline::DefaultPipeline(core::IClock& clock,
     , task_id_(std::string(id) + "_task") {
     fsm_block_pipeline_.reset(new (std::nothrow) control::FsmBlockPipeline(
         clock, reboot_handler, task_scheduler, storage_builder, "soil_fsm",
-        control::FsmBlockPipeline::Params {
-            .state_save_interval = core::Minute * 30,
-            .state_interval_resolution = core::Second,
-        }));
+        params.fsm_block));
     configASSERT(fsm_block_pipeline_);
 
     sensor_.reset(new (std::nothrow) Sensor(adc_store, fsm_block_pipeline_->get_block(),
