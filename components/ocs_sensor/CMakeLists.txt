@@ -13,6 +13,8 @@ idf_component_register(
     "ds18b20/sensor_pipeline.cpp"
     "ds18b20/resolution_to_str.cpp"
     "ds18b20/parse_configuration.cpp"
+    "sht41/sensor.cpp"
+    "sht41/sensor_pipeline.cpp"
 
     REQUIRES
     "ocs_io"
@@ -23,6 +25,8 @@ idf_component_register(
     "ocs_scheduler"
     "ocs_diagnostic"
     "ocs_onewire"
+    "ocs_i2c"
+    "ocs_algo"
 
     INCLUDE_DIRS
     ".."
