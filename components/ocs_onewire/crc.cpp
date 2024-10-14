@@ -7,29 +7,13 @@
  */
 
 #include "ocs_onewire/crc.h"
+#include "ocs_algo/crc_ops.h"
 
 namespace ocs {
 namespace onewire {
 
 uint8_t calculate_crc(const uint8_t* buf, unsigned size) {
-    // Initialize shift register to 0.
-    uint8_t crc = 0;
-
-    for (unsigned n = 0; n < size; ++n) {
-        // XOR data byte with current CRC value.
-        crc ^= buf[n];
-
-        for (uint8_t bit = 0; bit < 8; ++bit) {
-            if (crc & 0x01) {
-                // Polynomial 0x8C is used for DS18B20.
-                crc = (crc >> 1) ^ 0x8C;
-            } else {
-                crc >>= 1;
-            }
-        }
-    }
-
-    return crc;
+    return algo::CrcOps::crc8(buf, size, 0x00, 0x8C, algo::CrcOps::BitOrder::LSB);
 }
 
 } // namespace onewire
