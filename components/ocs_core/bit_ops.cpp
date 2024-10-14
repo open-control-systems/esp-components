@@ -23,5 +23,14 @@ uint8_t BitOps::nth(unsigned value, uint8_t pos) {
     return mask(pos) & value ? 1 : 0;
 }
 
+uint16_t BitOps::pack_uint8(uint8_t hi, uint8_t lo) {
+    return (static_cast<uint16_t>(hi) << 8) | static_cast<uint16_t>(lo);
+}
+
+void BitOps::unpack_uint16(uint16_t value, uint8_t& hi, uint8_t& lo) {
+    hi = (value & 0xFF00) >> 8;
+    lo = value & 0x00FF;
+}
+
 } // namespace core
 } // namespace ocs
