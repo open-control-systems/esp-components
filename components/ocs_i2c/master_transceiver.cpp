@@ -41,7 +41,8 @@ MasterTransceiver::send(const uint8_t* buf, unsigned size, core::microseconds_t 
         return status::StatusCode::InvalidArg;
     }
 
-    const auto err = i2c_master_transmit(device_.get(), buf, size, timeout);
+    const auto err =
+        i2c_master_transmit(device_.get(), buf, size, timeout / core::Millisecond);
     if (err != ESP_OK) {
         ocs_logi(log_tag, "i2c_master_transmit() failed: id=%s err=%s", id_.c_str(),
                  esp_err_to_name(err));
@@ -65,7 +66,8 @@ MasterTransceiver::receive(uint8_t* buf, unsigned size, core::microseconds_t tim
         return status::StatusCode::InvalidArg;
     }
 
-    const auto err = i2c_master_receive(device_.get(), buf, size, timeout);
+    const auto err =
+        i2c_master_receive(device_.get(), buf, size, timeout / core::Millisecond);
     if (err != ESP_OK) {
         ocs_logi(log_tag, "i2c_master_receive() failed: id=%s err=%s", id_.c_str(),
                  esp_err_to_name(err));
