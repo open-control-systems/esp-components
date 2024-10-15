@@ -107,7 +107,7 @@ status::StatusCode Scratchpad::write(onewire::Bus& bus,
     OCS_STATUS_RETURN_ON_ERROR(rom_code.match(bus));
 
     OCS_STATUS_RETURN_ON_ERROR(
-        bus.write_byte(static_cast<uint8_t>(Commands::WriteScratchpad)));
+        bus.write_byte(static_cast<uint8_t>(Command::WriteScratchpad)));
 
     // Only bytes 2, 3, 4 of the scratchpad can be modified.
     OCS_STATUS_RETURN_ON_ERROR(
@@ -120,7 +120,7 @@ status::StatusCode Scratchpad::read(onewire::Bus& bus, const onewire::RomCode& r
     OCS_STATUS_RETURN_ON_ERROR(rom_code.match(bus));
 
     OCS_STATUS_RETURN_ON_ERROR(
-        bus.write_byte(static_cast<uint8_t>(Commands::ReadScratchpad)));
+        bus.write_byte(static_cast<uint8_t>(Command::ReadScratchpad)));
 
     OCS_STATUS_RETURN_ON_ERROR(
         bus.read_bytes(reinterpret_cast<uint8_t*>(this), sizeof(Scratchpad)));

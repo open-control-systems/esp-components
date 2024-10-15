@@ -32,7 +32,7 @@ bool RomCode::valid() const {
 status::StatusCode RomCode::match(onewire::Bus& bus) const {
     OCS_STATUS_RETURN_ON_ERROR(bus.reset());
 
-    OCS_STATUS_RETURN_ON_ERROR(bus.write_byte(static_cast<uint8_t>(Commands::MatchRom)));
+    OCS_STATUS_RETURN_ON_ERROR(bus.write_byte(static_cast<uint8_t>(Command::MatchRom)));
 
     OCS_STATUS_RETURN_ON_ERROR(
         bus.write_bytes(reinterpret_cast<const uint8_t*>(this), sizeof(RomCode)));
@@ -43,7 +43,7 @@ status::StatusCode RomCode::match(onewire::Bus& bus) const {
 status::StatusCode RomCode::read(onewire::Bus& bus) {
     OCS_STATUS_RETURN_ON_ERROR(bus.reset());
 
-    OCS_STATUS_RETURN_ON_ERROR(bus.write_byte(static_cast<uint8_t>(Commands::ReadRom)));
+    OCS_STATUS_RETURN_ON_ERROR(bus.write_byte(static_cast<uint8_t>(Command::ReadRom)));
 
     OCS_STATUS_RETURN_ON_ERROR(
         bus.read_bytes(reinterpret_cast<uint8_t*>(this), sizeof(RomCode)));

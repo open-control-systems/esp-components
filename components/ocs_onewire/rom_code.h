@@ -25,7 +25,7 @@ namespace onewire {
 using SerialNumber = uint8_t[DS_SENSOR_SERIAL_NUMBER_LEN];
 
 struct OCS_ATTR_PACKED RomCode {
-    enum class Commands : uint8_t {
+    enum class Command : uint8_t {
         SearchRom = 0xF0,
         ReadRom = 0x33,
         MatchRom = 0x55,

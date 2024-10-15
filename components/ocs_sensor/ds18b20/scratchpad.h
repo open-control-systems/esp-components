@@ -17,7 +17,7 @@ namespace sensor {
 namespace ds18b20 {
 
 struct OCS_ATTR_PACKED Scratchpad {
-    enum class Commands : uint8_t {
+    enum class Command : uint8_t {
         ConvertT = 0x44,
         ReadScratchpad = 0xBE,
         WriteScratchpad = 0x4E,
