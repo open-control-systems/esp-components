@@ -219,15 +219,18 @@ TEST_CASE("FSM block: save state on reboot", "[ocs_control], [fsm_block]") {
     const core::microseconds_t resolution = core::Second;
     const char* id = "block_id";
     const uint64_t write_count = 17;
+    const core::microseconds_t time_passed = core::Second * 42;
 
     TestFsmBlockStorage storage;
     storage.write_count = write_count;
 
     test::TestClock clock;
+    clock.value = time_passed;
 
     FsmBlock block(clock, storage, resolution, id);
     block.handle_reboot();
 
+    TEST_ASSERT_EQUAL_UINT64(time_passed / resolution, block.current_state_duration());
     TEST_ASSERT_EQUAL_UINT64(write_count + 1, storage.write_count);
 }
 

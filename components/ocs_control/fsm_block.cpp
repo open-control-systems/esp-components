@@ -43,6 +43,8 @@ FsmBlock::FsmBlock(core::IClock& clock,
 }
 
 void FsmBlock::handle_reboot() {
+    update();
+
     const auto code = write_();
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag_.c_str(), "failed to save block on reboot: %s",
