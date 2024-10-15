@@ -24,10 +24,10 @@ struct BitOps {
     static uint8_t nth(unsigned value, uint8_t pos);
 
     //! Return 16-bit value from two 8-bit values.
-    static uint16_t pack_uint8(uint8_t hi, uint8_t lo);
+    static uint16_t pack_u8(uint8_t hi, uint8_t lo);
 
     //! Unpack 16-bit value into corresponding 8-bit values.
-    static void unpack_uint16(uint16_t value, uint8_t& hi, uint8_t& lo);
+    static void unpack_u8(uint16_t value, uint8_t& hi, uint8_t& lo);
 };
 
 } // namespace core

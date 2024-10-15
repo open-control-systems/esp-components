@@ -22,7 +22,7 @@ TEST_CASE("CRC Ops: crc8: MSB", "[ocs_algo], [crc_ops]") {
     uint8_t buf[2];
     memset(buf, 0, sizeof(buf));
 
-    core::BitOps::unpack_uint16(data, buf[0], buf[1]);
+    core::BitOps::unpack_u8(data, buf[0], buf[1]);
 
     TEST_ASSERT_EQUAL(0x92,
                       CrcOps::crc8(buf, sizeof(buf), 0xFF, 0x31, CrcOps::BitOrder::MSB));

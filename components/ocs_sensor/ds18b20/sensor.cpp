@@ -74,7 +74,7 @@ status::StatusCode Sensor::run() {
     OCS_STATUS_RETURN_ON_ERROR(configuration_.rom_code.match(*bus_));
 
     OCS_STATUS_RETURN_ON_ERROR(
-        bus_->write_byte(static_cast<uint8_t>(Scratchpad::Commands::ConvertT)));
+        bus_->write_byte(static_cast<uint8_t>(Scratchpad::Command::ConvertT)));
 
     // Read temperature from scratchpad.
     Scratchpad scratchpad;

@@ -28,7 +28,7 @@ status::StatusCode RomCodeScanner::scan(RomCode& rom_code) {
     OCS_STATUS_RETURN_ON_ERROR(bus_.reset());
 
     OCS_STATUS_RETURN_ON_ERROR(
-        bus_.write_byte(static_cast<uint8_t>(RomCode::Commands::SearchRom)));
+        bus_.write_byte(static_cast<uint8_t>(RomCode::Command::SearchRom)));
 
     OCS_STATUS_RETURN_ON_ERROR(
         scan_(reinterpret_cast<uint8_t*>(&rom_code), sizeof(rom_code)));

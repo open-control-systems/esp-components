@@ -52,7 +52,7 @@ status::StatusCode read_temperature(onewire::Bus& bus, const onewire::RomCode& r
     }
 
     code = bus.write_byte(
-        static_cast<uint8_t>(sensor::ds18b20::Scratchpad::Commands::ConvertT));
+        static_cast<uint8_t>(sensor::ds18b20::Scratchpad::Command::ConvertT));
     if (code != status::StatusCode::OK) {
         ocs_logi(log_tag, "failed to start temperature conversation: %s",
                  status::code_to_str(code));
