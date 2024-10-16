@@ -45,7 +45,7 @@ public:
     //! Register a new I2C device.
     //!
     //! @params
-    //!  - @p id - to distringuish one I2C device from another.
+    //!  - @p id - to distinguish one I2C device from another.
     //!  - @p len - I2C device address length.
     //!  - @p addr - actual I2C device address.
     //!  - @p speed - how fast data will be transmitted over I2C bus.

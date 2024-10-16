@@ -74,6 +74,10 @@ status::StatusCode Sensor::run() {
         data.humidity = std::clamp(data.humidity, 0.0, 100.0);
     }
 
+    printf("DBG: t_crc=%u t_crc_cal=%u h_crc=%u h_crc_cal=%u\n", temperature_checksum,
+           calculate_crc(buf[0], buf[1]), humidity_checksum,
+           calculate_crc(buf[3], buf[4]));
+
     set_data_(data);
 
     return status::StatusCode::OK;
