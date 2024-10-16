@@ -14,7 +14,7 @@ namespace i2c {
 
 namespace {
 
-const char* log_tag = "master_transceiver";
+const char* log_tag = "i2c_master_transceiver";
 
 } // namespace
 

@@ -26,6 +26,9 @@ struct BitOps {
     //! Return 16-bit value from two 8-bit values.
     static uint16_t pack_u8(uint8_t hi, uint8_t lo);
 
+    //! Return 32-bit value from two 16-bit values.
+    static uint32_t pack_u16(uint16_t hi, uint16_t lo);
+
     //! Unpack 16-bit value into corresponding 8-bit values.
     static void unpack_u8(uint16_t value, uint8_t& hi, uint8_t& lo);
 };
