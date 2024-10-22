@@ -77,21 +77,9 @@ IStore::ITransceiverPtr MasterStore::add(const char* id,
     }
 
     auto device_ptr = MasterTransceiver::make_device_shared(device);
-    if (!device_ptr) {
-        ocs_loge(log_tag, "failed to allocate memory for I2C device: id=%s", id);
+    configASSERT(device_ptr);
 
-        return nullptr;
-    }
-
-    IStore::ITransceiverPtr transceiver(new (std::nothrow)
-                                            MasterTransceiver(device_ptr, id));
-    if (!transceiver) {
-        ocs_loge(log_tag, "failed to allocate memory for I2C transceiver: id=%s", id);
-
-        return nullptr;
-    }
-
-    return transceiver;
+    return IStore::ITransceiverPtr(new (std::nothrow) MasterTransceiver(device_ptr, id));
 }
 
 MasterStore::~MasterStore() {
