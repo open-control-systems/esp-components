@@ -5,6 +5,7 @@ idf_component_register(
     "ldr/json_formatter.cpp"
     "yl69/json_formatter.cpp"
     "sht41/json_formatter.cpp"
+    "bme280/json_formatter.cpp"
     "network_json_formatter.cpp"
     "system_json_formatter.cpp"
     "system_counter_pipeline.cpp"
