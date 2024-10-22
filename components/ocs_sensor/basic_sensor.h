@@ -44,9 +44,9 @@ protected:
         data_.store(data, std::memory_order_release);
     }
 
-private:
     const std::string id_;
 
+private:
     //! Atomicity considerations.
     //!
     //! The implementation represents the single producer multiple consumers model
