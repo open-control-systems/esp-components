@@ -27,6 +27,10 @@ uint16_t BitOps::pack_u8(uint8_t hi, uint8_t lo) {
     return (static_cast<uint16_t>(hi) << 8) | static_cast<uint16_t>(lo);
 }
 
+uint32_t BitOps::pack_u16(uint16_t hi, uint16_t lo) {
+    return static_cast<uint32_t>(hi) << 16 | lo;
+}
+
 void BitOps::unpack_u8(uint16_t value, uint8_t& hi, uint8_t& lo) {
     hi = (value & 0xFF00) >> 8;
     lo = value & 0x00FF;
