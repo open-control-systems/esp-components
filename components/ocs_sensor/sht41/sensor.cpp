@@ -7,12 +7,12 @@
  */
 
 #include <algorithm>
-#include <cmath>
 #include <cstring>
 
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_algo/crc_ops.h"
+#include "ocs_algo/math_ops.h"
 #include "ocs_core/bit_ops.h"
 #include "ocs_sensor/sht41/sensor.h"
 #include "ocs_status/macros.h"
@@ -26,12 +26,6 @@ namespace {
 uint8_t calculate_crc(uint8_t hi, uint8_t lo) {
     const uint8_t buf[2] { hi, lo };
     return algo::CrcOps::crc8(buf, sizeof(buf), 0xFF, 0x31, algo::CrcOps::BitOrder::MSB);
-}
-
-double round_value(double value, unsigned decimal_places) {
-    const auto multiplier = std::pow(10.0, decimal_places);
-    const auto ret = std::floor(value * multiplier) / multiplier;
-    return ret;
 }
 
 } // namespace
@@ -62,7 +56,7 @@ status::StatusCode Sensor::run() {
     const uint8_t temperature_checksum = buf[2];
     if (temperature_checksum == calculate_crc(buf[0], buf[1])) {
         data.temperature = -45 + (175.0 * temperature_ticks / UINT16_MAX);
-        data.temperature = round_value(data.temperature, 2);
+        data.temperature = algo::MathOps::round_floor(data.temperature, 2);
     }
 
     const uint16_t humidity_ticks = core::BitOps::pack_u8(buf[3], buf[4]);
@@ -70,7 +64,7 @@ status::StatusCode Sensor::run() {
 
     if (humidity_checksum == calculate_crc(buf[3], buf[4])) {
         data.humidity = -6 + (125.0 * humidity_ticks / UINT16_MAX);
-        data.humidity = round_value(data.humidity, 2);
+        data.humidity = algo::MathOps::round_floor(data.humidity, 2);
         data.humidity = std::clamp(data.humidity, 0.0, 100.0);
     }
 
