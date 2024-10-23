@@ -24,7 +24,7 @@ uint8_t BitOps::nth(unsigned value, uint8_t pos) {
 }
 
 uint16_t BitOps::pack_u8(uint8_t hi, uint8_t lo) {
-    return (static_cast<uint16_t>(hi) << 8) | static_cast<uint16_t>(lo);
+    return static_cast<uint16_t>(hi) << 8 | lo;
 }
 
 uint32_t BitOps::pack_u16(uint16_t hi, uint16_t lo) {
