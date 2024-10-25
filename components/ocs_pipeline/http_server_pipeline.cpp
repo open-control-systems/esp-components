@@ -43,7 +43,7 @@ HttpServerPipeline::HttpServerPipeline() {
     configASSERT(mdns_provider_);
 }
 
-void HttpServerPipeline::handle_connected() {
+void HttpServerPipeline::handle_connect() {
     const auto code = http_server_->start();
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to start HTTP server when WiFi is connected: code=%s",
@@ -51,7 +51,7 @@ void HttpServerPipeline::handle_connected() {
     }
 }
 
-void HttpServerPipeline::handle_disconnected() {
+void HttpServerPipeline::handle_disconnect() {
     const auto code = http_server_->stop();
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to stop HTTP server when WiFi is disconnected: code=%s",

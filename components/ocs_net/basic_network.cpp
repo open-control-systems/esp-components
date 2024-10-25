@@ -15,15 +15,15 @@ void BasicNetwork::add(INetworkHandler& handler) {
     handlers_.emplace_back(&handler);
 }
 
-void BasicNetwork::handle_connected_() {
+void BasicNetwork::handle_connect_() {
     for (auto& handler : handlers_) {
-        handler->handle_connected();
+        handler->handle_connect();
     }
 }
 
-void BasicNetwork::handle_disconnected_() {
+void BasicNetwork::handle_disconnect_() {
     for (auto& handler : handlers_) {
-        handler->handle_disconnected();
+        handler->handle_disconnect();
     }
 }
 

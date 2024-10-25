@@ -31,10 +31,10 @@ public:
     HttpServerPipeline();
 
     //! Start HTTP server.
-    void handle_connected() override;
+    void handle_connect() override;
 
     //! Stop HTTP server.
-    void handle_disconnected() override;
+    void handle_disconnect() override;
 
     //! Disable mDNS.
     status::StatusCode handle_suspend() override;

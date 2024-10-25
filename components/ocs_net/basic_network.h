@@ -44,8 +44,8 @@ public:
     void add(INetworkHandler& handler);
 
 protected:
-    void handle_connected_();
-    void handle_disconnected_();
+    void handle_connect_();
+    void handle_disconnect_();
 
     std::vector<INetworkHandler*> handlers_;
 };
