@@ -15,7 +15,7 @@ namespace ocs {
 namespace core {
 
 TEST_CASE("Rate limiter: allow operation to be performed", "[ocs_core], [rate_limiter]") {
-    const Time interval = Second;
+    const Time interval = second;
 
     test::TestClock clock;
     clock.value = 42;
@@ -29,11 +29,11 @@ TEST_CASE("Rate limiter: allow operation to be performed", "[ocs_core], [rate_li
     TEST_ASSERT_FALSE(limiter.allow());
 
     // Update the current time, but do not exceed the rate interval.
-    clock.value += interval - core::Microsecond;
+    clock.value += interval - core::Duration::microsecond;
     TEST_ASSERT_FALSE(limiter.allow());
 
     // Again, but now the rate interval has been exceeded.
-    clock.value += core::Microsecond;
+    clock.value += core::Duration::microsecond;
     TEST_ASSERT_TRUE(limiter.allow());
     TEST_ASSERT_FALSE(limiter.allow());
 }

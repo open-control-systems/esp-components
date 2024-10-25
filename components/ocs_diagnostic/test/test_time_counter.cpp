@@ -17,37 +17,37 @@ namespace diagnostic {
 TEST_CASE("Time counter: gradually reach resolution",
           "[ocs_diagnostic], [time_counter]") {
     test::TestClock clock;
-    clock.value = core::Millisecond * 500;
+    clock.value = core::Duration::millisecond * 500;
 
-    TimeCounter counter(clock, "counter", core::Second);
+    TimeCounter counter(clock, "counter", core::Duration::second);
     TEST_ASSERT_EQUAL(0, counter.get());
 
-    clock.value += core::Millisecond * 499;
+    clock.value += core::Duration::millisecond * 499;
     TEST_ASSERT_EQUAL(0, counter.get());
 
-    clock.value += core::Millisecond;
+    clock.value += core::Duration::millisecond;
     TEST_ASSERT_EQUAL(1, counter.get());
 }
 
 TEST_CASE("Time counter: reach resolution after reset",
           "[ocs_diagnostic], [time_counter]") {
     test::TestClock clock;
-    clock.value = core::Millisecond * 500;
+    clock.value = core::Duration::millisecond * 500;
 
-    TimeCounter counter(clock, "counter", core::Second);
+    TimeCounter counter(clock, "counter", core::Duration::second);
 
     TEST_ASSERT_EQUAL(0, counter.get());
 
-    clock.value += core::Millisecond * 499;
+    clock.value += core::Duration::millisecond * 499;
     TEST_ASSERT_EQUAL(0, counter.get());
 
     counter.reset();
     TEST_ASSERT_EQUAL(0, counter.get());
 
-    clock.value += core::Millisecond * 999;
+    clock.value += core::Duration::millisecond * 999;
     TEST_ASSERT_EQUAL(0, counter.get());
 
-    clock.value += core::Millisecond;
+    clock.value += core::Duration::millisecond;
     TEST_ASSERT_EQUAL(1, counter.get());
 }
 

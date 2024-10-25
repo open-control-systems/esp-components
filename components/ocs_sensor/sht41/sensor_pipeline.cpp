@@ -25,7 +25,7 @@ SensorPipeline::SensorPipeline(i2c::IStore& store,
                       Sensor(*transceiver_, "sht41_sensor",
                              Sensor::Params {
                                  .send_wait_interval = pdMS_TO_TICKS(10),
-                                 .bus_wait_interval = core::Second * 5,
+                                 .bus_wait_interval = core::Duration::second * 5,
                                  .measure_mode = Sensor::MeasureMode::HighPrecision,
                              }));
     configASSERT(sensor_);

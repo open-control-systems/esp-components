@@ -17,7 +17,7 @@ namespace scheduler {
 TEST_CASE("High resolution timer: handle events in periodic task",
           "[ocs_scheduler], [high_resolution_timer]") {
     test::TestTask task(status::StatusCode::OK);
-    HighResolutionTimer timer(task, "test", core::Millisecond * 100);
+    HighResolutionTimer timer(task, "test", core::Duration::millisecond * 100);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, timer.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task.wait());

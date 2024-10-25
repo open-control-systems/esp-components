@@ -33,7 +33,7 @@ public:
     void reset();
 
 private:
-    const core::Time resolution_ = core::Microsecond;
+    const core::Time resolution_ = core::Duration::microsecond;
 
     core::IClock& clock_;
 

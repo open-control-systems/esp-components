@@ -130,23 +130,23 @@ extern "C" void app_main(void) {
             .gpio = static_cast<gpio_num_t>(CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_GPIO),
         },
         onewire::Bus::Params {
-            .reset_pulse_interval = core::Microsecond
+            .reset_pulse_interval = core::Duration::microsecond
                 * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_RESET_PULSE_INTERVAL,
-            .presence_pulse_interval = core::Microsecond
+            .presence_pulse_interval = core::Duration::microsecond
                 * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_PRESENCE_PULSE_INTERVAL,
-            .write_slot_interval =
-                core::Microsecond * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_WRITE_SLOT_INTERVAL,
-            .write_bit_interval =
-                core::Microsecond * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_WRITE_BIT_INTERVAL,
-            .write_recovery_interval = core::Microsecond
+            .write_slot_interval = core::Duration::microsecond
+                * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_WRITE_SLOT_INTERVAL,
+            .write_bit_interval = core::Duration::microsecond
+                * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_WRITE_BIT_INTERVAL,
+            .write_recovery_interval = core::Duration::microsecond
                 * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_WRITE_RECOVERY_INTERVAL,
-            .read_slot_interval =
-                core::Microsecond * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_READ_SLOT_INTERVAL,
-            .read_bit_init_interval = core::Microsecond
+            .read_slot_interval = core::Duration::microsecond
+                * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_READ_SLOT_INTERVAL,
+            .read_bit_init_interval = core::Duration::microsecond
                 * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_READ_BIT_INIT_INTERVAL,
-            .read_bit_rc_interval = core::Microsecond
+            .read_bit_rc_interval = core::Duration::microsecond
                 * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_READ_BIT_RC_INTERVAL,
-            .read_recovery_interval = core::Microsecond
+            .read_recovery_interval = core::Duration::microsecond
                 * CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_READ_RECOVERY_INTERVAL,
         });
 

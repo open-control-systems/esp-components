@@ -14,9 +14,9 @@ namespace ocs {
 namespace system {
 
 TEST_CASE("Busy loop delayer: delay", "[ocs_system], [busy_loop_delayer]") {
-    BusyLoopDelayer delayer(core::Second);
+    BusyLoopDelayer delayer(core::Duration::second);
     for (unsigned n = 0; n < 10; ++n) {
-        delayer.delay(core::Microsecond * 100);
+        delayer.delay(core::Duration::microsecond * 100);
     }
 }
 

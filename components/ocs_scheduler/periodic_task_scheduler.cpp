@@ -42,7 +42,7 @@ status::StatusCode
 PeriodicTaskScheduler::add(ITask& task, const char* id, core::Time interval) {
     configASSERT(id);
     configASSERT(interval > 0);
-    configASSERT(interval >= core::Millisecond);
+    configASSERT(interval >= core::Duration::millisecond);
 
     if (nodes_.size() == max_count()) {
         return status::StatusCode::Error;
@@ -67,7 +67,7 @@ PeriodicTaskScheduler::add(ITask& task, const char* id, core::Time interval) {
 status::StatusCode PeriodicTaskScheduler::start() {
     ocs_logi(log_tag_.c_str(),
              "start handling tasks: count=%u/%u task_min_interval=%lli(ms)", count(),
-             max_count(), task_min_interval_ / core::Millisecond);
+             max_count(), task_min_interval_ / core::Duration::millisecond);
 
     return status::StatusCode::OK;
 }
@@ -88,7 +88,8 @@ status::StatusCode PeriodicTaskScheduler::run() {
              "delay estimating: total=%lli(usec) total_min=%lli(usec) "
              "total_max=%lli(usec) task_min=%lli(ms) estimated=%lu(ms)",
              total_ts, total_ts_min_, total_ts_max_,
-             task_min_interval_ / core::Millisecond, pdTICKS_TO_MS(estimated_delay));
+             task_min_interval_ / core::Duration::millisecond,
+             pdTICKS_TO_MS(estimated_delay));
 
     vTaskDelay(estimated_delay);
 
