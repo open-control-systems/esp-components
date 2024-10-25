@@ -23,7 +23,7 @@ namespace sht41 {
 class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
-        core::microseconds_t read_interval { 0 };
+        core::Time read_interval { 0 };
     };
 
     //! Initialize.

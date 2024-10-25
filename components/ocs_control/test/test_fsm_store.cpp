@@ -73,7 +73,7 @@ enum class State {
 TEST_CASE("FSM store: initialization", "[ocs_control], [fsm_store]") {
     test::TestClock clock;
     TestFsmBlockStorage storage;
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);
@@ -89,7 +89,7 @@ TEST_CASE("FSM store: initialization", "[ocs_control], [fsm_store]") {
 TEST_CASE("FSM store: handle none state", "[ocs_control], [fsm_store]") {
     test::TestClock clock;
     TestFsmBlockStorage storage;
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);
@@ -109,7 +109,7 @@ TEST_CASE("FSM store: handle state: single state: different handlers",
           "[ocs_control], [fsm_store]") {
     test::TestClock clock;
     TestFsmBlockStorage storage;
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);
@@ -137,7 +137,7 @@ TEST_CASE("FSM store: handle state: multiple states: same handler",
           "[ocs_control], [fsm_store]") {
     test::TestClock clock;
     TestFsmBlockStorage storage;
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);
@@ -165,7 +165,7 @@ TEST_CASE("FSM store: handle state: multiple states: different handlers",
           "[ocs_control], [fsm_store]") {
     test::TestClock clock;
     TestFsmBlockStorage storage;
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);
@@ -196,7 +196,7 @@ TEST_CASE("FSM store: handle state: multiple states: different handlers",
 TEST_CASE("FSM store: handle state: some handlers failed", "[ocs_control], [fsm_store]") {
     test::TestClock clock;
     TestFsmBlockStorage storage;
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);
@@ -221,7 +221,7 @@ TEST_CASE("FSM store: handle state: some handlers failed", "[ocs_control], [fsm_
 TEST_CASE("FSM store: handle state transition", "[ocs_control], [fsm_store]") {
     test::TestClock clock;
     TestFsmBlockStorage storage;
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);
@@ -275,7 +275,7 @@ TEST_CASE("FSM store: state transition: some handlers failed",
           "[ocs_control], [fsm_store]") {
     test::TestClock clock;
     TestFsmBlockStorage storage;
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);
@@ -348,7 +348,7 @@ TEST_CASE("FSM store: state transition: block transition failed",
     TestFsmBlockStorage storage(status::StatusCode::NoMem, status::StatusCode::NoMem,
                                 status::StatusCode::NoMem);
 
-    const core::microseconds_t resolution = core::Second;
+    const core::Time resolution = core::Second;
     const char* block_id = "fsm_block_1";
 
     FsmBlock block(clock, storage, resolution, block_id);

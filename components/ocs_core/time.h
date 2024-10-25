@@ -14,22 +14,22 @@ namespace ocs {
 namespace core {
 
 //! Microseconds.
-using microseconds_t = int64_t;
+using Time = int64_t;
 
 //! One microsecond represented in microseconds.
-const microseconds_t Microsecond = 1;
+const Time Microsecond = 1;
 
 //! One millisecond represented in microseconds.
-const microseconds_t Millisecond = 1000 * Microsecond;
+const Time Millisecond = 1000 * Microsecond;
 
 //! One second represented in microseconds.
-const microseconds_t Second = 1000 * Millisecond;
+const Time Second = 1000 * Millisecond;
 
 //! One minute represented in microseconds.
-const microseconds_t Minute = 60 * Second;
+const Time Minute = 60 * Second;
 
 //! One hour represented in microseconds.
-const microseconds_t Hour = 60 * Minute;
+const Time Hour = 60 * Minute;
 
 } // namespace core
 } // namespace ocs

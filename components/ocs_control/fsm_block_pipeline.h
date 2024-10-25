@@ -23,10 +23,10 @@ class FsmBlockPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         //! How often the FSM block should be persisted.
-        core::microseconds_t state_save_interval { 0 };
+        core::Time state_save_interval { 0 };
 
         //! State interval resolution (in milliseconds, seconds, ...).
-        core::microseconds_t state_interval_resolution { 0 };
+        core::Time state_interval_resolution { 0 };
     };
 
     //! Initialize.

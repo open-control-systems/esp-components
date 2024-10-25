@@ -19,7 +19,7 @@ public:
     virtual ~IClock() = default;
 
     //! Get time in microseconds since boot.
-    virtual microseconds_t now() = 0;
+    virtual Time now() = 0;
 };
 
 } // namespace core

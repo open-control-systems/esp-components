@@ -59,7 +59,7 @@ public:
     //!  - If there are too many tasks added to the same scheduler, it is possible that
     //!    the total time required to run all these tasks will be greater then the
     //!    minimum periodic interval.
-    status::StatusCode add(ITask& task, const char* id, core::microseconds_t interval);
+    status::StatusCode add(ITask& task, const char* id, core::Time interval);
 
     //! Start tasks scheduling.
     status::StatusCode start() override;
@@ -70,10 +70,7 @@ public:
 private:
     class Node : public ITask {
     public:
-        Node(core::IClock& clock,
-             ITask& task,
-             const char* id,
-             core::microseconds_t interval);
+        Node(core::IClock& clock, ITask& task, const char* id, core::Time interval);
 
         status::StatusCode run() override;
 
@@ -94,10 +91,10 @@ private:
     const unsigned max_count_ { 0 };
     const std::string log_tag_;
 
-    core::microseconds_t task_min_interval_ { INT64_MAX };
+    core::Time task_min_interval_ { INT64_MAX };
 
-    core::microseconds_t total_ts_min_ { INT64_MAX };
-    core::microseconds_t total_ts_max_ { INT64_MIN };
+    core::Time total_ts_min_ { INT64_MAX };
+    core::Time total_ts_max_ { INT64_MIN };
 
     core::IClock& clock_;
     IDelayEstimator& estimator_;

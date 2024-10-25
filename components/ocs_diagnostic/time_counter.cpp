@@ -13,9 +13,7 @@
 namespace ocs {
 namespace diagnostic {
 
-TimeCounter::TimeCounter(core::IClock& clock,
-                         const char* id,
-                         core::microseconds_t resolution)
+TimeCounter::TimeCounter(core::IClock& clock, const char* id, core::Time resolution)
     : BasicCounter(id)
     , resolution_(resolution)
     , clock_(clock) {

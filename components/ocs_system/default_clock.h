@@ -17,7 +17,7 @@ namespace system {
 class DefaultClock : public core::IClock, public core::NonCopyable<> {
 public:
     //! Return time in microseconds since boot.
-    core::microseconds_t now() override;
+    core::Time now() override;
 };
 
 } // namespace system

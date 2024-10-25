@@ -20,7 +20,7 @@ public:
     //!
     //! @params
     //!  - @p resolution - single tick duration equals to 1/resolution.
-    explicit LowPowerDelayer(core::microseconds_t resolution);
+    explicit LowPowerDelayer(core::Time resolution);
 
     //! Delay based on the hardware timers and interrupts.
     //!
@@ -29,7 +29,7 @@ public:
     //!  the delay in a low-power way, the CPU is not kept busy in a loop. As a result, it
     //!  takes some time for the FreeRTOS scheduler to return the execution to the calling
     //!  task.
-    status::StatusCode delay(core::microseconds_t delay) override;
+    status::StatusCode delay(core::Time delay) override;
 
 private:
     static bool handle_alarm_callback_(gptimer_handle_t handle,

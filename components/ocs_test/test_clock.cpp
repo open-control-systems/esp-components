@@ -11,7 +11,7 @@
 namespace ocs {
 namespace test {
 
-core::microseconds_t TestClock::now() {
+core::Time TestClock::now() {
     return value;
 }
 

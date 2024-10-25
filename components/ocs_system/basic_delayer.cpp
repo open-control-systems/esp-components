@@ -17,7 +17,7 @@
 namespace ocs {
 namespace system {
 
-BasicDelayer::BasicDelayer(core::microseconds_t resolution) {
+BasicDelayer::BasicDelayer(core::Time resolution) {
     gptimer_config_t config;
     memset(&config, 0, sizeof(config));
 

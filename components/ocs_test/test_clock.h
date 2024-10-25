@@ -15,9 +15,9 @@ namespace ocs {
 namespace test {
 
 struct TestClock : public core::IClock, public core::NonCopyable<> {
-    core::microseconds_t now() override;
+    core::Time now() override;
 
-    core::microseconds_t value { 0 };
+    core::Time value { 0 };
 };
 
 } // namespace test

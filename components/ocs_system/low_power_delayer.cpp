@@ -17,7 +17,7 @@
 namespace ocs {
 namespace system {
 
-LowPowerDelayer::LowPowerDelayer(core::microseconds_t resolution)
+LowPowerDelayer::LowPowerDelayer(core::Time resolution)
     : BasicDelayer(resolution) {
     gptimer_event_callbacks_t cbs;
     cbs.on_alarm = handle_alarm_callback_;
@@ -26,7 +26,7 @@ LowPowerDelayer::LowPowerDelayer(core::microseconds_t resolution)
     ESP_ERROR_CHECK(gptimer_enable(handle_));
 }
 
-status::StatusCode LowPowerDelayer::delay(core::microseconds_t delay) {
+status::StatusCode LowPowerDelayer::delay(core::Time delay) {
     OCS_STATUS_RETURN_ON_FALSE(gptimer_set_raw_count(handle_, 0) == ESP_OK,
                                status::StatusCode::Error);
 
