@@ -210,7 +210,7 @@ void WiFiNetwork::handle_wifi_event_sta_disconnected_(void* event_data) {
         xEventGroupSetBits(event_group_.get(), EVENT_BIT_FAILED);
     }
 
-    handle_disconnected_();
+    handle_disconnect_();
 }
 
 void WiFiNetwork::handle_ip_event_(int32_t event_id, void* event_data) {
@@ -231,7 +231,7 @@ void WiFiNetwork::handle_ip_event_sta_got_ip_(void* event_data) {
     retry_count_ = 0;
     xEventGroupSetBits(event_group_.get(), EVENT_BIT_CONNECTED);
 
-    handle_connected_();
+    handle_connect_();
 }
 
 } // namespace net
