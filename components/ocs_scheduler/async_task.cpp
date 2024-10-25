@@ -11,7 +11,7 @@
 namespace ocs {
 namespace scheduler {
 
-AsyncTask::AsyncTask(EventGroupHandle_t handle, ITask::Event event)
+AsyncTask::AsyncTask(EventGroupHandle_t handle, EventBits_t event)
     : event_(event)
     , handle_(handle) {
 }

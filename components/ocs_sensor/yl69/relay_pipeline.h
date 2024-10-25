@@ -11,6 +11,9 @@
 #include <memory>
 #include <string>
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
 #include "driver/gpio.h"
 
 #include "ocs_control/fsm_block_pipeline.h"

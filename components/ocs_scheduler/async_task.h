@@ -23,13 +23,13 @@ public:
     //! @params
     //!  - @p handle to post asynchronous events.
     //!  - @p event to post to the event group.
-    AsyncTask(EventGroupHandle_t handle, ITask::Event event);
+    AsyncTask(EventGroupHandle_t handle, EventBits_t event);
 
     //! Schedule an event to the event group.
     status::StatusCode run() override;
 
 private:
-    const ITask::Event event_ { 0 };
+    const EventBits_t event_ { 0 };
 
     EventGroupHandle_t handle_ { nullptr };
 };
