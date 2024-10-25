@@ -37,12 +37,12 @@ MasterTransceiver::MasterTransceiver(MasterTransceiver::DevicePtr device, const 
 
 status::StatusCode
 MasterTransceiver::send(const uint8_t* buf, unsigned size, core::Time timeout) {
-    if (timeout > 0 && timeout < core::Millisecond) {
+    if (timeout > 0 && timeout < core::Duration::millisecond) {
         return status::StatusCode::InvalidArg;
     }
 
-    const auto err =
-        i2c_master_transmit(device_.get(), buf, size, timeout / core::Millisecond);
+    const auto err = i2c_master_transmit(device_.get(), buf, size,
+                                         timeout / core::Duration::millisecond);
     if (err != ESP_OK) {
         ocs_logi(log_tag, "i2c_master_transmit() failed: id=%s err=%s", id_.c_str(),
                  esp_err_to_name(err));
@@ -62,12 +62,12 @@ MasterTransceiver::send(const uint8_t* buf, unsigned size, core::Time timeout) {
 
 status::StatusCode
 MasterTransceiver::receive(uint8_t* buf, unsigned size, core::Time timeout) {
-    if (timeout > 0 && timeout < core::Millisecond) {
+    if (timeout > 0 && timeout < core::Duration::millisecond) {
         return status::StatusCode::InvalidArg;
     }
 
-    const auto err =
-        i2c_master_receive(device_.get(), buf, size, timeout / core::Millisecond);
+    const auto err = i2c_master_receive(device_.get(), buf, size,
+                                        timeout / core::Duration::millisecond);
     if (err != ESP_OK) {
         ocs_logi(log_tag, "i2c_master_receive() failed: id=%s err=%s", id_.c_str(),
                  esp_err_to_name(err));

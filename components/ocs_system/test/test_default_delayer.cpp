@@ -17,7 +17,7 @@ TEST_CASE("Default delayer: delay", "[ocs_system], [default_delayer]") {
     DefaultDelayer delayer;
 
     for (unsigned n = 0; n < 10; ++n) {
-        delayer.delay(core::Microsecond * 100);
+        delayer.delay(core::Duration::microsecond * 100);
     }
 }
 

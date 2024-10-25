@@ -96,19 +96,19 @@ Store::Node::Node(gpio_num_t gpio, const char* gpio_id, unsigned max_event_count
 
     // For timing selection, see reference:
     // https://www.analog.com/en/resources/technical-articles/1wire-communication-through-software.html
-    bus_.reset(new (std::nothrow)
-                   onewire::Bus(*delayer_, *gpio_,
-                                onewire::Bus::Params {
-                                    .reset_pulse_interval = core::Microsecond * 480,
-                                    .presence_pulse_interval = core::Microsecond * 60,
-                                    .write_slot_interval = core::Microsecond * 60,
-                                    .write_bit_interval = core::Microsecond * 10,
-                                    .write_recovery_interval = core::Microsecond * 1,
-                                    .read_slot_interval = core::Microsecond * 60,
-                                    .read_bit_init_interval = core::Microsecond * 5,
-                                    .read_bit_rc_interval = core::Microsecond * 5,
-                                    .read_recovery_interval = core::Microsecond * 1,
-                                }));
+    bus_.reset(new (std::nothrow) onewire::Bus(
+        *delayer_, *gpio_,
+        onewire::Bus::Params {
+            .reset_pulse_interval = core::Duration::microsecond * 480,
+            .presence_pulse_interval = core::Duration::microsecond * 60,
+            .write_slot_interval = core::Duration::microsecond * 60,
+            .write_bit_interval = core::Duration::microsecond * 10,
+            .write_recovery_interval = core::Duration::microsecond * 1,
+            .read_slot_interval = core::Duration::microsecond * 60,
+            .read_bit_init_interval = core::Duration::microsecond * 5,
+            .read_bit_rc_interval = core::Duration::microsecond * 5,
+            .read_recovery_interval = core::Duration::microsecond * 1,
+        }));
     configASSERT(bus_);
 }
 

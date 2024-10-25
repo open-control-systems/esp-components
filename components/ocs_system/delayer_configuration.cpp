@@ -28,10 +28,12 @@ IDelayerPtr make_delayer(DelayerStrategy strategy) {
         return IDelayerPtr(new (std::nothrow) system::DefaultDelayer());
 
     case system::DelayerStrategy::BusyLoop:
-        return IDelayerPtr(new (std::nothrow) system::BusyLoopDelayer(core::Second));
+        return IDelayerPtr(new (std::nothrow)
+                               system::BusyLoopDelayer(core::Duration::second));
 
     case system::DelayerStrategy::LowPower:
-        return IDelayerPtr(new (std::nothrow) system::LowPowerDelayer(core::Second));
+        return IDelayerPtr(new (std::nothrow)
+                               system::LowPowerDelayer(core::Duration::second));
 
     default:
         break;

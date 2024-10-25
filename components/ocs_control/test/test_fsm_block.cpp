@@ -38,7 +38,7 @@ TEST_CASE("FSM block: initialization: no persistent state",
     TestFsmBlockStorage storage;
 
     test::TestClock clock;
-    const core::Time resolution = core::Second;
+    const core::Time resolution = core::Duration::second;
     const char* id = "block_id";
 
     FsmBlock block(clock, storage, resolution, id);
@@ -55,13 +55,13 @@ TEST_CASE("FSM block: initialization: failed to read persistent state",
     TestFsmBlockStorage storage(status::StatusCode::Error);
     storage.prev_state = static_cast<FsmBlock::State>(State::None);
     storage.curr_state = static_cast<FsmBlock::State>(State::First);
-    storage.prev_state_duration = core::Second;
-    storage.curr_state_duration = core::Hour;
+    storage.prev_state_duration = core::Duration::second;
+    storage.curr_state_duration = core::Duration::hour;
     storage.write_count = 10;
 
     test::TestClock clock;
 
-    const core::Time resolution = core::Second;
+    const core::Time resolution = core::Duration::second;
     const char* id = "block_id";
 
     FsmBlock block(clock, storage, resolution, id);
@@ -78,13 +78,13 @@ TEST_CASE("FSM block: initialization: properly read persistent state",
     TestFsmBlockStorage storage;
     storage.prev_state = static_cast<FsmBlock::State>(State::None);
     storage.curr_state = static_cast<FsmBlock::State>(State::First);
-    storage.prev_state_duration = core::Second;
-    storage.curr_state_duration = core::Hour;
+    storage.prev_state_duration = core::Duration::second;
+    storage.curr_state_duration = core::Duration::hour;
     storage.write_count = 10;
 
     test::TestClock clock;
 
-    const core::Time resolution = core::Second;
+    const core::Time resolution = core::Duration::second;
     const char* id = "block_id";
 
     FsmBlock block(clock, storage, resolution, id);
@@ -97,7 +97,7 @@ TEST_CASE("FSM block: initialization: properly read persistent state",
 }
 
 TEST_CASE("FSM block: transit: save state", "[ocs_control], [fsm_block]") {
-    const core::Time resolution = core::Second;
+    const core::Time resolution = core::Duration::second;
     const char* id = "block_id";
     uint64_t write_count = 17;
     const unsigned state_duration = 42;
@@ -141,7 +141,7 @@ TEST_CASE("FSM block: transit: save state", "[ocs_control], [fsm_block]") {
 }
 
 TEST_CASE("FSM block: transit: failed to save state", "[ocs_control], [fsm_block]") {
-    const core::Time resolution = core::Second;
+    const core::Time resolution = core::Duration::second;
     const char* id = "block_id";
     const uint64_t write_count = 17;
     const unsigned state_duration = 42;
@@ -184,8 +184,8 @@ TEST_CASE("FSM block: transit: reset previously saved current state duration",
     const char* id = "block_id";
     const uint64_t write_count = 17;
 
-    const core::Time resolution = core::Second;
-    const core::Time curr_state_duration = core::Hour * 13;
+    const core::Time resolution = core::Duration::second;
+    const core::Time curr_state_duration = core::Duration::hour * 13;
     TEST_ASSERT_TRUE(curr_state_duration > resolution);
 
     TestFsmBlockStorage storage;
@@ -216,10 +216,10 @@ TEST_CASE("FSM block: transit: reset previously saved current state duration",
 }
 
 TEST_CASE("FSM block: save state on reboot", "[ocs_control], [fsm_block]") {
-    const core::Time resolution = core::Second;
+    const core::Time resolution = core::Duration::second;
     const char* id = "block_id";
     const uint64_t write_count = 17;
-    const core::Time time_passed = core::Second * 42;
+    const core::Time time_passed = core::Duration::second * 42;
 
     TestFsmBlockStorage storage;
     storage.write_count = write_count;
@@ -235,7 +235,7 @@ TEST_CASE("FSM block: save state on reboot", "[ocs_control], [fsm_block]") {
 }
 
 TEST_CASE("FSM block: save state on run", "[ocs_control], [fsm_block]") {
-    const core::Time resolution = core::Second;
+    const core::Time resolution = core::Duration::second;
     const char* id = "block_id";
     const uint64_t write_count = 17;
 
@@ -254,7 +254,7 @@ TEST_CASE("FSM block: update current state duration", "[ocs_control], [fsm_block
     const char* id = "block_id";
     const uint64_t write_count = 17;
 
-    const core::Time resolution = core::Second;
+    const core::Time resolution = core::Duration::second;
 
     TestFsmBlockStorage storage;
     storage.write_count = write_count;
@@ -273,12 +273,12 @@ TEST_CASE("FSM block: update current state duration", "[ocs_control], [fsm_block
     TEST_ASSERT_EQUAL(0, block.current_state_duration());
 
     // Required resolution is still not reached.
-    clock.value += (resolution / 2) - core::Millisecond;
+    clock.value += (resolution / 2) - core::Duration::millisecond;
     block.update();
     TEST_ASSERT_EQUAL(0, block.current_state_duration());
 
     // Reach the required resolution.
-    clock.value += core::Millisecond;
+    clock.value += core::Duration::millisecond;
     block.update();
     TEST_ASSERT_EQUAL(1, block.current_state_duration());
 }

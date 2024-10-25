@@ -22,7 +22,7 @@ namespace scheduler {
 
 TEST_CASE("Periodic task scheduler: add task",
           "[ocs_scheduler], [periodic_task_scheduler]") {
-    const core::Time interval = core::Second;
+    const core::Time interval = core::Duration::second;
     const TickType_t delay = pdMS_TO_TICKS(10);
     const char* task_id = "test_task";
 
@@ -68,16 +68,16 @@ TEST_CASE("Periodic task scheduler: add same task twice",
     PeriodicTaskScheduler task_scheduler(clock, estimator, "scheduler", 16);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
-                      task_scheduler.add(task, "test_task", core::Second));
+                      task_scheduler.add(task, "test_task", core::Duration::second));
     TEST_ASSERT_EQUAL(status::StatusCode::InvalidArg,
-                      task_scheduler.add(task, "test_task", core::Second));
+                      task_scheduler.add(task, "test_task", core::Duration::second));
 }
 
 TEST_CASE("Periodic task scheduler: add multiple tasks",
           "[ocs_scheduler], [periodic_task_scheduler]") {
     const unsigned task_count = 10;
     const TickType_t delay = pdMS_TO_TICKS(10);
-    const core::Time interval = core::Second;
+    const core::Time interval = core::Duration::second;
 
     test::TestClock clock;
     clock.value = 42;
@@ -135,7 +135,7 @@ TEST_CASE("Periodic task scheduler: add multiple tasks",
 
 TEST_CASE("Periodic task scheduler: max number of tasks overflow",
           "[ocs_scheduler], [periodic_task_scheduler]") {
-    const core::Time interval = core::Second;
+    const core::Time interval = core::Duration::second;
     const TickType_t delay = pdMS_TO_TICKS(10);
 
     test::TestClock clock;
