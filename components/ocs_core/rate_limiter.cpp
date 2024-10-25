@@ -14,7 +14,7 @@
 namespace ocs {
 namespace core {
 
-RateLimiter::RateLimiter(core::IClock& clock, core::microseconds_t interval)
+RateLimiter::RateLimiter(core::IClock& clock, core::Time interval)
     : interval_(interval)
     , clock_(clock) {
     configASSERT(interval > 0);

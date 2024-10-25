@@ -25,7 +25,7 @@ class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         Sensor::Params sensor;
-        core::microseconds_t read_interval { 0 };
+        core::Time read_interval { 0 };
     };
 
     //! Initialize.

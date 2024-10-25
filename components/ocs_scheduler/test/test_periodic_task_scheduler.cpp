@@ -22,7 +22,7 @@ namespace scheduler {
 
 TEST_CASE("Periodic task scheduler: add task",
           "[ocs_scheduler], [periodic_task_scheduler]") {
-    const core::microseconds_t interval = core::Second;
+    const core::Time interval = core::Second;
     const TickType_t delay = pdMS_TO_TICKS(10);
     const char* task_id = "test_task";
 
@@ -77,7 +77,7 @@ TEST_CASE("Periodic task scheduler: add multiple tasks",
           "[ocs_scheduler], [periodic_task_scheduler]") {
     const unsigned task_count = 10;
     const TickType_t delay = pdMS_TO_TICKS(10);
-    const core::microseconds_t interval = core::Second;
+    const core::Time interval = core::Second;
 
     test::TestClock clock;
     clock.value = 42;
@@ -135,7 +135,7 @@ TEST_CASE("Periodic task scheduler: add multiple tasks",
 
 TEST_CASE("Periodic task scheduler: max number of tasks overflow",
           "[ocs_scheduler], [periodic_task_scheduler]") {
-    const core::microseconds_t interval = core::Second;
+    const core::Time interval = core::Second;
     const TickType_t delay = pdMS_TO_TICKS(10);
 
     test::TestClock clock;

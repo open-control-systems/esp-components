@@ -22,16 +22,16 @@ public:
     //! @params
     //!  - @p clock to count the time passed since last operation.
     //!  - @p interval - how often the operation may be performed.
-    RateLimiter(core::IClock& clock, core::microseconds_t interval);
+    RateLimiter(core::IClock& clock, core::Time interval);
 
     //! Retur true if an operation can be performed.
     bool allow();
 
 private:
-    const microseconds_t interval_ { 0 };
+    const Time interval_ { 0 };
 
     core::IClock& clock_;
-    core::microseconds_t start_ { 0 };
+    core::Time start_ { 0 };
 };
 
 } // namespace core

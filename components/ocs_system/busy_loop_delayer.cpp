@@ -16,12 +16,12 @@
 namespace ocs {
 namespace system {
 
-BusyLoopDelayer::BusyLoopDelayer(core::microseconds_t resolution)
+BusyLoopDelayer::BusyLoopDelayer(core::Time resolution)
     : BasicDelayer(resolution) {
     ESP_ERROR_CHECK(gptimer_enable(handle_));
 }
 
-status::StatusCode BusyLoopDelayer::delay(core::microseconds_t delay) {
+status::StatusCode BusyLoopDelayer::delay(core::Time delay) {
     OCS_STATUS_RETURN_ON_FALSE(gptimer_set_raw_count(handle_, 0) == ESP_OK,
                                status::StatusCode::Error);
 

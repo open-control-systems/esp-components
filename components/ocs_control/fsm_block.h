@@ -35,7 +35,7 @@ public:
     //!  - @p id to distinguish one block from another.
     FsmBlock(core::IClock& clock,
              storage::IStorage& storage,
-             core::microseconds_t resolution,
+             core::Time resolution,
              const char* id);
 
     //! Save block state to the storage.
@@ -60,10 +60,10 @@ public:
     State next_state() const;
 
     //! Return the previous FSM state duration.
-    core::microseconds_t previous_state_duration() const;
+    core::Time previous_state_duration() const;
 
     //! Return the current FSM state duration.
-    core::microseconds_t current_state_duration() const;
+    core::Time current_state_duration() const;
 
     //! Return the number of times the block was persisted in the storage.
     //!
@@ -88,7 +88,7 @@ private:
     status::StatusCode write_();
 
     const std::string log_tag_;
-    const core::microseconds_t resolution_ { 0 };
+    const core::Time resolution_ { 0 };
 
     core::IClock& clock_;
     storage::IStorage& storage_;
@@ -103,16 +103,16 @@ private:
     State next_state_ { 0 };
 
     //! Time spend in the previous machine state.
-    core::microseconds_t prev_state_dur_ { 0 };
+    core::Time prev_state_dur_ { 0 };
 
     //! Time spend in the current machine state.
-    core::microseconds_t curr_state_dur_ { 0 };
+    core::Time curr_state_dur_ { 0 };
 
     // Number of time a block was saved to the storage.
     uint64_t write_count_ { 0 };
 
-    core::microseconds_t start_ts_ { 0 };
-    core::microseconds_t saved_ts_ { 0 };
+    core::Time start_ts_ { 0 };
+    core::Time saved_ts_ { 0 };
 };
 
 } // namespace control

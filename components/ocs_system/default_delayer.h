@@ -17,7 +17,7 @@ namespace system {
 class DefaultDelayer : public IDelayer, public core::NonCopyable<> {
 public:
     //! Highly-accurate delay based on the builtin ets_delay_us().
-    status::StatusCode delay(core::microseconds_t delay) override;
+    status::StatusCode delay(core::Time delay) override;
 };
 
 } // namespace system

@@ -36,7 +36,7 @@ public:
     struct Params {
         Sensor::Params sensor;
         control::FsmBlockPipeline::Params fsm_block;
-        core::microseconds_t read_interval { 0 };
+        core::Time read_interval { 0 };
         gpio_num_t relay_gpio { GPIO_NUM_NC };
         TickType_t power_on_delay_interval { 0 };
     };

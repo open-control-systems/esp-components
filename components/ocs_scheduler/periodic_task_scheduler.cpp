@@ -39,7 +39,7 @@ unsigned PeriodicTaskScheduler::count() const {
 }
 
 status::StatusCode
-PeriodicTaskScheduler::add(ITask& task, const char* id, core::microseconds_t interval) {
+PeriodicTaskScheduler::add(ITask& task, const char* id, core::Time interval) {
     configASSERT(id);
     configASSERT(interval > 0);
     configASSERT(interval >= core::Millisecond);
@@ -108,7 +108,7 @@ void PeriodicTaskScheduler::run_() {
 PeriodicTaskScheduler::Node::Node(core::IClock& clock,
                                   ITask& task,
                                   const char* id,
-                                  core::microseconds_t interval)
+                                  core::Time interval)
     : id_(id)
     , limiter_(clock, interval)
     , task_(&task) {

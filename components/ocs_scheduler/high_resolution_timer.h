@@ -26,7 +26,7 @@ public:
     //!  - @p task to be invoked periodically at the configured interval.
     //!  - @p name to distinguish one timer from another.
     //!  - @p interval - timer interval.
-    HighResolutionTimer(ITask& task, const char* name, core::microseconds_t interval);
+    HighResolutionTimer(ITask& task, const char* name, core::Time interval);
 
     //! Destroy timer.
     ~HighResolutionTimer();
@@ -40,7 +40,7 @@ public:
 private:
     static void handle_cb_(void* arg);
 
-    const core::microseconds_t interval_ { 0 };
+    const core::Time interval_ { 0 };
 
     ITask& task_;
 

@@ -32,8 +32,7 @@ public:
     //!  - @p task - task to be executed periodically.
     //!  - @p id - unique task identifier.
     //!  - @p interval - task running frequency.
-    virtual status::StatusCode
-    add(ITask& task, const char* id, core::microseconds_t interval) = 0;
+    virtual status::StatusCode add(ITask& task, const char* id, core::Time interval) = 0;
 
     //! Start scheduling registered tasks.
     virtual status::StatusCode start() = 0;

@@ -36,10 +36,10 @@ status::StatusCode TestFsmBlockStorage::read(const char* key, void* data, unsign
         *static_cast<FsmBlock::State*>(data) = curr_state;
     } else if (strcmp(key, "prev_state_dur") == 0) {
         TEST_ASSERT_EQUAL(sizeof(prev_state_duration), size);
-        *static_cast<core::microseconds_t*>(data) = prev_state_duration;
+        *static_cast<core::Time*>(data) = prev_state_duration;
     } else if (strcmp(key, "curr_state_dur") == 0) {
         TEST_ASSERT_EQUAL(sizeof(curr_state_duration), size);
-        *static_cast<core::microseconds_t*>(data) = curr_state_duration;
+        *static_cast<core::Time*>(data) = curr_state_duration;
     } else if (strcmp(key, "write_count") == 0) {
         TEST_ASSERT_EQUAL(sizeof(write_count), size);
         *static_cast<decltype(write_count)*>(data) = write_count;
@@ -64,10 +64,10 @@ TestFsmBlockStorage::write(const char* key, const void* data, unsigned size) {
         curr_state = *static_cast<const FsmBlock::State*>(data);
     } else if (strcmp(key, "prev_state_dur") == 0) {
         TEST_ASSERT_EQUAL(sizeof(prev_state_duration), size);
-        prev_state_duration = *static_cast<const core::microseconds_t*>(data);
+        prev_state_duration = *static_cast<const core::Time*>(data);
     } else if (strcmp(key, "curr_state_dur") == 0) {
         TEST_ASSERT_EQUAL(sizeof(curr_state_duration), size);
-        curr_state_duration = *static_cast<const core::microseconds_t*>(data);
+        curr_state_duration = *static_cast<const core::Time*>(data);
     } else if (strcmp(key, "write_count") == 0) {
         TEST_ASSERT_EQUAL(sizeof(write_count), size);
         write_count = *static_cast<const decltype(write_count)*>(data);

@@ -30,7 +30,7 @@ public:
     struct Params {
         Sensor::Params sensor;
         control::FsmBlockPipeline::Params fsm_block;
-        core::microseconds_t read_interval { 0 };
+        core::Time read_interval { 0 };
     };
 
     //! Initialize.

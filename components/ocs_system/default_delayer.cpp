@@ -13,7 +13,7 @@
 namespace ocs {
 namespace system {
 
-status::StatusCode DefaultDelayer::delay(core::microseconds_t delay) {
+status::StatusCode DefaultDelayer::delay(core::Time delay) {
     ets_delay_us(delay);
     return status::StatusCode::OK;
 }

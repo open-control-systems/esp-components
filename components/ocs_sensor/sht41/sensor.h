@@ -44,7 +44,7 @@ public:
         TickType_t send_wait_interval { pdMS_TO_TICKS(10) };
 
         //! How long to wait for I2C operation to complete.
-        core::microseconds_t bus_wait_interval { core::Second * 5 };
+        core::Time bus_wait_interval { core::Second * 5 };
 
         //! How precise data should be measured.
         MeasureMode measure_mode { MeasureMode::HighPrecision };

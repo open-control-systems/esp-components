@@ -24,7 +24,7 @@ namespace bme280 {
 class SpiSensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
-        core::microseconds_t read_interval { 0 };
+        core::Time read_interval { 0 };
         gpio_num_t cs_gpio { GPIO_NUM_NC };
         Sensor::Params sensor;
     };

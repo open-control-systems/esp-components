@@ -22,7 +22,7 @@ public:
     //!
     //! @params
     //!  - @p resolution - single tick duration equals to 1/resolution.
-    explicit BasicDelayer(core::microseconds_t resolution);
+    explicit BasicDelayer(core::Time resolution);
 
     //! Destroy.
     virtual ~BasicDelayer();

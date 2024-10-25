@@ -23,7 +23,7 @@ namespace ds18b20 {
 class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
-        core::microseconds_t read_interval { 0 };
+        core::Time read_interval { 0 };
         gpio_num_t data_pin { GPIO_NUM_NC };
     };
 

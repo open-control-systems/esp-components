@@ -23,7 +23,7 @@ class ConsoleJsonPipeline : public core::NonCopyable<> {
 public:
     struct DataParams {
         //! How often print data to the console.
-        core::microseconds_t interval { 0 };
+        core::Time interval { 0 };
 
         //! Buffer size to hold the formatted JSON data, in bytes.
         unsigned buffer_size { 0 };

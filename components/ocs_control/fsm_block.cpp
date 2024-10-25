@@ -18,7 +18,7 @@ namespace control {
 
 FsmBlock::FsmBlock(core::IClock& clock,
                    storage::IStorage& storage,
-                   core::microseconds_t resolution,
+                   core::Time resolution,
                    const char* id)
     : log_tag_(id)
     , resolution_(resolution)
@@ -74,11 +74,11 @@ FsmBlock::State FsmBlock::next_state() const {
     return next_state_;
 }
 
-core::microseconds_t FsmBlock::previous_state_duration() const {
+core::Time FsmBlock::previous_state_duration() const {
     return prev_state_dur_;
 }
 
-core::microseconds_t FsmBlock::current_state_duration() const {
+core::Time FsmBlock::current_state_duration() const {
     return curr_state_dur_;
 }
 

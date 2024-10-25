@@ -33,11 +33,11 @@ public:
 
     //! Send data to the I2C device.
     status::StatusCode
-    send(const uint8_t* buf, unsigned size, core::microseconds_t timeout = -1) override;
+    send(const uint8_t* buf, unsigned size, core::Time timeout = -1) override;
 
     //! Receive data from the I2C device.
     status::StatusCode
-    receive(uint8_t* buf, unsigned size, core::microseconds_t timeout = -1) override;
+    receive(uint8_t* buf, unsigned size, core::Time timeout = -1) override;
 
 private:
     const std::string id_;

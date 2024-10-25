@@ -20,14 +20,14 @@ public:
     //!
     //! @params
     //!  - @p resolution - single tick duration equals to 1/resolution.
-    explicit BusyLoopDelayer(core::microseconds_t resolution);
+    explicit BusyLoopDelayer(core::Time resolution);
 
     //! Highly-accurate delay based on the hardware timers and busy loop.
     //!
     //! @notes
     //!  Busy loop approach provides high precision but is inefficient for power usage
     //!  and CPU utilization.
-    status::StatusCode delay(core::microseconds_t delay) override;
+    status::StatusCode delay(core::Time delay) override;
 };
 
 } // namespace system

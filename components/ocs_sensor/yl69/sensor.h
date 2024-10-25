@@ -30,8 +30,8 @@ struct SensorData {
     int moisture { 0 };
     SoilStatus prev_status { SoilStatus::None };
     SoilStatus curr_status { SoilStatus::None };
-    core::microseconds_t prev_status_duration { 0 };
-    core::microseconds_t curr_status_duration { 0 };
+    core::Time prev_status_duration { 0 };
+    core::Time curr_status_duration { 0 };
     uint64_t write_count { 0 };
     uint16_t status_len { 0 };
     int16_t status_pos { 0 };
