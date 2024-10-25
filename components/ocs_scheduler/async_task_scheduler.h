@@ -27,7 +27,7 @@ public:
     //!
     //! @remarks
     //!  8 high bits are used by the FreeRTOS itself.
-    static const unsigned max_task_count = (sizeof(ITask::Event) * 8) - 8;
+    static const unsigned max_task_count = (sizeof(EventBits_t) * 8) - 8;
 
     //! Return number of registered tasks to which asynchronous events are delivered.
     unsigned count() const;
@@ -51,7 +51,7 @@ private:
     struct TaskNode {
         TaskNode(ITask* task,
                  EventGroupHandle_t event_group,
-                 ITask::Event event,
+                 EventBits_t event,
                  const char* id)
             : id(id)
             , task(task)
@@ -62,7 +62,7 @@ private:
         const std::string id;
 
         ITask* task { nullptr };
-        ITask::Event event { 0 };
+        EventBits_t event { 0 };
         AsyncTask async_task;
     };
 
@@ -70,7 +70,7 @@ private:
 
     core::StaticEventGroup event_group_;
 
-    ITask::Event bits_all_ { 0 };
+    EventBits_t bits_all_ { 0 };
 
     std::vector<TaskNode> nodes_;
 };

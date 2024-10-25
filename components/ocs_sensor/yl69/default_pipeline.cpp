@@ -6,6 +6,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include "freertos/FreeRTOSConfig.h"
+
 #include "ocs_sensor/yl69/default_pipeline.h"
 
 namespace ocs {

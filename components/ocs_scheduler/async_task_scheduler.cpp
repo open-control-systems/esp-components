@@ -45,7 +45,7 @@ ITask* AsyncTaskScheduler::add(ITask& task, const char* id) {
         }
     }
 
-    const ITask::Event event = core::BitOps::mask(nodes_.size());
+    const EventBits_t event = core::BitOps::mask(nodes_.size());
 
     TaskNode node(&task, event_group_.get(), event, id);
     nodes_.emplace_back(node);

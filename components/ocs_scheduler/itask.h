@@ -8,9 +8,6 @@
 
 #pragma once
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/event_groups.h"
-
 #include "ocs_status/code.h"
 
 namespace ocs {
@@ -18,9 +15,6 @@ namespace scheduler {
 
 class ITask {
 public:
-    //! Event type used for the events posting.
-    using Event = EventBits_t;
-
     //! Destroy.
     virtual ~ITask() = default;
 
