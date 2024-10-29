@@ -22,4 +22,3 @@ status::StatusCode RebootTask::run() {
 
 } // namespace system
 } // namespace ocs
-
