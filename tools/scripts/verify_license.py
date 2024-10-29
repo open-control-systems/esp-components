@@ -18,7 +18,7 @@ license_text = f"""/*
  */"""
 
 
-def add_license_header(args: argparse.Namespace):
+def verify_header(args: argparse.Namespace):
     for root, dirs, files in os.walk(args.path):
         for file_name in files:
             if file_name.endswith(".cpp") or file_name.endswith(".h"):
@@ -27,23 +27,27 @@ def add_license_header(args: argparse.Namespace):
                 with open(file_path, 'r+') as file:
                     content = file.read()
                     if not content.startswith("/*"):
-                        file.seek(0, 0)
-                        file.write(license_text.rstrip('\r\n') + '\n\n' + content)
+                        if args.fmt:
+                            file.seek(0, 0)
+                            file.write(license_text.rstrip('\r\n') + '\n\n' + content)
 
-                        print(f'LICENSED MPL 2.0: {file_name}', file=sys.stderr)
+                            print(f'Add MPL 2.0 header: {file_name}', file=sys.stderr)
+                        else:
+                            print(f'Missed MPL 2.0 header: {file_name}', file=sys.stderr)
 
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Add MPL 2.0 License Header')
+    parser = argparse.ArgumentParser(description='Verify MPL 2.0 License Header')
 
     parser.add_argument('--path', help='Project path', required=True)
+    parser.add_argument('--fmt', help='Add license header', action='store_true')
 
     return parser.parse_args()
 
 
 def main() -> None:
     args: argparse.Namespace = parse_args()
-    add_license_header(args)
+    verify_header(args)
 
 
 if __name__ == '__main__':
