@@ -1,0 +1,44 @@
+name: "Platform Independent Environment Setup"
+description: "Setup all prerequisites"
+inputs:
+  PROJECT_ID:
+    description: "Project unique identifier"
+    required: true
+    default: "project"
+runs:
+  using: "composite"
+  steps:
+    - name: Install Prerequisites
+      run: |
+        mkdir -p .env
+        mkdir -p .log
+        mkdir -p .cache/ccache
+
+        set -xe
+        sudo apt-get update
+        sudo apt-get install -y \
+            git wget flex bison gperf python3 python3-pip python3-venv \
+            cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
+      shell: bash
+
+    - name: Setup ccache Configuration
+      run: |
+        echo 'export CCACHE_MAXSIZE=512M' >> .env/ccache
+        echo 'export CCACHE_COMPRESS=true' >> .env/ccache
+
+        # https://stackoverflow.com/questions/53659419/no-hits-in-gitlab-ci-for-ccache
+        echo 'export CCACHE_COMPILERCHECK=content' >> .env/ccache
+
+        echo "export CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> .env/ccache
+        echo "export CCACHE_DIR=$GITHUB_WORKSPACE/.cache/ccache" >> .env/ccache
+
+        echo "export CCACHE_LOGFILE=$GITHUB_WORKSPACE/.log/ccache" >> .env/ccache
+      shell: bash
+
+    - name: Setup ccache Cache
+      uses: actions/cache@v4
+      with:
+        path: .cache/ccache
+        key: ccache-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.h') }}
+        restore-keys: |
+          ccache-${{ runner.os }}-${{ inputs.PROJECT_ID }}

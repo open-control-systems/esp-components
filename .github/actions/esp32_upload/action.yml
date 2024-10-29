@@ -1,0 +1,23 @@
+name: "ESP-IDF Project Upload"
+description: "Upload ESP-IDF project"
+inputs:
+  PROJECT_PATH:
+    description: "Path for the project to upload"
+    required: true
+    default: "project"
+  PROJECT_ID:
+    description: "Project unique identifier"
+    required: true
+    default: "project"
+runs:
+  using: "composite"
+  steps:
+      - name: Upload ESP-IDF Project
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ inputs.PROJECT_ID }}
+          path: |
+            ${{ inputs.PROJECT_PATH }}/build/bootloader/*.bin
+            ${{ inputs.PROJECT_PATH }}/build/partition_table/*.bin
+            ${{ inputs.PROJECT_PATH }}/build/*.bin
+            ${{ inputs.PROJECT_PATH }}/build/flash_project_args

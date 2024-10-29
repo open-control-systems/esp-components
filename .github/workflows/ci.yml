@@ -1,0 +1,70 @@
+name: Build OCS Firmware Library
+
+on:
+  pull_request:
+
+jobs:
+  build-esp:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_PATH: project
+      IDF_PATH: esp-idf
+      IDF_VERSION: v5.3.1
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          path: ${{ env.PROJECT_PATH }}
+
+      - name: Setup Prerequisites
+        uses: ./project/.github/actions/basic_env
+        with:
+          PROJECT_ID: ocs-core-firmware
+
+      - name: Setup ESP-IDF
+        uses: ./project/.github/actions/esp32_env
+        with:
+          IDF_PATH: ${{ env.IDF_PATH }}
+          IDF_VERSION: ${{ env.IDF_VERSION }}
+
+      - name: Perform All Checks
+        uses: ./project/.github/actions/basic_checks
+        with:
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}
+          OCS_PATH: ${{ env.PROJECT_PATH }}
+
+      - name: Build Unit Tests
+        uses: ./project/.github/actions/esp32_build
+        with:
+          IDF_PATH: ${{ env.IDF_PATH }}
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}/tests
+
+      - name: Build DS18B20 Verifier
+        uses: ./project/.github/actions/esp32_build
+        with:
+          IDF_PATH: ${{ env.IDF_PATH }}
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds18b20-verifier
+
+      - name: Build DS Rom Code Scanner
+        uses: ./project/.github/actions/esp32_build
+        with:
+          IDF_PATH: ${{ env.IDF_PATH }}
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds-rom-code-scanner
+
+      - name: Upload Unit Tests Artifacts
+        uses: ./project/.github/actions/esp32_upload
+        with:
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}/tests
+          PROJECT_ID: artifacts-unittests
+
+      - name: Upload DS18B20 Verifier Artifacts
+        uses: ./project/.github/actions/esp32_upload
+        with:
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds18b20-verifier
+          PROJECT_ID: artifacts-ds18b20-verifier
+
+      - name: Upload DS Rom Code Scanner Artifacts
+        uses: ./project/.github/actions/esp32_upload
+        with:
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds-rom-code-scanner
+          PROJECT_ID: artifacts-ds-rom-code-scanner

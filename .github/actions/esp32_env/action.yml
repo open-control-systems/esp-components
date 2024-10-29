@@ -1,0 +1,33 @@
+name: "ESP-IDF Project Setup"
+description: "Setup ESP-IDF environment"
+inputs:
+  IDF_PATH:
+    description: "Path where ESP-IDF is installed"
+    required: true
+    default: "esp-idf"
+  IDF_VERSION:
+    description: "ESP-IDF version"
+    required: true
+    default: "v5.3.1"
+runs:
+  using: "composite"
+  steps:
+    - name: Cache ESP-IDF
+      uses: actions/cache@v4
+      with:
+        path: |
+          ${{ inputs.IDF_PATH }}
+          ~/.espressif
+        key: esp-idf-${{ runner.os }}-${{ inputs.IDF_VERSION }}
+
+    - name: Setup ESP-IDF
+      run: |
+        if [ ! -d "${{ inputs.IDF_PATH }}" ]; then
+            set -xe
+            git clone --single-branch -b ${{ inputs.IDF_VERSION }} \
+                --recursive https://github.com/espressif/esp-idf.git ${{ inputs.IDF_PATH }}
+        fi
+
+        cd ${{ inputs.IDF_PATH }}
+        ./install.sh
+      shell: bash
