@@ -1,0 +1,32 @@
+name: "Platform Independent Checks"
+description: "Perform all platform independent checks"
+inputs:
+  PROJECT_PATH:
+    description: "Path where the project is checked out"
+    required: true
+    default: "project"
+  OCS_PATH:
+    description: "Path to the OCS components library"
+    required: true
+    default: "project"
+runs:
+  using: "composite"
+  steps:
+    - name: Run clang-format
+      run: |
+        set -xe
+        cd ${{ inputs.PROJECT_PATH }}
+        files=$(find . -name '*.cpp' -o -name '*.h')
+        clang-format --dry-run --Werror -style=file $files
+      shell: bash
+
+    - name: Check for MPL License Headers
+      run: |
+        cd ${{ inputs.OCS_PATH }}
+        output=$(tools/scripts/verify_license.py --path . 2>&1)
+        if [ -n "$output" ]; then
+          echo "Error: Some files are missing the MPL license header:"
+          echo "$output"
+          exit 1
+        fi
+      shell: bash

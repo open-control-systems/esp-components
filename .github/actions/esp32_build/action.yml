@@ -1,0 +1,27 @@
+name: "ESP-IDF Project Build"
+description: "Build ESP-IDF project"
+inputs:
+  IDF_PATH:
+    description: "Path where ESP-IDF is installed"
+    required: true
+    default: "esp-idf"
+  PROJECT_PATH:
+    description: "Path for the project to build"
+    required: true
+    default: "."
+runs:
+  using: "composite"
+  steps:
+      - name: Build ESP-IDF Project
+        run: |
+          source $GITHUB_WORKSPACE/.env/ccache
+
+          ccache -xvps
+
+          . ${{ inputs.IDF_PATH }}/export.sh
+
+          cd ${{ inputs.PROJECT_PATH }}
+          IDF_CCACHE_ENABLE=1 idf.py build
+
+          ccache -xvps
+        shell: bash
