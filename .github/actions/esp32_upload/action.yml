@@ -21,3 +21,4 @@ runs:
             ${{ inputs.PROJECT_PATH }}/build/partition_table/*.bin
             ${{ inputs.PROJECT_PATH }}/build/*.bin
             ${{ inputs.PROJECT_PATH }}/build/flash_project_args
+            ${{ inputs.PROJECT_PATH }}/build/config/sdkconfig.json
