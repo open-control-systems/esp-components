@@ -34,7 +34,7 @@ jobs:
         uses: ./project/.github/actions/basic_checks
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}
-          OCS_PATH: ${{ env.PROJECT_PATH }}
+          OCS_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
 
       - name: Build Unit Tests
         uses: ./project/.github/actions/esp32_build
