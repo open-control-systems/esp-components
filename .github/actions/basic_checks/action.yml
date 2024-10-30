@@ -12,21 +12,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Run clang-format
-      run: |
-        set -xe
-        cd ${{ inputs.PROJECT_PATH }}
-        files=$(find . -name '*.cpp' -o -name '*.h')
-        clang-format --dry-run --Werror -style=file $files
+    - name: Check Code Formatting
+      run: "${{ inputs.OCS_COMPONENTS_PATH }}/tools/scripts/check_format.sh"
       shell: bash
+      env:
+        PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
 
-    - name: Check for MPL License Headers
-      run: |
-        cd ${{ inputs.OCS_COMPONENTS_PATH }}
-        output=$(tools/scripts/verify_license.py --path . 2>&1)
-        if [ -n "$output" ]; then
-          echo "Error: Some files are missing the MPL license header:"
-          echo "$output"
-          exit 1
-        fi
+    - name: Check License Headers
+      run: "${{ inputs.OCS_COMPONENTS_PATH }}/tools/scripts/check_license.sh"
       shell: bash
+      env:
+          PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
+          OCS_COMPONENTS_PATH: "${{ inputs.OCS_COMPONENTS_PATH }}"
