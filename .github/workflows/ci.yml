@@ -1,4 +1,4 @@
-name: Build OCS Firmware Library
+name: Build OCS Firmware Components
 
 on:
   pull_request:
