@@ -9,19 +9,37 @@ inputs:
     description: "Path for the project to build"
     required: true
     default: "."
+  CONFIGURATION_PATH_CCACHE:
+    description: "ccache configuration path"
+    required: true
+    default: ".env/ccache"
+  CONFIGURATION_PATH_PROJECT:
+    description: "Project configuration path"
+    required: true
+    default: ".env/esp32_build_configuration"
 runs:
   using: "composite"
   steps:
-      - name: Build ESP-IDF Project
-        run: |
-          source $GITHUB_WORKSPACE/.env/ccache
+    - name: Build ESP-IDF Project
+      run: |
+        echo "Using IDF Path: ${{ inputs.IDF_PATH }}"
+        echo "Using Project Path: ${{ inputs.PROJECT_PATH }}"
+        echo "Using ccache Configuration Path: ${{ inputs.CONFIGURATION_PATH_CCACHE }}"
+        echo "Using Project Configuration Path: ${{ inputs.CONFIGURATION_PATH_PROJECT }}"
 
-          ccache -xvps
+        source "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
+        source "${{ inputs.IDF_PATH }}/export.sh"
 
-          . ${{ inputs.IDF_PATH }}/export.sh
+        ccache -xvps
 
-          cd ${{ inputs.PROJECT_PATH }}
-          IDF_CCACHE_ENABLE=1 idf.py build
+        if [ -f "${{ inputs.CONFIGURATION_PATH_PROJECT }}" ]; then
+            cat "${{ inputs.CONFIGURATION_PATH_PROJECT }}" >> "${{ inputs.PROJECT_PATH }}/sdkconfig.defaults"
+            cat "${{ inputs.PROJECT_PATH }}/sdkconfig.defaults"
+        fi
 
-          ccache -xvps
-        shell: bash
+        cd "${{ inputs.PROJECT_PATH }}"
+
+        IDF_CCACHE_ENABLE=1 idf.py build
+
+        ccache -xvps
+      shell: bash
