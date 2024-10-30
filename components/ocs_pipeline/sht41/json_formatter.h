@@ -19,7 +19,7 @@ namespace sht41 {
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::sht41::Sensor& sensor, bool flat_formatting);
+    JsonFormatter(sensor::sht41::Sensor& sensor, bool flat_formatting = true);
 
     //! Format SHT41 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;

@@ -19,7 +19,7 @@ namespace bme280 {
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::bme280::Sensor& sensor, bool flat_formatting);
+    JsonFormatter(sensor::bme280::Sensor& sensor, bool flat_formatting = true);
 
     //! Format bme280 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
