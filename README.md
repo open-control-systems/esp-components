@@ -1,6 +1,6 @@
 # OCS Firmware Components
 
-[![ESP32](https://github.com/open-control-systems/esp-components/actions/workflows/ci.yml/badge.svg)](https://github.com/open-control-systems/esp-components/actions/workflows/ci.yml)
+[![ESP32](https://github.com/open-control-systems/esp-components/actions/workflows/esp32.yml/badge.svg)](https://github.com/open-control-systems/esp-components/actions/workflows/esp32.yml)
 
 ## Introduction
 
