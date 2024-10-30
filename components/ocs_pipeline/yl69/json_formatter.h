@@ -19,7 +19,7 @@ namespace yl69 {
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::yl69::Sensor& sensor, bool flat_formatting);
+    JsonFormatter(sensor::yl69::Sensor& sensor, bool flat_formatting = true);
 
     //! Format YL69 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
