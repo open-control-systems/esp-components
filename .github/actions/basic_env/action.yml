@@ -9,14 +9,30 @@ inputs:
     description: "ccache configuration path"
     required: true
     default: ".env/ccache"
+  CONFIGURATION_PATH:
+    description: "path for various build configurations"
+    required: true
+    default: ".env"
+  LOG_PATH:
+    description: "path for various log files"
+    required: true
+    default: ".log"
+  CACHE_PATH:
+    description: "path for various caches"
+    required: true
+    default: ".cache"
 runs:
   using: "composite"
   steps:
     - name: Install Prerequisites
       run: |
-        mkdir -p .env
-        mkdir -p .log
-        mkdir -p .cache/ccache
+        echo "Using Configuration Path: ${{ inputs.CONFIGURATION_PATH }}"
+        echo "Using Log Path: ${{ inputs.LOG_PATH }}"
+        echo "Using Cache Path: ${{ inputs.CACHE_PATH }}"
+
+        mkdir -p "${{ inputs.CONFIGURATION_PATH }}"
+        mkdir -p "${{ inputs.LOG_PATH }}"
+        mkdir -p "${{ inputs.CACHE_PATH }}"
 
         set -xe
         sudo apt-get update
@@ -27,6 +43,11 @@ runs:
 
     - name: Setup ccache Configuration
       run: |
+        ccache_path="${{ inputs.CACHE_PATH }}/ccache"
+        ccache_log_file="${{ inputs.LOG_PATH }}/ccache"
+
+        mkdir -p $ccache_path
+
         echo "export CCACHE_MAXSIZE=512M" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
         echo "export CCACHE_COMPRESS=true" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
 
@@ -34,15 +55,15 @@ runs:
         echo "export CCACHE_COMPILERCHECK=content" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
 
         echo "export CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
-        echo "export CCACHE_DIR=$GITHUB_WORKSPACE/.cache/ccache" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
+        echo "export CCACHE_DIR=$GITHUB_WORKSPACE/$ccache_path" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
 
-        echo "export CCACHE_LOGFILE=$GITHUB_WORKSPACE/.log/ccache" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
+        echo "export CCACHE_LOGFILE=$GITHUB_WORKSPACE/$ccache_log_file" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
       shell: bash
 
     - name: Setup ccache Cache
       uses: actions/cache@v4
       with:
-        path: .cache/ccache
+        path: ${{ inputs.CACHE_PATH }}/ccache
         key: ccache-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.h') }}
         restore-keys: |
           ccache-${{ runner.os }}-${{ inputs.PROJECT_ID }}
