@@ -1,3 +1,7 @@
+# OCS Firmware Components
+
+[![ESP32](https://github.com/open-control-systems/esp-components/actions/workflows/ci.yml/badge.svg)](https://github.com/open-control-systems/esp-components/actions/workflows/ci.yml)
+
 ## Introduction
 
 `esp-components` is a C++ library dedicated to be used in various ESP-IDF based projects.
