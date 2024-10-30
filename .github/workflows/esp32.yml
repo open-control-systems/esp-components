@@ -13,6 +13,8 @@ jobs:
       PROJECT_PATH: project
       IDF_PATH: esp-idf
       IDF_VERSION: v5.3.1
+      CONFIGURATION_PATH_CCACHE: .env/ccache
+      CONFIGURATION_PATH_UNIT_TESTS: .env/esp32_configuration_unit_tests
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -36,11 +38,18 @@ jobs:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}
           OCS_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
 
+      - name: Prepare Configuration for Unit Tests Build
+        run: |
+          echo "CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED=y" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
+        shell: bash
+
       - name: Build Unit Tests
         uses: ./project/.github/actions/esp32_build
         with:
           IDF_PATH: ${{ env.IDF_PATH }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tests
+          CONFIGURATION_PATH_CCACHE: ${{ env.CONFIGURATION_PATH_CCACHE }}
+          CONFIGURATION_PATH_PROJECT: ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
 
       - name: Build DS18B20 Verifier
         uses: ./project/.github/actions/esp32_build
