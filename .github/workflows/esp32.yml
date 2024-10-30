@@ -1,4 +1,4 @@
-name: Build OCS Firmware Components
+name: ESP32
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - master
 
 jobs:
-  build-esp:
+  build:
     runs-on: ubuntu-latest
     env:
       PROJECT_PATH: project
