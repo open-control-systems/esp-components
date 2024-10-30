@@ -23,11 +23,11 @@ runs:
 
     - name: Setup ccache Configuration
       run: |
-        echo 'export CCACHE_MAXSIZE=512M' >> .env/ccache
-        echo 'export CCACHE_COMPRESS=true' >> .env/ccache
+        echo "export CCACHE_MAXSIZE=512M" >> .env/ccache
+        echo "export CCACHE_COMPRESS=true" >> .env/ccache
 
         # https://stackoverflow.com/questions/53659419/no-hits-in-gitlab-ci-for-ccache
-        echo 'export CCACHE_COMPILERCHECK=content' >> .env/ccache
+        echo "export CCACHE_COMPILERCHECK=content" >> .env/ccache
 
         echo "export CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> .env/ccache
         echo "export CCACHE_DIR=$GITHUB_WORKSPACE/.cache/ccache" >> .env/ccache
