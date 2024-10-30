@@ -5,6 +5,10 @@ inputs:
     description: "Project unique identifier"
     required: true
     default: "project"
+  CONFIGURATION_PATH_CCACHE:
+    description: "ccache configuration path"
+    required: true
+    default: ".env/ccache"
 runs:
   using: "composite"
   steps:
@@ -23,16 +27,16 @@ runs:
 
     - name: Setup ccache Configuration
       run: |
-        echo "export CCACHE_MAXSIZE=512M" >> .env/ccache
-        echo "export CCACHE_COMPRESS=true" >> .env/ccache
+        echo "export CCACHE_MAXSIZE=512M" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
+        echo "export CCACHE_COMPRESS=true" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
 
         # https://stackoverflow.com/questions/53659419/no-hits-in-gitlab-ci-for-ccache
-        echo "export CCACHE_COMPILERCHECK=content" >> .env/ccache
+        echo "export CCACHE_COMPILERCHECK=content" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
 
-        echo "export CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> .env/ccache
-        echo "export CCACHE_DIR=$GITHUB_WORKSPACE/.cache/ccache" >> .env/ccache
+        echo "export CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
+        echo "export CCACHE_DIR=$GITHUB_WORKSPACE/.cache/ccache" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
 
-        echo "export CCACHE_LOGFILE=$GITHUB_WORKSPACE/.log/ccache" >> .env/ccache
+        echo "export CCACHE_LOGFILE=$GITHUB_WORKSPACE/.log/ccache" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
       shell: bash
 
     - name: Setup ccache Cache

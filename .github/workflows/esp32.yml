@@ -25,6 +25,7 @@ jobs:
         uses: ./project/.github/actions/basic_env
         with:
           PROJECT_ID: ocs-core-firmware
+          CONFIGURATION_PATH_CCACHE: ${{ env.CONFIGURATION_PATH_CCACHE }}
 
       - name: Setup ESP-IDF
         uses: ./project/.github/actions/esp32_env
