@@ -1,8 +1,12 @@
 name: "Platform Independent Environment Setup"
 description: "Setup all prerequisites"
 inputs:
-  PROJECT_ID:
-    description: "Project unique identifier"
+  PROJECT_PATH:
+    description: "Path where the project is checked out"
+    required: true
+    default: "project"
+  OCS_COMPONENTS_PATH:
+    description: "Path to the OCS components library"
     required: true
     default: "project"
   CONFIGURATION_PATH_CCACHE:
@@ -60,10 +64,41 @@ runs:
         echo "export CCACHE_LOGFILE=$GITHUB_WORKSPACE/$ccache_log_file" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
       shell: bash
 
+    - name: Load ccache Cache Key
+      run: |
+        # Compute new hash
+        new_hash=$("${{ inputs.OCS_COMPONENTS_PATH }}/tools/scripts/gen_source_hash.sh")
+
+        # Load previous hash if exists
+        hash_file="${{ inputs.CACHE_PATH }}/ccache_last_hash"
+        if [[ -f "$hash_file" ]]; then
+          prev_hash=$(cat "$hash_file")
+        else
+          prev_hash=""
+        fi
+
+        # If no previous hash or hashes differ, use new hash and update file
+        if [[ "$prev_hash" != "$new_hash" ]]; then
+          echo "Updating cache key: prev_hash=$prev_hash new_hash=$new_hash"
+          echo "$new_hash" > "$hash_file"
+
+          if [[ -z "$prev_hash" ]]; then
+            prev_hash=$new_hash
+          fi
+        fi
+
+        echo "ccache_cache_key=ccache-${{ runner.os }}-$new_hash" >> $GITHUB_ENV
+        echo "ccache_cache_restore_key=ccache-${{ runner.os }}-$prev_hash" >> $GITHUB_ENV
+      shell: bash
+      env:
+          PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
+
     - name: Setup ccache Cache
       uses: actions/cache@v4
       with:
-        path: ${{ inputs.CACHE_PATH }}/ccache
-        key: ccache-${{ runner.os }}-${{ hashFiles('**/*.cpp', '**/*.h') }}
+        path: |
+          ${{ inputs.CACHE_PATH }}/ccache
+          ${{ inputs.CACHE_PATH }}/ccache_last_hash
+        key: ${{ env.ccache_cache_key }}
         restore-keys: |
-          ccache-${{ runner.os }}-${{ inputs.PROJECT_ID }}
+          ${{ env.ccache_cache_restore_key }}
