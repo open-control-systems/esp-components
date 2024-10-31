@@ -32,12 +32,8 @@ const char* log_tag = "sensor_soil";
 
 } // namespace
 
-Sensor::Sensor(io::IAdc& adc,
-               control::FsmBlock& fsm_block,
-               const char* sensor_id,
-               Params params)
-    : BasicSensor(sensor_id)
-    , params_(params)
+Sensor::Sensor(io::IAdc& adc, control::FsmBlock& fsm_block, Params params)
+    : params_(params)
     , adc_(adc)
     , fsm_block_(fsm_block) {
     configASSERT(params_.value_min < params_.value_max);
@@ -63,19 +59,22 @@ status::StatusCode Sensor::run() {
     if (fsm_block_.is_in_transit()) {
         const auto code = fsm_block_.transit();
         if (code != status::StatusCode::OK) {
-            ocs_logw(
-                log_tag,
-                "failed to transit block to the next state: id=%s code=%s prev_state=%u "
-                "curr_state=%u prev_dur=%lli curr_dur=%lli",
-                id(), status::code_to_str(code), fsm_block_.previous_state(),
-                fsm_block_.current_state(), fsm_block_.previous_state_duration(),
-                fsm_block_.current_state_duration());
+            ocs_logw(log_tag,
+                     "failed to transit block to the next state: code=%s prev_state=%u "
+                     "curr_state=%u prev_dur=%lli curr_dur=%lli",
+                     status::code_to_str(code), fsm_block_.previous_state(),
+                     fsm_block_.current_state(), fsm_block_.previous_state_duration(),
+                     fsm_block_.current_state_duration());
         }
     }
 
     update_data_(read_result.value, conv_result.value);
 
     return status::StatusCode::OK;
+}
+
+Sensor::Data Sensor::get_data() const {
+    return data_.get();
 }
 
 int Sensor::calculate_moisture_(int raw) const {
@@ -126,7 +125,7 @@ int16_t Sensor::calculate_status_position_(int raw) const {
 }
 
 void Sensor::update_data_(int raw, int voltage) {
-    SensorData data;
+    Data data;
 
     data.raw = raw;
     data.voltage = voltage;
@@ -139,7 +138,7 @@ void Sensor::update_data_(int raw, int voltage) {
     data.status_len = status_len_;
     data.status_pos = calculate_status_position_(raw);
 
-    set_data_(data);
+    data_.set(data);
 }
 
 } // namespace soil

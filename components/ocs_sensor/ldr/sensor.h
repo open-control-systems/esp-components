@@ -9,26 +9,24 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
+#include "ocs_core/spmc_node.h"
 #include "ocs_io/adc_store.h"
 #include "ocs_io/iadc.h"
 #include "ocs_scheduler/itask.h"
-#include "ocs_sensor/basic_sensor.h"
 
 namespace ocs {
 namespace sensor {
 namespace ldr {
 
-//! Various sensor characteristics.
-struct SensorData {
-    int raw { 0 };
-    int voltage { 0 };
-    int lightness { 0 };
-};
-
-class Sensor : public scheduler::ITask,
-               public BasicSensor<SensorData>,
-               public core::NonCopyable<> {
+class Sensor : public scheduler::ITask, public core::NonCopyable<> {
 public:
+    //! Various sensor characteristics.
+    struct Data {
+        int raw { 0 };
+        int voltage { 0 };
+        int lightness { 0 };
+    };
+
     struct Params {
         unsigned value_min { 0 };
         unsigned value_max { 0 };
@@ -36,10 +34,13 @@ public:
     };
 
     //! Initialize.
-    Sensor(io::AdcStore& adc_store, const char* id, Params params);
+    Sensor(io::AdcStore& adc_store, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
+
+    //! Return the latest sensor data.
+    Data get_data() const;
 
 private:
     int calculate_lightness_(int raw) const;
@@ -49,6 +50,7 @@ private:
     const Params params_;
 
     io::IAdc* adc_ { nullptr };
+    core::SpmcNode<Data> data_;
 };
 
 } // namespace ldr

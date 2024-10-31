@@ -26,8 +26,7 @@ SpiSensorPipeline::SpiSensorPipeline(scheduler::ITaskScheduler& task_scheduler,
     register_transceiver_.reset(new (std::nothrow) SpiTransceiver(*spi_transceiver_));
     configASSERT(register_transceiver_);
 
-    sensor_.reset(new (std::nothrow)
-                      Sensor(*register_transceiver_, "bme280_sensor", params.sensor));
+    sensor_.reset(new (std::nothrow) Sensor(*register_transceiver_, params.sensor));
     configASSERT(sensor_);
 
     configASSERT(task_scheduler.add(*sensor_, "bme280_task", params.read_interval)

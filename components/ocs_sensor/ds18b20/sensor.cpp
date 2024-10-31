@@ -63,7 +63,7 @@ const char* log_tag = "ds18b20_sensor";
 } // namespace
 
 Sensor::Sensor(storage::IStorage& storage, const char* id)
-    : BasicSensor(id)
+    : id_(id)
     , storage_(storage) {
 }
 
@@ -81,7 +81,7 @@ status::StatusCode Sensor::run() {
     OCS_STATUS_RETURN_ON_ERROR(scratchpad.read(*bus_, configuration_.rom_code));
 
     if (scratchpad.valid()) {
-        set_data_(scratchpad.get_temperature());
+        data_.set(scratchpad.get_temperature());
     }
 
     return status::StatusCode::OK;
@@ -89,6 +89,14 @@ status::StatusCode Sensor::run() {
 
 bool Sensor::configured() const {
     return bus_;
+}
+
+const char* Sensor::id() const {
+    return id_.c_str();
+}
+
+float Sensor::get_data() const {
+    return data_.get();
 }
 
 status::StatusCode Sensor::read_configuration(Sensor::Configuration& configuration) {

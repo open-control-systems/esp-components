@@ -12,29 +12,28 @@
 #include "freertos/task.h"
 
 #include "ocs_core/noncopyable.h"
+#include "ocs_core/spmc_node.h"
 #include "ocs_core/time.h"
 #include "ocs_scheduler/itask.h"
-#include "ocs_sensor/basic_sensor.h"
 #include "ocs_sensor/bme280/itransceiver.h"
 
 namespace ocs {
 namespace sensor {
 namespace bme280 {
 
-struct SensorData {
-    double pressure { 0.0 };
-    double temperature { 0.0 };
-    double humidity { 0.0 };
-};
-
 //! BME280 sensor.
 //!
 //! @references
 //!  https://www.bosch-sensortec.com/media/boschsensortec/downloads/datasheets/bst-bme280-ds002.pdf
-class Sensor : public scheduler::ITask,
-               public BasicSensor<SensorData>,
-               public core::NonCopyable<> {
+class Sensor : public scheduler::ITask, public core::NonCopyable<> {
 public:
+    //! Various sensor characteristics.
+    struct Data {
+        double pressure { 0.0 };
+        double temperature { 0.0 };
+        double humidity { 0.0 };
+    };
+
     //! Number of times a value (temperature, pressure, humidity) is measured before
     //! available to be read. By default a value is measured once.
     //!
@@ -104,11 +103,13 @@ public:
     //!
     //! @params
     //!  - @p transceiver to communicate with BME280 sensor.
-    //!  - @p id to distinguish one sensor from another.
-    Sensor(ITransceiver& transceiver, const char* id, Params params);
+    Sensor(ITransceiver& transceiver, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
+
+    //! Return the latest sensor data.
+    Data get_data() const;
 
 private:
     void estimate_measurement_time_();
@@ -150,6 +151,8 @@ private:
 
     // Carries fine temperature.
     BME280_S32_t t_fine_ { 0 };
+
+    core::SpmcNode<Data> data_;
 };
 
 } // namespace bme280

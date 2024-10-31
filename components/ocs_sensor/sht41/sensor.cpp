@@ -30,9 +30,8 @@ uint8_t calculate_crc(uint8_t hi, uint8_t lo) {
 
 } // namespace
 
-Sensor::Sensor(i2c::ITransceiver& transceiver, const char* id, Sensor::Params params)
-    : BasicSensor(id)
-    , params_(params)
+Sensor::Sensor(i2c::ITransceiver& transceiver, Sensor::Params params)
+    : params_(params)
     , transceiver_(transceiver) {
     configASSERT(params_.send_wait_interval);
     configASSERT(params_.bus_wait_interval);
@@ -50,7 +49,7 @@ status::StatusCode Sensor::run() {
     OCS_STATUS_RETURN_ON_ERROR(
         transceiver_.receive(buf, sizeof(buf), params_.bus_wait_interval));
 
-    SensorData data;
+    Data data;
 
     const uint16_t temperature_ticks = core::BitOps::pack_u8(buf[0], buf[1]);
     const uint8_t temperature_checksum = buf[2];
@@ -68,9 +67,13 @@ status::StatusCode Sensor::run() {
         data.humidity = std::clamp(data.humidity, 0.0, 100.0);
     }
 
-    set_data_(data);
+    data_.set(data);
 
     return status::StatusCode::OK;
+}
+
+Sensor::Data Sensor::get_data() const {
+    return data_.get();
 }
 
 } // namespace sht41

@@ -22,7 +22,7 @@ SensorPipeline::SensorPipeline(i2c::IStore& store,
     configASSERT(transceiver_);
 
     sensor_.reset(new (std::nothrow)
-                      Sensor(*transceiver_, "sht41_sensor",
+                      Sensor(*transceiver_,
                              Sensor::Params {
                                  .send_wait_interval = pdMS_TO_TICKS(10),
                                  .bus_wait_interval = core::Duration::second * 5,

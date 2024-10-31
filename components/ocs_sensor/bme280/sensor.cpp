@@ -51,47 +51,47 @@ uint8_t oversampling_to_coef(Sensor::OversamplingMode oversampling_mode) {
     return 0;
 }
 
+const char* log_tag = "bme280_sensor";
+
 } // namespace
 
-Sensor::Sensor(ITransceiver& transceiver, const char* id, Sensor::Params params)
-    : BasicSensor(id)
-    , params_(params)
+Sensor::Sensor(ITransceiver& transceiver, Sensor::Params params)
+    : params_(params)
     , transceiver_(transceiver) {
     estimate_measurement_time_();
 
     if (const auto code = reset_(); code != status::StatusCode::OK) {
-        ocs_loge(id_.c_str(), "failed to reset sensor: code=%s",
-                 status::code_to_str(code));
+        ocs_loge(log_tag, "failed to reset sensor: code=%s", status::code_to_str(code));
     }
 
     if (const auto code = read_serial_number_(); code != status::StatusCode::OK) {
-        ocs_loge(id_.c_str(), "failed to read sensor serial number: code=%s",
+        ocs_loge(log_tag, "failed to read sensor serial number: code=%s",
                  status::code_to_str(code));
     }
 
     if (const auto code = write_configuration_(); code != status::StatusCode::OK) {
-        ocs_loge(id_.c_str(), "failed to write sensor configuration: code=%s",
+        ocs_loge(log_tag, "failed to write sensor configuration: code=%s",
                  status::code_to_str(code));
     }
 
     if (const auto code = read_configuration_(); code != status::StatusCode::OK) {
-        ocs_loge(id_.c_str(), "failed to read sensor configuration: code=%s",
+        ocs_loge(log_tag, "failed to read sensor configuration: code=%s",
                  status::code_to_str(code));
     }
 
     if (const auto code = read_calibration1_(); code != status::StatusCode::OK) {
-        ocs_loge(id_.c_str(), "failed to read sensor calibration1: code=%s",
+        ocs_loge(log_tag, "failed to read sensor calibration1: code=%s",
                  status::code_to_str(code));
     }
 
     if (const auto code = read_calibration2_(); code != status::StatusCode::OK) {
-        ocs_loge(id_.c_str(), "failed to read sensor calibration2: code=%s",
+        ocs_loge(log_tag, "failed to read sensor calibration2: code=%s",
                  status::code_to_str(code));
     }
 
     //! Allow the sensor to stabilise before the actual measurements.
     if (const auto code = run(); code != status::StatusCode::OK) {
-        ocs_loge(id_.c_str(), "failed to read sensor data at startup: code=%s",
+        ocs_loge(log_tag, "failed to read sensor data at startup: code=%s",
                  status::code_to_str(code));
     }
 }
@@ -118,6 +118,10 @@ status::StatusCode Sensor::run() {
     return read_data_();
 }
 
+Sensor::Data Sensor::get_data() const {
+    return data_.get();
+}
+
 void Sensor::estimate_measurement_time_() {
     // Appendix B: measurement time and current calculation, page 51.
     const unsigned typ_measurement_duration =
@@ -130,7 +134,7 @@ void Sensor::estimate_measurement_time_() {
         + ((2.3 * oversampling_to_coef(params_.pressure_oversampling)) + 0.575)
         + ((2.3 * oversampling_to_coef(params_.humidity_oversampling)) + 0.575));
 
-    ocs_logi(id_.c_str(), "time measurement estimated: cur=%lu(ms) typ=%u(ms) max=%u(ms)",
+    ocs_logi(log_tag, "time measurement estimated: cur=%lu(ms) typ=%u(ms) max=%u(ms)",
              pdTICKS_TO_MS(wait_measurement_interval_), typ_measurement_duration,
              max_measurement_duration);
 }
@@ -155,14 +159,14 @@ status::StatusCode Sensor::read_serial_number_() {
     OCS_STATUS_RETURN_ON_ERROR(transceiver_.receive(
         &id_register.value, sizeof(id_register), RegisterID::address));
 
-    ocs_logi(id_.c_str(), "serial_number=0x%02X", id_register.value);
+    ocs_logi(log_tag, "serial_number=0x%02X", id_register.value);
 
     return status::StatusCode::OK;
 }
 
 status::StatusCode Sensor::write_configuration_() {
     ocs_logi(
-        id_.c_str(),
+        log_tag,
         "writing configuration: mode=%u osrs_p=%u osrs_t=%u osrs_h=%u filter=%u t_sb=%u",
         static_cast<uint8_t>(params_.operation_mode),
         static_cast<uint8_t>(params_.pressure_oversampling),
@@ -208,7 +212,7 @@ status::StatusCode Sensor::read_configuration_() {
     memcpy(&measure_register, recv_buf + 2, 1);
     memcpy(&config_register, recv_buf + 3, 1);
 
-    ocs_logi(id_.c_str(),
+    ocs_logi(log_tag,
              "sensor configuration: ctrl_hum:[osrs_h=%u]; ctrl_meas=[mode=%u osrs_p=%u "
              "osrs_t=%u]; config=[spi3w_en=%u filter=%u t_sb=%u]",
              humidity_register.osrs_h, measure_register.mode, measure_register.osrs_p,
@@ -227,7 +231,7 @@ status::StatusCode Sensor::read_calibration1_() {
 
     memcpy(&calibration1_, recv_buf, sizeof(calibration1_));
 
-    ocs_logi(id_.c_str(),
+    ocs_logi(log_tag,
              "sensor calibration 1: T1=%u T2=%i T3=%i P1=%u P2=%i P3=%i P4=%i P5=%i "
              "P6=%i P7=%i P8=%i P9=%i H1=%u",
              calibration1_.dig_T1, calibration1_.dig_T2, calibration1_.dig_T3,
@@ -267,7 +271,7 @@ status::StatusCode Sensor::read_calibration2_() {
 
     calibration2_.dig_H6 = static_cast<int8_t>(recv_buf[6]);
 
-    ocs_logi(id_.c_str(), "sensor calibration 2: H2=%i H3=%u H4=%i H5=%i H6=%i",
+    ocs_logi(log_tag, "sensor calibration 2: H2=%i H3=%u H4=%i H5=%i H6=%i",
              calibration2_.dig_H2, calibration2_.dig_H3, calibration2_.dig_H4,
              calibration2_.dig_H5, calibration2_.dig_H6);
 
@@ -290,31 +294,30 @@ status::StatusCode Sensor::read_data_() {
     const int32_t humidity_raw = static_cast<int32_t>(
         core::BitOps::pack_u8(register_data.hum_msb, register_data.hum_lsb));
 
-    SensorData sensor_data;
+    Data data;
 
-    sensor_data.pressure =
-        static_cast<double>(BME280_compensate_P_int64_(pressure_raw)) / 256.0;
+    data.pressure = static_cast<double>(BME280_compensate_P_int64_(pressure_raw)) / 256.0;
 
     if (params_.pressure_resolution) {
-        sensor_data.pressure /= std::pow(10.0, params_.pressure_resolution);
+        data.pressure /= std::pow(10.0, params_.pressure_resolution);
     }
     if (params_.pressure_decimal_places) {
-        sensor_data.pressure = algo::MathOps::round_floor(
-            sensor_data.pressure, params_.pressure_decimal_places);
+        data.pressure =
+            algo::MathOps::round_floor(data.pressure, params_.pressure_decimal_places);
     }
 
-    sensor_data.temperature =
+    data.temperature =
         static_cast<double>(BME280_compensate_T_int32_(temperature_raw)) / 100.0;
 
-    sensor_data.humidity =
+    data.humidity =
         static_cast<double>(BME280_compensate_H_int32_(humidity_raw)) / 1024.0;
 
     if (params_.humidity_decimal_places) {
-        sensor_data.humidity = algo::MathOps::round_floor(
-            sensor_data.humidity, params_.humidity_decimal_places);
+        data.humidity =
+            algo::MathOps::round_floor(data.humidity, params_.humidity_decimal_places);
     }
 
-    set_data_(sensor_data);
+    data_.set(data);
 
     return status::StatusCode::OK;
 }

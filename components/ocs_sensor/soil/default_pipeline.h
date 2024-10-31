@@ -47,7 +47,6 @@ public:
     Sensor& get_sensor();
 
 private:
-    const std::string sensor_id_;
     const std::string task_id_;
 
     io::IAdc* adc_ { nullptr };

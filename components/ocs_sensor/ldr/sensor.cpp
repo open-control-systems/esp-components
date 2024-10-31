@@ -14,9 +14,8 @@ namespace ocs {
 namespace sensor {
 namespace ldr {
 
-Sensor::Sensor(io::AdcStore& adc_store, const char* id, Sensor::Params params)
-    : BasicSensor(id)
-    , params_(params) {
+Sensor::Sensor(io::AdcStore& adc_store, Sensor::Params params)
+    : params_(params) {
     configASSERT(params_.value_min < params_.value_max);
 
     adc_ = adc_store.add(params_.adc_channel);
@@ -39,6 +38,10 @@ status::StatusCode Sensor::run() {
     return status::StatusCode::OK;
 }
 
+Sensor::Data Sensor::get_data() const {
+    return data_.get();
+}
+
 int Sensor::calculate_lightness_(int raw) const {
     if (raw >= params_.value_max) {
         return 100;
@@ -56,13 +59,13 @@ int Sensor::calculate_lightness_(int raw) const {
 }
 
 void Sensor::update_data_(int raw, int voltage) {
-    SensorData data;
+    Data data;
 
     data.raw = raw;
     data.voltage = voltage;
     data.lightness = calculate_lightness_(raw);
 
-    set_data_(data);
+    data_.set(data);
 }
 
 } // namespace ldr
