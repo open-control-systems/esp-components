@@ -16,11 +16,11 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_io/iadc.h"
 #include "ocs_sensor/basic_sensor.h"
-#include "ocs_sensor/yl69/soil_status.h"
+#include "ocs_sensor/soil/soil_status.h"
 
 namespace ocs {
 namespace sensor {
-namespace yl69 {
+namespace soil {
 
 //! Various sensor characteristics.
 struct SensorData {
@@ -72,6 +72,6 @@ private:
     uint16_t status_len_ { 0 };
 };
 
-} // namespace yl69
+} // namespace soil
 } // namespace sensor
 } // namespace ocs

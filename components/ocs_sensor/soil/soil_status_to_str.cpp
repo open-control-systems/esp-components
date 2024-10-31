@@ -6,11 +6,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/yl69/soil_status_to_str.h"
+#include "ocs_sensor/soil/soil_status_to_str.h"
 
 namespace ocs {
 namespace sensor {
-namespace yl69 {
+namespace soil {
 
 const char* soil_status_to_str(SoilStatus status) {
     switch (status) {
@@ -36,6 +36,6 @@ const char* soil_status_to_str(SoilStatus status) {
     return "<none>";
 }
 
-} // namespace yl69
+} // namespace soil
 } // namespace sensor
 } // namespace ocs
