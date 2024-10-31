@@ -10,7 +10,6 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/spmc_node.h"
-#include "ocs_io/adc_store.h"
 #include "ocs_io/iadc.h"
 #include "ocs_scheduler/itask.h"
 
@@ -30,11 +29,10 @@ public:
     struct Params {
         unsigned value_min { 0 };
         unsigned value_max { 0 };
-        adc_channel_t adc_channel { ADC_CHANNEL_0 };
     };
 
     //! Initialize.
-    Sensor(io::AdcStore& adc_store, Params params);
+    Sensor(io::IAdc& adc, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
@@ -49,7 +47,7 @@ private:
 
     const Params params_;
 
-    io::IAdc* adc_ { nullptr };
+    io::IAdc& adc_;
     core::SpmcNode<Data> data_;
 };
 

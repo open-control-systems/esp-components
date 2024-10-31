@@ -14,21 +14,19 @@ namespace ocs {
 namespace sensor {
 namespace ldr {
 
-Sensor::Sensor(io::AdcStore& adc_store, Sensor::Params params)
-    : params_(params) {
+Sensor::Sensor(io::IAdc& adc, Sensor::Params params)
+    : params_(params)
+    , adc_(adc) {
     configASSERT(params_.value_min < params_.value_max);
-
-    adc_ = adc_store.add(params_.adc_channel);
-    configASSERT(adc_);
 }
 
 status::StatusCode Sensor::run() {
-    const auto read_result = adc_->read();
+    const auto read_result = adc_.read();
     if (read_result.code != status::StatusCode::OK) {
         return read_result.code;
     }
 
-    const auto conv_result = adc_->convert(read_result.value);
+    const auto conv_result = adc_.convert(read_result.value);
     if (conv_result.code != status::StatusCode::OK) {
         return conv_result.code;
     }

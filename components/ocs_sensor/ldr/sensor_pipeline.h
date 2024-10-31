@@ -25,6 +25,7 @@ class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         Sensor::Params sensor;
+        adc_channel_t adc_channel { ADC_CHANNEL_0 };
         core::Time read_interval { 0 };
     };
 
@@ -45,6 +46,7 @@ public:
 private:
     const std::string task_id_;
 
+    io::IAdc* adc_ { nullptr };
     std::unique_ptr<Sensor> sensor_;
 };
 

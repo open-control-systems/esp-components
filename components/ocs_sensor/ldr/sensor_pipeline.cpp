@@ -19,7 +19,10 @@ SensorPipeline::SensorPipeline(io::AdcStore& adc_store,
                                const char* id,
                                SensorPipeline::Params params)
     : task_id_(std::string(id) + "_task") {
-    sensor_.reset(new (std::nothrow) Sensor(adc_store, params.sensor));
+    adc_ = adc_store.add(params.adc_channel);
+    configASSERT(adc_);
+
+    sensor_.reset(new (std::nothrow) Sensor(*adc_, params.sensor));
     configASSERT(sensor_);
 
     configASSERT(task_scheduler.add(*sensor_, task_id_.c_str(), params.read_interval)
