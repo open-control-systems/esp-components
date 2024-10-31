@@ -67,7 +67,13 @@ runs:
         echo "export CCACHE_LOGFILE=$GITHUB_WORKSPACE/$ccache_log_file" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
       shell: bash
 
-    - name: Load ccache Cache Key
+    - name: Restore ccache Hash File
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ inputs.CACHE_PATH }}/ccache_last_hash
+        key: ccache-last-hash-${{ runner.os }}
+
+    - name: Update ccache Hash File
       run: |
         # Compute new hash
         new_hash=$("${{ inputs.OCS_COMPONENTS_PATH }}/tools/scripts/gen_source_hash.sh")
@@ -88,6 +94,10 @@ runs:
           if [[ -z "$prev_hash" ]]; then
             prev_hash=$new_hash
           fi
+
+          echo "ccache_hash_file_changed=true" >> $GITHUB_ENV
+        else
+          echo "ccache_hash_file_changed=false" >> $GITHUB_ENV
         fi
 
         echo "ccache_cache_key=ccache-${{ runner.os }}-$new_hash" >> $GITHUB_ENV
@@ -96,12 +106,17 @@ runs:
       env:
           PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
 
+    - name: Store ccache Hash File
+      if: env.ccache_hash_file_changed == 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ inputs.CACHE_PATH }}/ccache_last_hash
+        key: ccache-last-hash-${{ runner.os }}
+
     - name: Setup ccache Cache
       uses: actions/cache@v4
       with:
-        path: |
-          ${{ inputs.CACHE_PATH }}/ccache
-          ${{ inputs.CACHE_PATH }}/ccache_last_hash
+        path: ${{ inputs.CACHE_PATH }}/ccache
         key: ${{ env.ccache_cache_key }}
         restore-keys: |
           ${{ env.ccache_cache_restore_key }}
