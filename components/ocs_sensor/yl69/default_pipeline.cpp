@@ -23,12 +23,15 @@ DefaultPipeline::DefaultPipeline(core::IClock& clock,
                                  DefaultPipeline::Params params)
     : sensor_id_(std::string(id) + "_sensor")
     , task_id_(std::string(id) + "_task") {
+    adc_ = adc_store.add(params.adc_channel);
+    configASSERT(adc_);
+
     fsm_block_pipeline_.reset(new (std::nothrow) control::FsmBlockPipeline(
         clock, reboot_handler, task_scheduler, storage_builder, "soil_fsm",
         params.fsm_block));
     configASSERT(fsm_block_pipeline_);
 
-    sensor_.reset(new (std::nothrow) Sensor(adc_store, fsm_block_pipeline_->get_block(),
+    sensor_.reset(new (std::nothrow) Sensor(*adc_, fsm_block_pipeline_->get_block(),
                                             sensor_id_.c_str(), params.sensor));
     configASSERT(sensor_);
 

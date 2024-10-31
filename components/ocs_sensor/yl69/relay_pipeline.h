@@ -35,6 +35,7 @@ class RelayPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         Sensor::Params sensor;
+        adc_channel_t adc_channel { ADC_CHANNEL_0 };
         control::FsmBlockPipeline::Params fsm_block;
         core::Time read_interval { 0 };
         gpio_num_t relay_gpio { GPIO_NUM_NC };
@@ -57,6 +58,7 @@ private:
     const std::string sensor_id_;
     const std::string task_id_;
 
+    io::IAdc* adc_ { nullptr };
     std::unique_ptr<control::FsmBlockPipeline> fsm_block_pipeline_;
     std::unique_ptr<Sensor> sensor_;
     std::unique_ptr<scheduler::ITask> relay_sensor_;
