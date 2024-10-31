@@ -10,24 +10,24 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/basic_formatter.h"
-#include "ocs_sensor/yl69/sensor.h"
+#include "ocs_sensor/soil/sensor.h"
 
 namespace ocs {
 namespace pipeline {
-namespace yl69 {
+namespace soil {
 
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::yl69::Sensor& sensor, bool flat_formatting = true);
+    JsonFormatter(sensor::soil::Sensor& sensor, bool flat_formatting = true);
 
-    //! Format YL69 sensor data into @p json.
+    //! Format soil sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    sensor::yl69::Sensor& sensor_;
+    sensor::soil::Sensor& sensor_;
 };
 
-} // namespace yl69
+} // namespace soil
 } // namespace pipeline
 } // namespace ocs

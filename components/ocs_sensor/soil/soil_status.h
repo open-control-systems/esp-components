@@ -10,7 +10,7 @@
 
 namespace ocs {
 namespace sensor {
-namespace yl69 {
+namespace soil {
 
 //! Known soil statuses.
 //!
@@ -39,6 +39,6 @@ enum class SoilStatus {
     Last,
 };
 
-} // namespace yl69
+} // namespace soil
 } // namespace sensor
 } // namespace ocs

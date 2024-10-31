@@ -10,12 +10,12 @@
 
 #include "ocs_core/log.h"
 #include "ocs_core/time.h"
-#include "ocs_sensor/yl69/sensor.h"
+#include "ocs_sensor/soil/sensor.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
 namespace sensor {
-namespace yl69 {
+namespace soil {
 
 namespace {
 
@@ -28,7 +28,7 @@ SoilStatus parse_status(control::FsmBlock::State state) {
     return static_cast<SoilStatus>(state);
 }
 
-const char* log_tag = "sensor_yl69";
+const char* log_tag = "sensor_soil";
 
 } // namespace
 
@@ -142,6 +142,6 @@ void Sensor::update_data_(int raw, int voltage) {
     set_data_(data);
 }
 
-} // namespace yl69
+} // namespace soil
 } // namespace sensor
 } // namespace ocs

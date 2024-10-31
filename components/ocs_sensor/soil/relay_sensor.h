@@ -21,7 +21,7 @@
 
 namespace ocs {
 namespace sensor {
-namespace yl69 {
+namespace soil {
 
 //! Activate the sensor only when the relay is energized.
 class RelaySensor : public scheduler::ITask, public core::NonCopyable<> {
@@ -48,6 +48,6 @@ private:
     io::IGpio* gpio_ { nullptr };
 };
 
-} // namespace yl69
+} // namespace soil
 } // namespace sensor
 } // namespace ocs

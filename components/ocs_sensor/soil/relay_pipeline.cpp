@@ -6,13 +6,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/yl69/relay_pipeline.h"
-#include "ocs_sensor/yl69/default_pipeline.h"
-#include "ocs_sensor/yl69/relay_sensor.h"
+#include "ocs_sensor/soil/relay_pipeline.h"
+#include "ocs_sensor/soil/default_pipeline.h"
+#include "ocs_sensor/soil/relay_sensor.h"
 
 namespace ocs {
 namespace sensor {
-namespace yl69 {
+namespace soil {
 
 RelayPipeline::RelayPipeline(core::IClock& clock,
                              io::AdcStore& adc_store,
@@ -48,6 +48,6 @@ Sensor& RelayPipeline::get_sensor() {
     return *sensor_;
 }
 
-} // namespace yl69
+} // namespace soil
 } // namespace sensor
 } // namespace ocs

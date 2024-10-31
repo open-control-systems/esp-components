@@ -8,15 +8,15 @@
 
 #pragma once
 
-#include "ocs_sensor/yl69/soil_status.h"
+#include "ocs_sensor/soil/soil_status.h"
 
 namespace ocs {
 namespace sensor {
-namespace yl69 {
+namespace soil {
 
 //! Convert soil moisture status to human-readable description.
 const char* soil_status_to_str(SoilStatus);
 
-} // namespace yl69
+} // namespace soil
 } // namespace sensor
 } // namespace ocs

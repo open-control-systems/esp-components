@@ -3,7 +3,7 @@ idf_component_register(
     "ds18b20/http_handler.cpp"
     "ds18b20/json_formatter.cpp"
     "ldr/json_formatter.cpp"
-    "yl69/json_formatter.cpp"
+    "soil/json_formatter.cpp"
     "sht41/json_formatter.cpp"
     "bme280/json_formatter.cpp"
     "network_json_formatter.cpp"

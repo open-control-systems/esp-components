@@ -8,11 +8,11 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_sensor/yl69/default_pipeline.h"
+#include "ocs_sensor/soil/default_pipeline.h"
 
 namespace ocs {
 namespace sensor {
-namespace yl69 {
+namespace soil {
 
 DefaultPipeline::DefaultPipeline(core::IClock& clock,
                                  io::AdcStore& adc_store,
@@ -43,6 +43,6 @@ Sensor& DefaultPipeline::get_sensor() {
     return *sensor_;
 }
 
-} // namespace yl69
+} // namespace soil
 } // namespace sensor
 } // namespace ocs
