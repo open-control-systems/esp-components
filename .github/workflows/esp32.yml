@@ -24,7 +24,8 @@ jobs:
       - name: Setup Prerequisites
         uses: ./project/.github/actions/basic_env
         with:
-          PROJECT_ID: ocs-core-firmware
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}
+          OCS_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
           CONFIGURATION_PATH_CCACHE: ${{ env.CONFIGURATION_PATH_CCACHE }}
 
       - name: Setup ESP-IDF
