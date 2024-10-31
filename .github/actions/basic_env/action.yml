@@ -28,7 +28,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Install Prerequisites
+    - name: Setup Configuration Paths
       run: |
         echo "Using Configuration Path: ${{ inputs.CONFIGURATION_PATH }}"
         echo "Using Log Path: ${{ inputs.LOG_PATH }}"
@@ -37,7 +37,10 @@ runs:
         mkdir -p "${{ inputs.CONFIGURATION_PATH }}"
         mkdir -p "${{ inputs.LOG_PATH }}"
         mkdir -p "${{ inputs.CACHE_PATH }}"
+      shell: bash
 
+    - name: Install Prerequisites
+      run: |
         set -xe
         sudo apt-get update
         sudo apt-get install -y \
