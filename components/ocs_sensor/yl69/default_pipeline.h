@@ -29,6 +29,7 @@ class DefaultPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         Sensor::Params sensor;
+        adc_channel_t adc_channel { ADC_CHANNEL_0 };
         control::FsmBlockPipeline::Params fsm_block;
         core::Time read_interval { 0 };
     };
@@ -49,6 +50,7 @@ private:
     const std::string sensor_id_;
     const std::string task_id_;
 
+    io::IAdc* adc_ { nullptr };
     std::unique_ptr<control::FsmBlockPipeline> fsm_block_pipeline_;
     std::unique_ptr<Sensor> sensor_;
 };

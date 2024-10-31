@@ -14,7 +14,6 @@
 #include "ocs_control/fsm_block.h"
 #include "ocs_control/ifsm_handler.h"
 #include "ocs_core/noncopyable.h"
-#include "ocs_io/adc_store.h"
 #include "ocs_io/iadc.h"
 #include "ocs_sensor/basic_sensor.h"
 #include "ocs_sensor/yl69/soil_status.h"
@@ -44,11 +43,10 @@ public:
     struct Params {
         unsigned value_min { 0 };
         unsigned value_max { 0 };
-        adc_channel_t adc_channel { ADC_CHANNEL_0 };
     };
 
     //! Initialize.
-    Sensor(io::AdcStore& adc_store,
+    Sensor(io::IAdc& adc,
            control::FsmBlock& fsm_block,
            const char* sensor_id,
            Params params);
@@ -68,8 +66,8 @@ private:
 
     const Params params_;
 
+    io::IAdc& adc_;
     control::FsmBlock& fsm_block_;
-    io::IAdc* adc_ { nullptr };
 
     uint16_t status_len_ { 0 };
 };
