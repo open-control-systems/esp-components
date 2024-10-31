@@ -12,27 +12,26 @@
 #include "freertos/task.h"
 
 #include "ocs_core/noncopyable.h"
+#include "ocs_core/spmc_node.h"
 #include "ocs_i2c/itransceiver.h"
 #include "ocs_scheduler/itask.h"
-#include "ocs_sensor/basic_sensor.h"
 
 namespace ocs {
 namespace sensor {
 namespace sht41 {
 
-struct SensorData {
-    double humidity { 0.0 };
-    double temperature { 0.0 };
-};
-
 //! Read data from SHT41 sensor.
 //!
 //! @reference
 //!  - https://sensirion.com/products/catalog/SEK-SHT41
-class Sensor : public BasicSensor<SensorData>,
-               public scheduler::ITask,
-               public core::NonCopyable<> {
+class Sensor : public scheduler::ITask, public core::NonCopyable<> {
 public:
+    //! Various sensor characteristics.
+    struct Data {
+        double humidity { 0.0 };
+        double temperature { 0.0 };
+    };
+
     enum class MeasureMode : uint8_t {
         HighPrecision = 0xFD,
         MediumPrecision = 0xF6,
@@ -54,16 +53,20 @@ public:
     //!
     //! @params
     //!  - @p transceiver to communicate with the I2C device.
-    //!  - @p id to distinguish one sensor from another.
-    Sensor(i2c::ITransceiver& transceiver, const char* id, Params params);
+    Sensor(i2c::ITransceiver& transceiver, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
+
+    //! Return the latest sensor data.
+    Data get_data() const;
 
 private:
     const Params params_;
 
     i2c::ITransceiver& transceiver_;
+
+    core::SpmcNode<Data> data_;
 };
 
 } // namespace sht41

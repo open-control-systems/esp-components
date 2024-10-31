@@ -21,8 +21,7 @@ RelayPipeline::RelayPipeline(core::IClock& clock,
                              scheduler::ITaskScheduler& task_scheduler,
                              const char* id,
                              RelayPipeline::Params params)
-    : sensor_id_(std::string(id) + "_sensor")
-    , task_id_(std::string(id) + "_task") {
+    : task_id_(std::string(id) + "_task") {
     adc_ = adc_store.add(params.adc_channel);
     configASSERT(adc_);
 
@@ -31,8 +30,8 @@ RelayPipeline::RelayPipeline(core::IClock& clock,
         params.fsm_block));
     configASSERT(fsm_block_pipeline_);
 
-    sensor_.reset(new (std::nothrow) Sensor(*adc_, fsm_block_pipeline_->get_block(),
-                                            sensor_id_.c_str(), params.sensor));
+    sensor_.reset(new (std::nothrow)
+                      Sensor(*adc_, fsm_block_pipeline_->get_block(), params.sensor));
     configASSERT(sensor_);
 
     relay_sensor_.reset(new (std::nothrow) RelaySensor(*sensor_, params.relay_gpio,

@@ -8,21 +8,21 @@
 
 #pragma once
 
+#include <string>
+
 #include "ocs_core/macros.h"
 #include "ocs_core/noncopyable.h"
+#include "ocs_core/spmc_node.h"
 #include "ocs_onewire/bus.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_scheduler/itask.h"
-#include "ocs_sensor/basic_sensor.h"
 #include "ocs_storage/istorage.h"
 
 namespace ocs {
 namespace sensor {
 namespace ds18b20 {
 
-class Sensor : public scheduler::ITask,
-               public BasicSensor<float>,
-               public core::NonCopyable<> {
+class Sensor : public scheduler::ITask, public core::NonCopyable<> {
 public:
     //! Various sensor configuration.
     struct OCS_ATTR_PACKED Configuration {
@@ -60,6 +60,12 @@ public:
     //! Return true if the sensor was assigned to one of the 1-Wire buses.
     bool configured() const;
 
+    //! Return human readable sensor identifier.
+    const char* id() const;
+
+    //! Return the latest sensor data.
+    float get_data() const;
+
     //! Read sensor configuration from persistent storage.
     status::StatusCode read_configuration(Configuration& configuration);
 
@@ -83,10 +89,13 @@ public:
     status::StatusCode erase_configuration(Configuration& configuration);
 
 private:
+    const std::string id_;
+
     storage::IStorage& storage_;
 
     onewire::Bus* bus_ { nullptr };
     Configuration configuration_;
+    core::SpmcNode<float> data_;
 };
 
 } // namespace ds18b20
