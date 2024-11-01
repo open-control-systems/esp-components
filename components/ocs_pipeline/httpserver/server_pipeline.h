@@ -19,16 +19,17 @@
 
 namespace ocs {
 namespace pipeline {
+namespace httpserver {
 
-class HttpServerPipeline : public net::INetworkHandler,
-                           public system::ISuspendHandler,
-                           public core::NonCopyable<> {
+class ServerPipeline : public net::INetworkHandler,
+                       public system::ISuspendHandler,
+                       public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
     //! @remarks
     //!  NVS should be initialized.
-    HttpServerPipeline();
+    ServerPipeline();
 
     //! Start HTTP server.
     void handle_connect() override;
@@ -65,5 +66,6 @@ private:
     std::unique_ptr<net::MdnsProvider> mdns_provider_;
 };
 
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs

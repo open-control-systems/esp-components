@@ -6,34 +6,37 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_pipeline/http_system_state_handler.h"
+#include "ocs_pipeline/httpserver/data_handler.h"
+#include "ocs_core/log.h"
 #include "ocs_fmt/json/cjson_builder.h"
-#include "ocs_pipeline/system_state_json_formatter.h"
 
 namespace ocs {
 namespace pipeline {
+namespace httpserver {
 
-HttpSystemStateHandler::HttpSystemStateHandler(http::Server& server,
-                                               net::MdnsProvider& provider,
-                                               unsigned response_size) {
-    state_json_formatter_.reset(new (std::nothrow) SystemStateJsonFormatter());
-    configASSERT(state_json_formatter_);
+DataHandler::DataHandler(http::Server& server,
+                         net::MdnsProvider& provider,
+                         fmt::json::IFormatter& formatter,
+                         const char* path,
+                         const char* id,
+                         unsigned buffer_size) {
+    fanout_formatter_.reset(new (std::nothrow) fmt::json::FanoutFormatter());
+    configASSERT(fanout_formatter_);
 
-    json_formatter_.reset(new (std::nothrow) fmt::json::DynamicFormatter(response_size));
+    fanout_formatter_->add(formatter);
+
+    json_formatter_.reset(new (std::nothrow) fmt::json::DynamicFormatter(buffer_size));
     configASSERT(json_formatter_);
 
-    server.add_GET("/system/report", [this](httpd_req_t* req) {
+    fanout_formatter_->add(*json_formatter_);
+
+    server.add_GET(path, [this, path, id](httpd_req_t* req) {
         auto json = fmt::json::CjsonUniqueBuilder::make_object();
         if (!json) {
             return status::StatusCode::NoMem;
         }
 
-        auto code = state_json_formatter_->format(json.get());
-        if (code != status::StatusCode::OK) {
-            return code;
-        }
-
-        code = json_formatter_->format(json.get());
+        const auto code = fanout_formatter_->format(json.get());
         if (code != status::StatusCode::OK) {
             return code;
         }
@@ -41,21 +44,22 @@ HttpSystemStateHandler::HttpSystemStateHandler(http::Server& server,
         const auto err =
             httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
+            ocs_loge(id, "httpd_resp_send(): %s", esp_err_to_name(err));
             return status::StatusCode::Error;
         }
 
         return status::StatusCode::OK;
     });
-
     provider.add_txt_records(net::MdnsProvider::Service::Http,
                              net::MdnsProvider::Proto::Tcp,
                              net::MdnsProvider::TxtRecordList {
                                  {
-                                     "system_report",
-                                     "/system/report",
+                                     id,
+                                     path,
                                  },
                              });
 }
 
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs

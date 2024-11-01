@@ -9,10 +9,11 @@
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/log.h"
-#include "ocs_pipeline/http_system_handler.h"
+#include "ocs_pipeline/httpserver/system_handler.h"
 
 namespace ocs {
 namespace pipeline {
+namespace httpserver {
 
 namespace {
 
@@ -20,9 +21,9 @@ const char* log_tag = "http_system_handler";
 
 } // namespace
 
-HttpSystemHandler::HttpSystemHandler(http::Server& server,
-                                     net::MdnsProvider& provider,
-                                     scheduler::ITask& reboot_task) {
+SystemHandler::SystemHandler(http::Server& server,
+                             net::MdnsProvider& provider,
+                             scheduler::ITask& reboot_task) {
     server.add_GET("/system/reboot", [&reboot_task](httpd_req_t* req) {
         const auto err = httpd_resp_send(req, "Rebooting...", HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
@@ -43,5 +44,6 @@ HttpSystemHandler::HttpSystemHandler(http::Server& server,
                              });
 }
 
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs

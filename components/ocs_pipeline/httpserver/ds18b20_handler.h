@@ -19,9 +19,9 @@
 
 namespace ocs {
 namespace pipeline {
-namespace ds18b20 {
+namespace httpserver {
 
-class HttpHandler : public core::NonCopyable<> {
+class DS18B20Handler : public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -30,10 +30,10 @@ public:
     //!  - @p provider to register mDNS txt records.
     //!  - @p suspender to suspend the system during sensors operations.
     //!  - @p store to perform operations on sensors.
-    HttpHandler(http::Server& server,
-                net::MdnsProvider& prover,
-                system::ISuspender& suspender,
-                sensor::ds18b20::Store& store);
+    DS18B20Handler(http::Server& server,
+                   net::MdnsProvider& prover,
+                   system::ISuspender& suspender,
+                   sensor::ds18b20::Store& store);
 
 private:
     using HandleConfigurationFunc =
@@ -94,6 +94,6 @@ private:
     sensor::ds18b20::Store& store_;
 };
 
-} // namespace ds18b20
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs

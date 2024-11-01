@@ -10,18 +10,19 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/fanout_formatter.h"
-#include "ocs_pipeline/http_data_handler.h"
-#include "ocs_pipeline/http_server_pipeline.h"
-#include "ocs_pipeline/http_system_handler.h"
+#include "ocs_pipeline/httpserver/data_handler.h"
+#include "ocs_pipeline/httpserver/server_pipeline.h"
+#include "ocs_pipeline/httpserver/system_handler.h"
 #include "ocs_scheduler/itask.h"
 #include "ocs_system/fanout_suspender.h"
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
-#include "ocs_pipeline/http_system_state_handler.h"
+#include "ocs_pipeline/httpserver/system_state_handler.h"
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
 
 namespace ocs {
 namespace pipeline {
+namespace httpserver {
 
 class HttpPipeline : public core::NonCopyable<> {
 public:
@@ -45,19 +46,20 @@ public:
     //! Start the pipeline.
     status::StatusCode start();
 
-    HttpServerPipeline& get_server_pipeline();
+    ServerPipeline& get_server_pipeline();
 
 private:
-    std::unique_ptr<HttpServerPipeline> http_server_pipeline_;
-    std::unique_ptr<HttpDataHandler> http_telemetry_handler_;
-    std::unique_ptr<HttpDataHandler> http_registration_handler_;
-    std::unique_ptr<HttpSystemHandler> http_system_handler_;
+    std::unique_ptr<ServerPipeline> server_pipeline_;
+    std::unique_ptr<DataHandler> telemetry_handler_;
+    std::unique_ptr<DataHandler> registration_handler_;
+    std::unique_ptr<SystemHandler> system_handler_;
     std::unique_ptr<fmt::json::IFormatter> network_formatter_;
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
-    std::unique_ptr<HttpSystemStateHandler> http_system_state_handler_;
+    std::unique_ptr<SystemStateHandler> system_state_handler_;
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
 };
 
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs
