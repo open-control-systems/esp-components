@@ -11,10 +11,11 @@
 #include "ocs_core/log.h"
 #include "ocs_core/version.h"
 #include "ocs_core/version_to_str.h"
-#include "ocs_pipeline/registration_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/registration_formatter.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
 namespace {
 
@@ -22,8 +23,7 @@ const char* log_tag = "registration_json_formatter";
 
 } // namespace
 
-RegistrationJsonFormatter::RegistrationJsonFormatter(
-    RegistrationJsonFormatter::Params params) {
+RegistrationFormatter::RegistrationFormatter(RegistrationFormatter::Params params) {
     fanout_formatter_.reset(new (std::nothrow) fmt::json::FanoutFormatter());
     configASSERT(fanout_formatter_);
 
@@ -34,20 +34,21 @@ RegistrationJsonFormatter::RegistrationJsonFormatter(
 
     core::version_to_str version_str(version);
 
-    version_formatter_.reset(new (std::nothrow) VersionJsonFormatter());
+    version_formatter_.reset(new (std::nothrow) VersionFormatter());
     configASSERT(version_formatter_);
 
     version_formatter_->add(params.fw_name.c_str(), version_str.c_str());
     fanout_formatter_->add(*version_formatter_);
 }
 
-status::StatusCode RegistrationJsonFormatter::format(cJSON* json) {
+status::StatusCode RegistrationFormatter::format(cJSON* json) {
     return fanout_formatter_->format(json);
 }
 
-fmt::json::FanoutFormatter& RegistrationJsonFormatter::get_fanout_formatter() {
+fmt::json::FanoutFormatter& RegistrationFormatter::get_fanout_formatter() {
     return *fanout_formatter_;
 }
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

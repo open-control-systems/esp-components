@@ -10,12 +10,13 @@
 
 #include "ocs_fmt/json/cjson_builder.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
-#include "ocs_pipeline/system_state_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/system_state_formatter.h"
 #include "ocs_system/system_state_builder.h"
 #include "ocs_system/task_state_to_str.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
 namespace {
 
@@ -71,7 +72,7 @@ status::StatusCode format_task_state(fmt::json::CjsonObjectFormatter& formatter,
 
 } // namespace
 
-status::StatusCode SystemStateJsonFormatter::format(cJSON* json) {
+status::StatusCode SystemStateFormatter::format(cJSON* json) {
     auto array = cJSON_AddArrayToObject(json, "tasks");
     if (!array) {
         return status::StatusCode::NoMem;
@@ -105,5 +106,6 @@ status::StatusCode SystemStateJsonFormatter::format(cJSON* json) {
     return status::StatusCode::OK;
 }
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

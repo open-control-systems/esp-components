@@ -16,11 +16,12 @@
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-class TelemetryJsonFormatter : public fmt::json::IFormatter, public core::NonCopyable<> {
+class TelemetryFormatter : public fmt::json::IFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    TelemetryJsonFormatter();
+    TelemetryFormatter();
 
     //! Format all telemetry data into @p json.
     status::StatusCode format(cJSON* json);
@@ -32,5 +33,6 @@ private:
     std::unique_ptr<fmt::json::IFormatter> system_formatter_;
 };
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

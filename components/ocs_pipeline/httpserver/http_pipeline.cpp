@@ -8,7 +8,7 @@
 
 #include "ocs_pipeline/httpserver/http_pipeline.h"
 #include "ocs_core/log.h"
-#include "ocs_pipeline/network_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/network_formatter.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
@@ -47,7 +47,7 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     configASSERT(system_handler_);
 
     network_formatter_.reset(new (std::nothrow)
-                                 NetworkJsonFormatter(server_pipeline_->network()));
+                                 jsonfmt::NetworkFormatter(server_pipeline_->network()));
     configASSERT(network_formatter_);
 
     registration_formatter.add(*network_formatter_);

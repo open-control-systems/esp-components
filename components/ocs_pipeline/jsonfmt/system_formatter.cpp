@@ -9,13 +9,14 @@
 #include "esp_system.h"
 
 #include "ocs_fmt/json/cjson_object_formatter.h"
-#include "ocs_pipeline/system_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/system_formatter.h"
 #include "ocs_system/reset_reason_to_str.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-status::StatusCode SystemJsonFormatter::format(cJSON* json) {
+status::StatusCode SystemFormatter::format(cJSON* json) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
     if (!formatter.add_number_cs("system_memory_heap", esp_get_free_heap_size())) {
@@ -40,5 +41,6 @@ status::StatusCode SystemJsonFormatter::format(cJSON* json) {
     return status::StatusCode::OK;
 }
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs
