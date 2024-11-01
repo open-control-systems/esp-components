@@ -15,24 +15,24 @@
 #include "ocs_sensor/ds18b20/sensor.h"
 
 namespace ocs {
-namespace sensor {
-namespace ds18b20 {
+namespace pipeline {
+namespace jsonfmt {
 
-class JsonFormatter : public fmt::json::IFormatter, public core::NonCopyable<> {
+class DS18B20SensorFormatter : public fmt::json::IFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
     //! @params
     //!  - @p sensor to read temperature.
-    explicit JsonFormatter(Sensor& sensor);
+    explicit DS18B20SensorFormatter(sensor::ds18b20::Sensor& sensor);
 
     //! Format DS18B20 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    Sensor& sensor_;
+    sensor::ds18b20::Sensor& sensor_;
 };
 
-} // namespace ds18b20
-} // namespace sensor
+} // namespace jsonfmt
+} // namespace pipeline
 } // namespace ocs

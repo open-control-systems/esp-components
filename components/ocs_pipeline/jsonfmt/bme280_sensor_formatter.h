@@ -10,24 +10,25 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/basic_formatter.h"
-#include "ocs_sensor/sht41/sensor.h"
+#include "ocs_sensor/bme280/sensor.h"
 
 namespace ocs {
-namespace sensor {
-namespace sht41 {
+namespace pipeline {
+namespace jsonfmt {
 
-class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
+class BME280SensorFormatter : public fmt::json::BasicFormatter,
+                              public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(Sensor& sensor, bool flat_formatting = true);
+    BME280SensorFormatter(sensor::bme280::Sensor& sensor, bool flat_formatting = true);
 
-    //! Format SHT41 sensor data into @p json.
+    //! Format bme280 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    Sensor& sensor_;
+    sensor::bme280::Sensor& sensor_;
 };
 
-} // namespace sht41
-} // namespace sensor
+} // namespace jsonfmt
+} // namespace pipeline
 } // namespace ocs
