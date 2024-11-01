@@ -15,6 +15,7 @@ idf_component_register(
     "ds18b20/sensor_pipeline.cpp"
     "ds18b20/resolution_to_str.cpp"
     "ds18b20/parse_configuration.cpp"
+    "ds18b20/json_formatter.cpp"
     "sht41/sensor.cpp"
     "sht41/sensor_pipeline.cpp"
     "sht41/json_formatter.cpp"
