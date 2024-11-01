@@ -15,11 +15,11 @@ idf_component_register(
     "jsonfmt/registration_formatter.cpp"
     "jsonfmt/version_formatter.cpp"
     "jsonfmt/system_state_formatter.cpp"
+    "jsonfmt/console_task.cpp"
+    "jsonfmt/console_pipeline.cpp"
 
     "system_pipeline.cpp"
     "system_counter_pipeline.cpp"
-    "console_json_task.cpp"
-    "console_json_pipeline.cpp"
 
     REQUIRES
     "ocs_io"

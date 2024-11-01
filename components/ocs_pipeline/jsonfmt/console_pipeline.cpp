@@ -8,17 +8,18 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_pipeline/console_json_pipeline.h"
-#include "ocs_pipeline/console_json_task.h"
+#include "ocs_pipeline/jsonfmt/console_pipeline.h"
+#include "ocs_pipeline/jsonfmt/console_task.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::ITaskScheduler& task_scheduler,
-                                         fmt::json::IFormatter& telemetry_formatter,
-                                         fmt::json::IFormatter& registration_formatter,
-                                         Params params) {
-    telemetry_task_.reset(new (std::nothrow) ConsoleJsonTask(
+ConsolePipeline::ConsolePipeline(scheduler::ITaskScheduler& task_scheduler,
+                                 fmt::json::IFormatter& telemetry_formatter,
+                                 fmt::json::IFormatter& registration_formatter,
+                                 Params params) {
+    telemetry_task_.reset(new (std::nothrow) ConsoleTask(
         telemetry_formatter, "console_telemetry_task", params.telemetry.buffer_size));
     configASSERT(telemetry_task_);
 
@@ -26,7 +27,7 @@ ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::ITaskScheduler& task_schedul
                                     params.telemetry.interval)
                  == status::StatusCode::OK);
 
-    registration_task_.reset(new (std::nothrow) ConsoleJsonTask(
+    registration_task_.reset(new (std::nothrow) ConsoleTask(
         registration_formatter, "console_registration_task",
         params.registration.buffer_size));
     configASSERT(registration_task_);
@@ -36,5 +37,6 @@ ConsoleJsonPipeline::ConsoleJsonPipeline(scheduler::ITaskScheduler& task_schedul
                  == status::StatusCode::OK);
 }
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs
