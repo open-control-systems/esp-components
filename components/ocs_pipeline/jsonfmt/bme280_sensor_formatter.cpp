@@ -6,45 +6,42 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/ldr/json_formatter.h"
+#include "ocs_pipeline/jsonfmt/bme280_sensor_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 
 namespace ocs {
-namespace sensor {
-namespace ldr {
+namespace pipeline {
+namespace jsonfmt {
 
-JsonFormatter::JsonFormatter(Sensor& sensor, bool flat_formatting)
+BME280SensorFormatter::BME280SensorFormatter(sensor::bme280::Sensor& sensor,
+                                             bool flat_formatting)
     : BasicFormatter(flat_formatting)
     , sensor_(sensor) {
 }
 
-status::StatusCode JsonFormatter::format(cJSON* json) {
+status::StatusCode BME280SensorFormatter::format(cJSON* json) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
     const auto data = sensor_.get_data();
 
     if (flat_formatting_) {
-        if (!formatter.add_number_cs("sensor_ldr_raw", data.raw)) {
+        if (!formatter.add_number_cs("sensor_bme280_pressure", data.pressure)) {
             return status::StatusCode::NoMem;
         }
-
-        if (!formatter.add_number_cs("sensor_ldr_voltage", data.voltage)) {
+        if (!formatter.add_number_cs("sensor_bme280_temperature", data.temperature)) {
             return status::StatusCode::NoMem;
         }
-
-        if (!formatter.add_number_cs("sensor_ldr_lightness", data.lightness)) {
+        if (!formatter.add_number_cs("sensor_bme280_humidity", data.humidity)) {
             return status::StatusCode::NoMem;
         }
     } else {
-        if (!formatter.add_number_cs("raw", data.raw)) {
+        if (!formatter.add_number_cs("pressure", data.pressure)) {
             return status::StatusCode::NoMem;
         }
-
-        if (!formatter.add_number_cs("voltage", data.voltage)) {
+        if (!formatter.add_number_cs("temperature", data.temperature)) {
             return status::StatusCode::NoMem;
         }
-
-        if (!formatter.add_number_cs("lightness", data.lightness)) {
+        if (!formatter.add_number_cs("humidity", data.humidity)) {
             return status::StatusCode::NoMem;
         }
     }
@@ -52,6 +49,6 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
     return status::StatusCode::OK;
 }
 
-} // namespace ldr
-} // namespace sensor
+} // namespace jsonfmt
+} // namespace pipeline
 } // namespace ocs

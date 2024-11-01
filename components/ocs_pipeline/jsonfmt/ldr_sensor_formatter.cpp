@@ -6,37 +6,45 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/sht41/json_formatter.h"
+#include "ocs_pipeline/jsonfmt/ldr_sensor_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 
 namespace ocs {
-namespace sensor {
-namespace sht41 {
+namespace pipeline {
+namespace jsonfmt {
 
-JsonFormatter::JsonFormatter(Sensor& sensor, bool flat_formatting)
+LdrSensorFormatter::LdrSensorFormatter(sensor::ldr::Sensor& sensor, bool flat_formatting)
     : BasicFormatter(flat_formatting)
     , sensor_(sensor) {
 }
 
-status::StatusCode JsonFormatter::format(cJSON* json) {
+status::StatusCode LdrSensorFormatter::format(cJSON* json) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
     const auto data = sensor_.get_data();
 
     if (flat_formatting_) {
-        if (!formatter.add_number_cs("sensor_sht41_humidity", data.humidity)) {
+        if (!formatter.add_number_cs("sensor_ldr_raw", data.raw)) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_number_cs("sensor_sht41_temperature", data.temperature)) {
+        if (!formatter.add_number_cs("sensor_ldr_voltage", data.voltage)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("sensor_ldr_lightness", data.lightness)) {
             return status::StatusCode::NoMem;
         }
     } else {
-        if (!formatter.add_number_cs("humidity", data.humidity)) {
+        if (!formatter.add_number_cs("raw", data.raw)) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_number_cs("temperature", data.temperature)) {
+        if (!formatter.add_number_cs("voltage", data.voltage)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("lightness", data.lightness)) {
             return status::StatusCode::NoMem;
         }
     }
@@ -44,6 +52,6 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
     return status::StatusCode::OK;
 }
 
-} // namespace sht41
-} // namespace sensor
+} // namespace jsonfmt
+} // namespace pipeline
 } // namespace ocs

@@ -6,41 +6,38 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/bme280/json_formatter.h"
+#include "ocs_pipeline/jsonfmt/sht41_sensor_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 
 namespace ocs {
-namespace sensor {
-namespace bme280 {
+namespace pipeline {
+namespace jsonfmt {
 
-JsonFormatter::JsonFormatter(Sensor& sensor, bool flat_formatting)
+SHT41SensorFormatter::SHT41SensorFormatter(sensor::sht41::Sensor& sensor,
+                                           bool flat_formatting)
     : BasicFormatter(flat_formatting)
     , sensor_(sensor) {
 }
 
-status::StatusCode JsonFormatter::format(cJSON* json) {
+status::StatusCode SHT41SensorFormatter::format(cJSON* json) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
     const auto data = sensor_.get_data();
 
     if (flat_formatting_) {
-        if (!formatter.add_number_cs("sensor_bme280_pressure", data.pressure)) {
+        if (!formatter.add_number_cs("sensor_sht41_humidity", data.humidity)) {
             return status::StatusCode::NoMem;
         }
-        if (!formatter.add_number_cs("sensor_bme280_temperature", data.temperature)) {
-            return status::StatusCode::NoMem;
-        }
-        if (!formatter.add_number_cs("sensor_bme280_humidity", data.humidity)) {
+
+        if (!formatter.add_number_cs("sensor_sht41_temperature", data.temperature)) {
             return status::StatusCode::NoMem;
         }
     } else {
-        if (!formatter.add_number_cs("pressure", data.pressure)) {
-            return status::StatusCode::NoMem;
-        }
-        if (!formatter.add_number_cs("temperature", data.temperature)) {
-            return status::StatusCode::NoMem;
-        }
         if (!formatter.add_number_cs("humidity", data.humidity)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("temperature", data.temperature)) {
             return status::StatusCode::NoMem;
         }
     }
@@ -48,6 +45,6 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
     return status::StatusCode::OK;
 }
 
-} // namespace bme280
-} // namespace sensor
+} // namespace jsonfmt
+} // namespace pipeline
 } // namespace ocs

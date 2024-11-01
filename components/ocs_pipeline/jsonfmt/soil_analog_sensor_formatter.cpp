@@ -6,21 +6,21 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/soil/analog_sensor_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/soil_analog_sensor_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 #include "ocs_sensor/soil/soil_status_to_str.h"
 
 namespace ocs {
-namespace sensor {
-namespace soil {
+namespace pipeline {
+namespace jsonfmt {
 
-AnalogSensorJsonFormatter::AnalogSensorJsonFormatter(AnalogSensor& sensor,
+SoilAnalogSensorFormatter::SoilAnalogSensorFormatter(sensor::soil::AnalogSensor& sensor,
                                                      bool flat_formatting)
     : BasicFormatter(flat_formatting)
     , sensor_(sensor) {
 }
 
-status::StatusCode AnalogSensorJsonFormatter::format(cJSON* json) {
+status::StatusCode SoilAnalogSensorFormatter::format(cJSON* json) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
     const auto data = sensor_.get_data();
@@ -38,8 +38,9 @@ status::StatusCode AnalogSensorJsonFormatter::format(cJSON* json) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_string_ref_cs("sensor_soil_prev_status",
-                                         soil_status_to_str(data.prev_status))) {
+        if (!formatter.add_string_ref_cs(
+                "sensor_soil_prev_status",
+                sensor::soil::soil_status_to_str(data.prev_status))) {
             return status::StatusCode::NoMem;
         }
 
@@ -48,8 +49,9 @@ status::StatusCode AnalogSensorJsonFormatter::format(cJSON* json) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_string_ref_cs("sensor_soil_curr_status",
-                                         soil_status_to_str(data.curr_status))) {
+        if (!formatter.add_string_ref_cs(
+                "sensor_soil_curr_status",
+                sensor::soil::soil_status_to_str(data.curr_status))) {
             return status::StatusCode::NoMem;
         }
 
@@ -82,8 +84,8 @@ status::StatusCode AnalogSensorJsonFormatter::format(cJSON* json) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_string_ref_cs("prev_status",
-                                         soil_status_to_str(data.prev_status))) {
+        if (!formatter.add_string_ref_cs(
+                "prev_status", sensor::soil::soil_status_to_str(data.prev_status))) {
             return status::StatusCode::NoMem;
         }
 
@@ -91,8 +93,8 @@ status::StatusCode AnalogSensorJsonFormatter::format(cJSON* json) {
             return status::StatusCode::NoMem;
         }
 
-        if (!formatter.add_string_ref_cs("curr_status",
-                                         soil_status_to_str(data.curr_status))) {
+        if (!formatter.add_string_ref_cs(
+                "curr_status", sensor::soil::soil_status_to_str(data.curr_status))) {
             return status::StatusCode::NoMem;
         }
 
@@ -116,6 +118,6 @@ status::StatusCode AnalogSensorJsonFormatter::format(cJSON* json) {
     return status::StatusCode::OK;
 }
 
-} // namespace soil
-} // namespace sensor
+} // namespace jsonfmt
+} // namespace pipeline
 } // namespace ocs
