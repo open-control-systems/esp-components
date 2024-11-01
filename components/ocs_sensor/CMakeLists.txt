@@ -16,6 +16,7 @@ idf_component_register(
     "ds18b20/parse_configuration.cpp"
     "sht41/sensor.cpp"
     "sht41/sensor_pipeline.cpp"
+    "sht41/json_formatter.cpp"
     "bme280/sensor.cpp"
     "bme280/spi_sensor_pipeline.cpp"
     "bme280/spi_transceiver.cpp"

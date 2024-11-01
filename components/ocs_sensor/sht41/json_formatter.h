@@ -13,21 +13,21 @@
 #include "ocs_sensor/sht41/sensor.h"
 
 namespace ocs {
-namespace pipeline {
+namespace sensor {
 namespace sht41 {
 
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::sht41::Sensor& sensor, bool flat_formatting = true);
+    JsonFormatter(Sensor& sensor, bool flat_formatting = true);
 
     //! Format SHT41 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    sensor::sht41::Sensor& sensor_;
+    Sensor& sensor_;
 };
 
 } // namespace sht41
-} // namespace pipeline
+} // namespace sensor
 } // namespace ocs
