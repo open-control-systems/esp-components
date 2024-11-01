@@ -13,13 +13,14 @@
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-class VersionJsonFormatter : public fmt::json::StringFormatter,
-                             public core::NonCopyable<> {
+class VersionFormatter : public fmt::json::StringFormatter, public core::NonCopyable<> {
 public:
     //! Add ESP-IDF version on initialization.
-    VersionJsonFormatter();
+    VersionFormatter();
 };
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

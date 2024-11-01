@@ -14,10 +14,11 @@
 #include "ocs_fmt/json/cjson_object_formatter.h"
 #include "ocs_net/ip_addr_to_str.h"
 #include "ocs_net/rssi_to_signal_strength.h"
-#include "ocs_pipeline/network_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/network_formatter.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
 namespace {
 
@@ -25,11 +26,11 @@ const char* log_tag = "network_json_formatter";
 
 } // namespace
 
-NetworkJsonFormatter::NetworkJsonFormatter(net::BasicNetwork& network)
+NetworkFormatter::NetworkFormatter(net::BasicNetwork& network)
     : network_(network) {
 }
 
-status::StatusCode NetworkJsonFormatter::format(cJSON* json) {
+status::StatusCode NetworkFormatter::format(cJSON* json) {
     if (const auto code = format_ap_info_(json); code != status::StatusCode::OK) {
         return code;
     }
@@ -41,7 +42,7 @@ status::StatusCode NetworkJsonFormatter::format(cJSON* json) {
     return status::StatusCode::OK;
 }
 
-status::StatusCode NetworkJsonFormatter::format_ap_info_(cJSON* json) {
+status::StatusCode NetworkFormatter::format_ap_info_(cJSON* json) {
     wifi_ap_record_t record;
     memset(&record, 0, sizeof(record));
 
@@ -81,7 +82,7 @@ status::StatusCode NetworkJsonFormatter::format_ap_info_(cJSON* json) {
     return status::StatusCode::OK;
 }
 
-status::StatusCode NetworkJsonFormatter::format_ip_addr_(cJSON* json) {
+status::StatusCode NetworkFormatter::format_ip_addr_(cJSON* json) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
     const auto addr = network_.get_ip_addr();
@@ -99,5 +100,6 @@ status::StatusCode NetworkJsonFormatter::format_ip_addr_(cJSON* json) {
     return status::StatusCode::OK;
 }
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

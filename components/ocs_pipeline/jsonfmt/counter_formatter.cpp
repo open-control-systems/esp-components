@@ -6,13 +6,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_pipeline/counter_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/counter_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-status::StatusCode CounterJsonFormatter::format(cJSON* json) {
+status::StatusCode CounterFormatter::format(cJSON* json) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
     for (auto& counter : get_counters_()) {
@@ -24,5 +25,6 @@ status::StatusCode CounterJsonFormatter::format(cJSON* json) {
     return status::StatusCode::OK;
 }
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

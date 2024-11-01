@@ -8,14 +8,16 @@
 
 #include "esp_system.h"
 
-#include "ocs_pipeline/version_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/version_formatter.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-VersionJsonFormatter::VersionJsonFormatter() {
+VersionFormatter::VersionFormatter() {
     add("version_esp_idf", esp_get_idf_version());
 }
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

@@ -9,17 +9,21 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
+#include "ocs_diagnostic/basic_counter_holder.h"
 #include "ocs_fmt/json/iformatter.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-class SystemStateJsonFormatter : public fmt::json::IFormatter,
-                                 public core::NonCopyable<> {
+class CounterFormatter : public fmt::json::IFormatter,
+                         public diagnostic::BasicCounterHolder,
+                         public core::NonCopyable<> {
 public:
-    //! Format system state into @p json.
+    //! Format the underlying counters into @p json.
     status::StatusCode format(cJSON* json) override;
 };
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

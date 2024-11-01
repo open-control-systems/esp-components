@@ -8,7 +8,7 @@
 
 #include "ocs_pipeline/httpserver/system_state_handler.h"
 #include "ocs_fmt/json/cjson_builder.h"
-#include "ocs_pipeline/system_state_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/system_state_formatter.h"
 
 namespace ocs {
 namespace pipeline {
@@ -17,7 +17,7 @@ namespace httpserver {
 SystemStateHandler::SystemStateHandler(http::Server& server,
                                        net::MdnsProvider& provider,
                                        unsigned response_size) {
-    state_json_formatter_.reset(new (std::nothrow) SystemStateJsonFormatter());
+    state_json_formatter_.reset(new (std::nothrow) jsonfmt::SystemStateFormatter());
     configASSERT(state_json_formatter_);
 
     json_formatter_.reset(new (std::nothrow) fmt::json::DynamicFormatter(response_size));

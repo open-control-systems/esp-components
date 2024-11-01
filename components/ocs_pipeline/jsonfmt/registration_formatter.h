@@ -14,13 +14,13 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/fanout_formatter.h"
 #include "ocs_fmt/json/iformatter.h"
-#include "ocs_pipeline/version_json_formatter.h"
+#include "ocs_pipeline/jsonfmt/version_formatter.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-class RegistrationJsonFormatter : public fmt::json::IFormatter,
-                                  public core::NonCopyable<> {
+class RegistrationFormatter : public fmt::json::IFormatter, public core::NonCopyable<> {
 public:
     struct Params {
         std::string fw_version;
@@ -28,7 +28,7 @@ public:
     };
 
     //! Initialize.
-    explicit RegistrationJsonFormatter(Params params);
+    explicit RegistrationFormatter(Params params);
 
     //! Format the underlying data into @p json.
     status::StatusCode format(cJSON* json) override;
@@ -37,8 +37,9 @@ public:
 
 private:
     std::unique_ptr<fmt::json::FanoutFormatter> fanout_formatter_;
-    std::unique_ptr<VersionJsonFormatter> version_formatter_;
+    std::unique_ptr<VersionFormatter> version_formatter_;
 };
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs
