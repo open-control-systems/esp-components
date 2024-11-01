@@ -10,7 +10,7 @@
 
 #include "ocs_core/log.h"
 #include "ocs_core/time.h"
-#include "ocs_sensor/soil/sensor.h"
+#include "ocs_sensor/soil/analog_sensor.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
@@ -28,11 +28,11 @@ SoilStatus parse_status(control::FsmBlock::State state) {
     return static_cast<SoilStatus>(state);
 }
 
-const char* log_tag = "sensor_soil";
+const char* log_tag = "soil_analog_sensor";
 
 } // namespace
 
-Sensor::Sensor(io::IAdc& adc, control::FsmBlock& fsm_block, Params params)
+AnalogSensor::AnalogSensor(io::IAdc& adc, control::FsmBlock& fsm_block, Params params)
     : params_(params)
     , adc_(adc)
     , fsm_block_(fsm_block) {
@@ -40,7 +40,7 @@ Sensor::Sensor(io::IAdc& adc, control::FsmBlock& fsm_block, Params params)
     status_len_ = (params_.value_max - params_.value_min) / status_count_;
 }
 
-status::StatusCode Sensor::run() {
+status::StatusCode AnalogSensor::run() {
     const auto read_result = adc_.read();
     if (read_result.code != status::StatusCode::OK) {
         return read_result.code;
@@ -73,11 +73,11 @@ status::StatusCode Sensor::run() {
     return status::StatusCode::OK;
 }
 
-Sensor::Data Sensor::get_data() const {
+AnalogSensor::Data AnalogSensor::get_data() const {
     return data_.get();
 }
 
-int Sensor::calculate_moisture_(int raw) const {
+int AnalogSensor::calculate_moisture_(int raw) const {
     if (raw > params_.value_max) {
         return 0;
     }
@@ -94,7 +94,7 @@ int Sensor::calculate_moisture_(int raw) const {
     return 100 * remain;
 }
 
-SoilStatus Sensor::calculate_status_(int raw) const {
+SoilStatus AnalogSensor::calculate_status_(int raw) const {
     if (raw < params_.value_min || raw > params_.value_max) {
         return SoilStatus::Error;
     }
@@ -112,7 +112,7 @@ SoilStatus Sensor::calculate_status_(int raw) const {
     return SoilStatus::Dry;
 }
 
-int16_t Sensor::calculate_status_position_(int raw) const {
+int16_t AnalogSensor::calculate_status_position_(int raw) const {
     if (raw < params_.value_min) {
         return -1;
     }
@@ -124,7 +124,7 @@ int16_t Sensor::calculate_status_position_(int raw) const {
     return pos;
 }
 
-void Sensor::update_data_(int raw, int voltage) {
+void AnalogSensor::update_data_(int raw, int voltage) {
     Data data;
 
     data.raw = raw;

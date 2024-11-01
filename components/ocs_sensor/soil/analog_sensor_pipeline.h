@@ -17,7 +17,7 @@
 #include "ocs_io/adc_store.h"
 #include "ocs_scheduler/itask.h"
 #include "ocs_scheduler/itask_scheduler.h"
-#include "ocs_sensor/soil/sensor.h"
+#include "ocs_sensor/soil/analog_sensor.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
 namespace ocs {
@@ -25,33 +25,33 @@ namespace sensor {
 namespace soil {
 
 //! Periodically read the soil moisture data.
-class DefaultPipeline : public core::NonCopyable<> {
+class AnalogSensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
-        Sensor::Params sensor;
+        AnalogSensor::Params sensor;
         adc_channel_t adc_channel { ADC_CHANNEL_0 };
         control::FsmBlockPipeline::Params fsm_block;
         core::Time read_interval { 0 };
     };
 
     //! Initialize.
-    DefaultPipeline(core::IClock& clock,
-                    io::AdcStore& adc_store,
-                    storage::StorageBuilder& storage_builder,
-                    system::FanoutRebootHandler& reboot_handler,
-                    scheduler::ITaskScheduler& task_scheduler,
-                    const char* id,
-                    Params params);
+    AnalogSensorPipeline(core::IClock& clock,
+                         io::AdcStore& adc_store,
+                         storage::StorageBuilder& storage_builder,
+                         system::FanoutRebootHandler& reboot_handler,
+                         scheduler::ITaskScheduler& task_scheduler,
+                         const char* id,
+                         Params params);
 
     //! Return the underlying sensor.
-    Sensor& get_sensor();
+    AnalogSensor& get_sensor();
 
 private:
     const std::string task_id_;
 
     io::IAdc* adc_ { nullptr };
     std::unique_ptr<control::FsmBlockPipeline> fsm_block_pipeline_;
-    std::unique_ptr<Sensor> sensor_;
+    std::unique_ptr<AnalogSensor> sensor_;
 };
 
 } // namespace soil

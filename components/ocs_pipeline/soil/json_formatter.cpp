@@ -14,7 +14,7 @@ namespace ocs {
 namespace pipeline {
 namespace soil {
 
-JsonFormatter::JsonFormatter(sensor::soil::Sensor& sensor, bool flat_formatting)
+JsonFormatter::JsonFormatter(sensor::soil::AnalogSensor& sensor, bool flat_formatting)
     : BasicFormatter(flat_formatting)
     , sensor_(sensor) {
 }

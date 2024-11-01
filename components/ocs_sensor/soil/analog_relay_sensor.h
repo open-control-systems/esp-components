@@ -24,7 +24,7 @@ namespace sensor {
 namespace soil {
 
 //! Activate the sensor only when the relay is energized.
-class RelaySensor : public scheduler::ITask, public core::NonCopyable<> {
+class AnalogRelaySensor : public scheduler::ITask, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -32,9 +32,9 @@ public:
     //!  - @p task to perform actual sensor reading.
     //!  - @p gpio - relay GPIO.
     //!  - @p turn_on_delay_interval - how long to wait after the relay is activated.
-    RelaySensor(scheduler::ITask& task,
-                gpio_num_t gpio,
-                TickType_t turn_on_delay_interval);
+    AnalogRelaySensor(scheduler::ITask& task,
+                      gpio_num_t gpio,
+                      TickType_t turn_on_delay_interval);
 
     //! Energize the relay, run the underlying task, de-energized the relay.
     status::StatusCode run() override;

@@ -6,21 +6,22 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/soil/relay_pipeline.h"
-#include "ocs_sensor/soil/default_pipeline.h"
-#include "ocs_sensor/soil/relay_sensor.h"
+#include "ocs_sensor/soil/analog_relay_sensor_pipeline.h"
+#include "ocs_sensor/soil/analog_relay_sensor.h"
+#include "ocs_sensor/soil/analog_sensor_pipeline.h"
 
 namespace ocs {
 namespace sensor {
 namespace soil {
 
-RelayPipeline::RelayPipeline(core::IClock& clock,
-                             io::AdcStore& adc_store,
-                             storage::StorageBuilder& storage_builder,
-                             system::FanoutRebootHandler& reboot_handler,
-                             scheduler::ITaskScheduler& task_scheduler,
-                             const char* id,
-                             RelayPipeline::Params params)
+AnalogRelaySensorPipeline::AnalogRelaySensorPipeline(
+    core::IClock& clock,
+    io::AdcStore& adc_store,
+    storage::StorageBuilder& storage_builder,
+    system::FanoutRebootHandler& reboot_handler,
+    scheduler::ITaskScheduler& task_scheduler,
+    const char* id,
+    AnalogRelaySensorPipeline::Params params)
     : task_id_(std::string(id) + "_task") {
     adc_ = adc_store.add(params.adc_channel);
     configASSERT(adc_);
@@ -30,12 +31,12 @@ RelayPipeline::RelayPipeline(core::IClock& clock,
         params.fsm_block));
     configASSERT(fsm_block_pipeline_);
 
-    sensor_.reset(new (std::nothrow)
-                      Sensor(*adc_, fsm_block_pipeline_->get_block(), params.sensor));
+    sensor_.reset(new (std::nothrow) AnalogSensor(*adc_, fsm_block_pipeline_->get_block(),
+                                                  params.sensor));
     configASSERT(sensor_);
 
-    relay_sensor_.reset(new (std::nothrow) RelaySensor(*sensor_, params.relay_gpio,
-                                                       params.power_on_delay_interval));
+    relay_sensor_.reset(new (std::nothrow) AnalogRelaySensor(
+        *sensor_, params.relay_gpio, params.power_on_delay_interval));
     configASSERT(relay_sensor_);
 
     configASSERT(
@@ -43,7 +44,7 @@ RelayPipeline::RelayPipeline(core::IClock& clock,
         == status::StatusCode::OK);
 }
 
-Sensor& RelayPipeline::get_sensor() {
+AnalogSensor& AnalogRelaySensorPipeline::get_sensor() {
     return *sensor_;
 }
 
