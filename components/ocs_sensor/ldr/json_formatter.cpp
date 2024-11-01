@@ -6,14 +6,14 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_pipeline/ldr/json_formatter.h"
+#include "ocs_sensor/ldr/json_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 
 namespace ocs {
-namespace pipeline {
+namespace sensor {
 namespace ldr {
 
-JsonFormatter::JsonFormatter(sensor::ldr::Sensor& sensor, bool flat_formatting)
+JsonFormatter::JsonFormatter(Sensor& sensor, bool flat_formatting)
     : BasicFormatter(flat_formatting)
     , sensor_(sensor) {
 }
@@ -53,5 +53,5 @@ status::StatusCode JsonFormatter::format(cJSON* json) {
 }
 
 } // namespace ldr
-} // namespace pipeline
+} // namespace sensor
 } // namespace ocs
