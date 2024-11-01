@@ -6,22 +6,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_pipeline/console_json_task.h"
+#include "ocs_pipeline/jsonfmt/console_task.h"
 #include "ocs_core/log.h"
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
-ConsoleJsonTask::ConsoleJsonTask(fmt::json::IFormatter& formatter,
-                                 const char* log_tag,
-                                 unsigned buffer_size)
+ConsoleTask::ConsoleTask(fmt::json::IFormatter& formatter,
+                         const char* log_tag,
+                         unsigned buffer_size)
     : log_tag_(log_tag)
     , formatter_(formatter) {
     json_formatter_.reset(new (std::nothrow) fmt::json::DynamicFormatter(buffer_size));
     configASSERT(json_formatter_);
 }
 
-status::StatusCode ConsoleJsonTask::run() {
+status::StatusCode ConsoleTask::run() {
     auto json = fmt::json::CjsonUniqueBuilder::make_object();
     if (!json) {
         return status::StatusCode::NoMem;
@@ -42,5 +43,6 @@ status::StatusCode ConsoleJsonTask::run() {
     return status::StatusCode::OK;
 }
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

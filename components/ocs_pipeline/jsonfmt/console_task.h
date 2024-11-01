@@ -21,9 +21,10 @@
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
 //! Component to print sensor data to the console.
-class ConsoleJsonTask : public scheduler::ITask, public core::NonCopyable<> {
+class ConsoleTask : public scheduler::ITask, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -31,9 +32,9 @@ public:
     //!  - @p formatter to format an actual data.
     //!  - @p log_tag to distinguish one console task from another.
     //!  - @p buffer_size to hold the formatted JSON data, in bytes.
-    ConsoleJsonTask(fmt::json::IFormatter& formatter,
-                    const char* log_tag,
-                    unsigned buffer_size);
+    ConsoleTask(fmt::json::IFormatter& formatter,
+                const char* log_tag,
+                unsigned buffer_size);
 
     //! Write data to the console.
     status::StatusCode run() override;
@@ -46,5 +47,6 @@ private:
     std::unique_ptr<fmt::json::DynamicFormatter> json_formatter_;
 };
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs

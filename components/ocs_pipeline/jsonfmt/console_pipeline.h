@@ -17,9 +17,10 @@
 
 namespace ocs {
 namespace pipeline {
+namespace jsonfmt {
 
 //! Component to print telemetry and registration data to the console.
-class ConsoleJsonPipeline : public core::NonCopyable<> {
+class ConsolePipeline : public core::NonCopyable<> {
 public:
     struct DataParams {
         //! How often print data to the console.
@@ -39,15 +40,16 @@ public:
     //! @params
     //!  - @p telemetry_formatter to format telemetry data.
     //!  - @p registration_formatter to format registration data.
-    ConsoleJsonPipeline(scheduler::ITaskScheduler& task_scheduler,
-                        fmt::json::IFormatter& telemetry_formatter,
-                        fmt::json::IFormatter& registration_formatter,
-                        Params params);
+    ConsolePipeline(scheduler::ITaskScheduler& task_scheduler,
+                    fmt::json::IFormatter& telemetry_formatter,
+                    fmt::json::IFormatter& registration_formatter,
+                    Params params);
 
 private:
     std::unique_ptr<scheduler::ITask> telemetry_task_;
     std::unique_ptr<scheduler::ITask> registration_task_;
 };
 
+} // namespace jsonfmt
 } // namespace pipeline
 } // namespace ocs
