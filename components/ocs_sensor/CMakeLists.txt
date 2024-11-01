@@ -8,6 +8,7 @@ idf_component_register(
     "soil/analog_sensor_json_formatter.cpp"
     "ldr/sensor.cpp"
     "ldr/sensor_pipeline.cpp"
+    "ldr/json_formatter.cpp"
     "ds18b20/store.cpp"
     "ds18b20/sensor.cpp"
     "ds18b20/scratchpad.cpp"

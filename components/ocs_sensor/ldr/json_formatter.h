@@ -13,21 +13,21 @@
 #include "ocs_sensor/ldr/sensor.h"
 
 namespace ocs {
-namespace pipeline {
+namespace sensor {
 namespace ldr {
 
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::ldr::Sensor& sensor, bool flat_formatting = true);
+    JsonFormatter(Sensor& sensor, bool flat_formatting = true);
 
     //! Format LDR sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    sensor::ldr::Sensor& sensor_;
+    Sensor& sensor_;
 };
 
 } // namespace ldr
-} // namespace pipeline
+} // namespace sensor
 } // namespace ocs
