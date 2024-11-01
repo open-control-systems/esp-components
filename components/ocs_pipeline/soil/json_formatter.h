@@ -10,7 +10,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/basic_formatter.h"
-#include "ocs_sensor/soil/sensor.h"
+#include "ocs_sensor/soil/analog_sensor.h"
 
 namespace ocs {
 namespace pipeline {
@@ -19,13 +19,13 @@ namespace soil {
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::soil::Sensor& sensor, bool flat_formatting = true);
+    JsonFormatter(sensor::soil::AnalogSensor& sensor, bool flat_formatting = true);
 
     //! Format soil sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    sensor::soil::Sensor& sensor_;
+    sensor::soil::AnalogSensor& sensor_;
 };
 
 } // namespace soil

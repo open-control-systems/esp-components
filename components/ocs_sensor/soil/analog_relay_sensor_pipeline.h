@@ -22,7 +22,7 @@
 #include "ocs_io/adc_store.h"
 #include "ocs_scheduler/itask.h"
 #include "ocs_scheduler/itask_scheduler.h"
-#include "ocs_sensor/soil/sensor.h"
+#include "ocs_sensor/soil/analog_sensor.h"
 #include "ocs_storage/storage_builder.h"
 #include "ocs_system/fanout_reboot_handler.h"
 
@@ -31,10 +31,10 @@ namespace sensor {
 namespace soil {
 
 //! The sensor is only powered when the relay is activated.
-class RelayPipeline : public core::NonCopyable<> {
+class AnalogRelaySensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
-        Sensor::Params sensor;
+        AnalogSensor::Params sensor;
         adc_channel_t adc_channel { ADC_CHANNEL_0 };
         control::FsmBlockPipeline::Params fsm_block;
         core::Time read_interval { 0 };
@@ -43,23 +43,23 @@ public:
     };
 
     //! Initialize.
-    RelayPipeline(core::IClock& clock,
-                  io::AdcStore& adc_store,
-                  storage::StorageBuilder& storage_builder,
-                  system::FanoutRebootHandler& reboot_handler,
-                  scheduler::ITaskScheduler& task_scheduler,
-                  const char* id,
-                  Params params);
+    AnalogRelaySensorPipeline(core::IClock& clock,
+                              io::AdcStore& adc_store,
+                              storage::StorageBuilder& storage_builder,
+                              system::FanoutRebootHandler& reboot_handler,
+                              scheduler::ITaskScheduler& task_scheduler,
+                              const char* id,
+                              Params params);
 
     //! Return the underlying sensor.
-    Sensor& get_sensor();
+    AnalogSensor& get_sensor();
 
 private:
     const std::string task_id_;
 
     io::IAdc* adc_ { nullptr };
     std::unique_ptr<control::FsmBlockPipeline> fsm_block_pipeline_;
-    std::unique_ptr<Sensor> sensor_;
+    std::unique_ptr<AnalogSensor> sensor_;
     std::unique_ptr<scheduler::ITask> relay_sensor_;
 };
 

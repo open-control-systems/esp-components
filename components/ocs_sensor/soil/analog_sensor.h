@@ -22,7 +22,7 @@ namespace ocs {
 namespace sensor {
 namespace soil {
 
-class Sensor : public scheduler::ITask, public core::NonCopyable<> {
+class AnalogSensor : public scheduler::ITask, public core::NonCopyable<> {
 public:
     //! Various sensor characteristics.
     struct Data {
@@ -44,7 +44,7 @@ public:
     };
 
     //! Initialize.
-    Sensor(io::IAdc& adc, control::FsmBlock& fsm_block, Params params);
+    AnalogSensor(io::IAdc& adc, control::FsmBlock& fsm_block, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;

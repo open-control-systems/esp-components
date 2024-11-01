@@ -8,19 +8,19 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_sensor/soil/default_pipeline.h"
+#include "ocs_sensor/soil/analog_sensor_pipeline.h"
 
 namespace ocs {
 namespace sensor {
 namespace soil {
 
-DefaultPipeline::DefaultPipeline(core::IClock& clock,
-                                 io::AdcStore& adc_store,
-                                 storage::StorageBuilder& storage_builder,
-                                 system::FanoutRebootHandler& reboot_handler,
-                                 scheduler::ITaskScheduler& task_scheduler,
-                                 const char* id,
-                                 DefaultPipeline::Params params)
+AnalogSensorPipeline::AnalogSensorPipeline(core::IClock& clock,
+                                           io::AdcStore& adc_store,
+                                           storage::StorageBuilder& storage_builder,
+                                           system::FanoutRebootHandler& reboot_handler,
+                                           scheduler::ITaskScheduler& task_scheduler,
+                                           const char* id,
+                                           AnalogSensorPipeline::Params params)
     : task_id_(std::string(id) + "_task") {
     adc_ = adc_store.add(params.adc_channel);
     configASSERT(adc_);
@@ -30,15 +30,15 @@ DefaultPipeline::DefaultPipeline(core::IClock& clock,
         params.fsm_block));
     configASSERT(fsm_block_pipeline_);
 
-    sensor_.reset(new (std::nothrow)
-                      Sensor(*adc_, fsm_block_pipeline_->get_block(), params.sensor));
+    sensor_.reset(new (std::nothrow) AnalogSensor(*adc_, fsm_block_pipeline_->get_block(),
+                                                  params.sensor));
     configASSERT(sensor_);
 
     configASSERT(task_scheduler.add(*sensor_, task_id_.c_str(), params.read_interval)
                  == status::StatusCode::OK);
 }
 
-Sensor& DefaultPipeline::get_sensor() {
+AnalogSensor& AnalogSensorPipeline::get_sensor() {
     return *sensor_;
 }
 

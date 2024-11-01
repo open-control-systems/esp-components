@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_sensor/soil/relay_sensor.h"
+#include "ocs_sensor/soil/analog_relay_sensor.h"
 #include "ocs_io/default_gpio.h"
 #include "ocs_io/delay_gpio.h"
 #include "ocs_io/gpio_guard.h"
@@ -15,9 +15,9 @@ namespace ocs {
 namespace sensor {
 namespace soil {
 
-RelaySensor::RelaySensor(scheduler::ITask& task,
-                         gpio_num_t gpio,
-                         TickType_t turn_on_delay_interval)
+AnalogRelaySensor::AnalogRelaySensor(scheduler::ITask& task,
+                                     gpio_num_t gpio,
+                                     TickType_t turn_on_delay_interval)
     : task_(task) {
     default_gpio_.reset(new (std::nothrow) io::DefaultGpio("relay_sensor", gpio));
     configASSERT(default_gpio_);
@@ -35,7 +35,7 @@ RelaySensor::RelaySensor(scheduler::ITask& task,
     configASSERT(gpio_);
 }
 
-status::StatusCode RelaySensor::run() {
+status::StatusCode AnalogRelaySensor::run() {
     io::GpioGuard gpio(*gpio_);
 
     return task_.run();
