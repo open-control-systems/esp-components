@@ -13,21 +13,22 @@
 #include "ocs_sensor/soil/analog_sensor.h"
 
 namespace ocs {
-namespace pipeline {
+namespace sensor {
 namespace soil {
 
-class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
+class AnalogSensorJsonFormatter : public fmt::json::BasicFormatter,
+                                  public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::soil::AnalogSensor& sensor, bool flat_formatting = true);
+    AnalogSensorJsonFormatter(AnalogSensor& sensor, bool flat_formatting = true);
 
     //! Format soil sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    sensor::soil::AnalogSensor& sensor_;
+    AnalogSensor& sensor_;
 };
 
 } // namespace soil
-} // namespace pipeline
+} // namespace sensor
 } // namespace ocs
