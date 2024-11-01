@@ -19,6 +19,7 @@ idf_component_register(
     "bme280/sensor.cpp"
     "bme280/spi_sensor_pipeline.cpp"
     "bme280/spi_transceiver.cpp"
+    "bme280/json_formatter.cpp"
 
     REQUIRES
     "ocs_io"

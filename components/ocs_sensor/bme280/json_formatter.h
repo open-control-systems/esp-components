@@ -13,21 +13,21 @@
 #include "ocs_sensor/bme280/sensor.h"
 
 namespace ocs {
-namespace pipeline {
+namespace sensor {
 namespace bme280 {
 
 class JsonFormatter : public fmt::json::BasicFormatter, public core::NonCopyable<> {
 public:
     //! Initialize.
-    JsonFormatter(sensor::bme280::Sensor& sensor, bool flat_formatting = true);
+    JsonFormatter(Sensor& sensor, bool flat_formatting = true);
 
     //! Format bme280 sensor data into @p json.
     status::StatusCode format(cJSON* json) override;
 
 private:
-    sensor::bme280::Sensor& sensor_;
+    Sensor& sensor_;
 };
 
 } // namespace bme280
-} // namespace pipeline
+} // namespace sensor
 } // namespace ocs
