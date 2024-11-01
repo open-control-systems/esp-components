@@ -5,6 +5,7 @@ idf_component_register(
     "soil/analog_sensor_pipeline.cpp"
     "soil/analog_relay_sensor_pipeline.cpp"
     "soil/soil_status_to_str.cpp"
+    "soil/analog_sensor_json_formatter.cpp"
     "ldr/sensor.cpp"
     "ldr/sensor_pipeline.cpp"
     "ds18b20/store.cpp"
