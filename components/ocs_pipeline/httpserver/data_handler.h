@@ -18,8 +18,9 @@
 
 namespace ocs {
 namespace pipeline {
+namespace httpserver {
 
-class HttpDataHandler : public core::NonCopyable<> {
+class DataHandler : public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -30,17 +31,18 @@ public:
     //!  - @p path - URI path.
     //!  - @p id - unique data ID, to distinguish one data from another.
     //!  - @p buffer_size to hold the formatted JSON data, in bytes.
-    HttpDataHandler(http::Server& server,
-                    net::MdnsProvider& provider,
-                    fmt::json::IFormatter& formatter,
-                    const char* path,
-                    const char* id,
-                    unsigned buffer_size);
+    DataHandler(http::Server& server,
+                net::MdnsProvider& provider,
+                fmt::json::IFormatter& formatter,
+                const char* path,
+                const char* id,
+                unsigned buffer_size);
 
 private:
     std::unique_ptr<fmt::json::FanoutFormatter> fanout_formatter_;
     std::unique_ptr<fmt::json::DynamicFormatter> json_formatter_;
 };
 
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs

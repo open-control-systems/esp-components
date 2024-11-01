@@ -15,8 +15,9 @@
 
 namespace ocs {
 namespace pipeline {
+namespace httpserver {
 
-class HttpSystemHandler : public core::NonCopyable<> {
+class SystemHandler : public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -24,10 +25,11 @@ public:
     //!  - @p server to register HTTP endpoints.
     //!  - @p provider to register mDNS txt records.
     //!  - @p reboot_task to initiate the reboot process.
-    HttpSystemHandler(http::Server& server,
-                      net::MdnsProvider& provider,
-                      scheduler::ITask& reboot_task);
+    SystemHandler(http::Server& server,
+                  net::MdnsProvider& provider,
+                  scheduler::ITask& reboot_task);
 };
 
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs

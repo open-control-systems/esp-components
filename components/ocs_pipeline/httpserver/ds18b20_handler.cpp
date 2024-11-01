@@ -17,14 +17,14 @@
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/rom_code_scanner.h"
 #include "ocs_onewire/serial_number_to_str.h"
-#include "ocs_pipeline/ds18b20/http_handler.h"
+#include "ocs_pipeline/httpserver/ds18b20_handler.h"
 #include "ocs_sensor/ds18b20/parse_configuration.h"
 #include "ocs_sensor/ds18b20/resolution_to_str.h"
 #include "ocs_system/suspender_guard.h"
 
 namespace ocs {
 namespace pipeline {
-namespace ds18b20 {
+namespace httpserver {
 
 namespace {
 
@@ -109,10 +109,10 @@ status::StatusCode find_rom_code(onewire::Bus& bus,
 
 } // namespace
 
-HttpHandler::HttpHandler(http::Server& server,
-                         net::MdnsProvider& provider,
-                         system::ISuspender& suspender,
-                         sensor::ds18b20::Store& store)
+DS18B20Handler::DS18B20Handler(http::Server& server,
+                               net::MdnsProvider& provider,
+                               system::ISuspender& suspender,
+                               sensor::ds18b20::Store& store)
     : suspender_(suspender)
     , store_(store) {
     server.add_GET("/sensor/ds18b20/scan", [this](httpd_req_t* req) {
@@ -158,7 +158,7 @@ HttpHandler::HttpHandler(http::Server& server,
                              });
 }
 
-status::StatusCode HttpHandler::handle_scan_(httpd_req_t* req) {
+status::StatusCode DS18B20Handler::handle_scan_(httpd_req_t* req) {
     const auto values = http::UriOps::parse_query(req->uri);
     const auto it = values.find("gpio");
     if (it == values.end()) {
@@ -199,10 +199,11 @@ status::StatusCode HttpHandler::handle_scan_(httpd_req_t* req) {
     return send_response_(scan_response_buffer_size_, json.get(), req);
 }
 
-status::StatusCode HttpHandler::scan_(cJSON* json,
-                                      fmt::json::CjsonUniqueBuilder& builder,
-                                      onewire::Bus& bus,
-                                      const sensor::ds18b20::Store::SensorList& sensors) {
+status::StatusCode
+DS18B20Handler::scan_(cJSON* json,
+                      fmt::json::CjsonUniqueBuilder& builder,
+                      onewire::Bus& bus,
+                      const sensor::ds18b20::Store::SensorList& sensors) {
     auto code = scan_rom_code_(json, bus);
     if (code != status::StatusCode::OK) {
         return code;
@@ -216,7 +217,7 @@ status::StatusCode HttpHandler::scan_(cJSON* json,
     return status::StatusCode::OK;
 }
 
-status::StatusCode HttpHandler::scan_rom_code_(cJSON* json, onewire::Bus& bus) {
+status::StatusCode DS18B20Handler::scan_rom_code_(cJSON* json, onewire::Bus& bus) {
     auto array = cJSON_AddArrayToObject(json, "rom_codes");
     if (!array) {
         return status::StatusCode::NoMem;
@@ -231,9 +232,9 @@ status::StatusCode HttpHandler::scan_rom_code_(cJSON* json, onewire::Bus& bus) {
 }
 
 status::StatusCode
-HttpHandler::format_sensors_(cJSON* json,
-                             fmt::json::CjsonUniqueBuilder& builder,
-                             const sensor::ds18b20::Store::SensorList& sensors) {
+DS18B20Handler::format_sensors_(cJSON* json,
+                                fmt::json::CjsonUniqueBuilder& builder,
+                                const sensor::ds18b20::Store::SensorList& sensors) {
     auto array = cJSON_AddArrayToObject(json, "sensors");
     if (!array) {
         return status::StatusCode::NoMem;
@@ -251,9 +252,9 @@ HttpHandler::format_sensors_(cJSON* json,
     return status::StatusCode::OK;
 }
 
-status::StatusCode HttpHandler::format_sensor_(cJSON* array,
-                                               fmt::json::CjsonUniqueBuilder& builder,
-                                               const sensor::ds18b20::Sensor& sensor) {
+status::StatusCode DS18B20Handler::format_sensor_(cJSON* array,
+                                                  fmt::json::CjsonUniqueBuilder& builder,
+                                                  const sensor::ds18b20::Sensor& sensor) {
     auto json = builder.make_object();
     if (!json) {
         return status::StatusCode::NoMem;
@@ -284,10 +285,10 @@ status::StatusCode HttpHandler::format_sensor_(cJSON* array,
 }
 
 status::StatusCode
-HttpHandler::handle_configuration_(httpd_req_t* req,
-                                   unsigned wait_interval,
-                                   unsigned response_size,
-                                   HttpHandler::HandleConfigurationFunc func) {
+DS18B20Handler::handle_configuration_(httpd_req_t* req,
+                                      unsigned wait_interval,
+                                      unsigned response_size,
+                                      DS18B20Handler::HandleConfigurationFunc func) {
     const auto values = http::UriOps::parse_query(req->uri);
 
     const auto gpio_it = values.find("gpio");
@@ -339,8 +340,8 @@ HttpHandler::handle_configuration_(httpd_req_t* req,
     return send_response_(response_size, json.get(), req);
 }
 
-status::StatusCode HttpHandler::read_configuration_(cJSON* json,
-                                                    sensor::ds18b20::Sensor& sensor) {
+status::StatusCode DS18B20Handler::read_configuration_(cJSON* json,
+                                                       sensor::ds18b20::Sensor& sensor) {
     sensor::ds18b20::Sensor::Configuration configuration;
     auto code = sensor.read_configuration(configuration);
     if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
@@ -355,7 +356,7 @@ status::StatusCode HttpHandler::read_configuration_(cJSON* json,
     return status::StatusCode::OK;
 }
 
-status::StatusCode HttpHandler::handle_write_configuration_(httpd_req_t* req) {
+status::StatusCode DS18B20Handler::handle_write_configuration_(httpd_req_t* req) {
     const auto values = http::UriOps::parse_query(req->uri);
 
     const auto gpio_it = values.find("gpio");
@@ -415,11 +416,11 @@ status::StatusCode HttpHandler::handle_write_configuration_(httpd_req_t* req) {
 }
 
 status::StatusCode
-HttpHandler::write_configuration_(cJSON* json,
-                                  onewire::Bus& bus,
-                                  sensor::ds18b20::Sensor* sensor,
-                                  const std::string_view& serial_number,
-                                  const std::string_view& resolution) {
+DS18B20Handler::write_configuration_(cJSON* json,
+                                     onewire::Bus& bus,
+                                     sensor::ds18b20::Sensor* sensor,
+                                     const std::string_view& serial_number,
+                                     const std::string_view& resolution) {
     if (!sensor) {
         return status::StatusCode::InvalidArg;
     }
@@ -451,8 +452,8 @@ HttpHandler::write_configuration_(cJSON* json,
 }
 
 status::StatusCode
-HttpHandler::find_rom_code_(onewire::Bus& bus,
-                            sensor::ds18b20::Sensor::Configuration& configuration) {
+DS18B20Handler::find_rom_code_(onewire::Bus& bus,
+                               sensor::ds18b20::Sensor::Configuration& configuration) {
     system::SuspenderGuard suspender_guard(suspender_);
 
     core::OperationGuard operation_guard;
@@ -460,8 +461,8 @@ HttpHandler::find_rom_code_(onewire::Bus& bus,
     return find_rom_code(bus, configuration);
 }
 
-status::StatusCode HttpHandler::erase_configuration_(cJSON* json,
-                                                     sensor::ds18b20::Sensor& sensor) {
+status::StatusCode DS18B20Handler::erase_configuration_(cJSON* json,
+                                                        sensor::ds18b20::Sensor& sensor) {
     fmt::json::CjsonObjectFormatter formatter(json);
 
     sensor::ds18b20::Sensor::Configuration configuration;
@@ -480,7 +481,7 @@ status::StatusCode HttpHandler::erase_configuration_(cJSON* json,
 }
 
 status::StatusCode
-HttpHandler::send_response_(unsigned buffer_size, cJSON* json, httpd_req_t* req) {
+DS18B20Handler::send_response_(unsigned buffer_size, cJSON* json, httpd_req_t* req) {
     fmt::json::DynamicFormatter json_formatter(buffer_size);
 
     const auto code = json_formatter.format(json);
@@ -496,6 +497,6 @@ HttpHandler::send_response_(unsigned buffer_size, cJSON* json, httpd_req_t* req)
     return status::StatusCode::OK;
 }
 
-} // namespace ds18b20
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs

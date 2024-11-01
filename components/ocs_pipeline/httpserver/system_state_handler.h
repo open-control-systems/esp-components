@@ -17,8 +17,9 @@
 
 namespace ocs {
 namespace pipeline {
+namespace httpserver {
 
-class HttpSystemStateHandler : public core::NonCopyable<> {
+class SystemStateHandler : public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
@@ -26,14 +27,15 @@ public:
     //!  - @p server to register endpoint to receive system statistics.
     //!  - @p provider to register mDNS txt records.
     //!  - @p response_size - system state response size, in bytes.
-    HttpSystemStateHandler(http::Server& server,
-                           net::MdnsProvider& provider,
-                           unsigned response_size);
+    SystemStateHandler(http::Server& server,
+                       net::MdnsProvider& provider,
+                       unsigned response_size);
 
 private:
     std::unique_ptr<fmt::json::IFormatter> state_json_formatter_;
     std::unique_ptr<fmt::json::DynamicFormatter> json_formatter_;
 };
 
+} // namespace httpserver
 } // namespace pipeline
 } // namespace ocs
