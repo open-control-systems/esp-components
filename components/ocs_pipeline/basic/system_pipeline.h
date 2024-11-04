@@ -24,6 +24,7 @@
 
 namespace ocs {
 namespace pipeline {
+namespace basic {
 
 class SystemPipeline : public core::NonCopyable<> {
 public:
@@ -70,5 +71,6 @@ private:
     std::unique_ptr<system::FanoutSuspender> fanout_suspender_;
 };
 
+} // namespace basic
 } // namespace pipeline
 } // namespace ocs

@@ -8,7 +8,7 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_pipeline/system_pipeline.h"
+#include "ocs_pipeline/basic/system_pipeline.h"
 #include "ocs_scheduler/async_func.h"
 #include "ocs_scheduler/constant_delay_estimator.h"
 #include "ocs_scheduler/periodic_task_scheduler.h"
@@ -20,6 +20,7 @@
 
 namespace ocs {
 namespace pipeline {
+namespace basic {
 
 SystemPipeline::SystemPipeline(SystemPipeline::Params params) {
     configASSERT(params.task_scheduler.delay);
@@ -104,5 +105,6 @@ system::FanoutSuspender& SystemPipeline::get_suspender() {
     return *fanout_suspender_;
 }
 
+} // namespace basic
 } // namespace pipeline
 } // namespace ocs
