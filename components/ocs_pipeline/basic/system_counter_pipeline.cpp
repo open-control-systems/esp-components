@@ -10,11 +10,12 @@
 
 #include "ocs_diagnostic/live_counter.h"
 #include "ocs_diagnostic/time_counter.h"
-#include "ocs_pipeline/system_counter_pipeline.h"
+#include "ocs_pipeline/basic/system_counter_pipeline.h"
 #include "ocs_storage/nvs_storage.h"
 
 namespace ocs {
 namespace pipeline {
+namespace basic {
 
 SystemCounterPipeline::SystemCounterPipeline(
     core::IClock& clock,
@@ -49,5 +50,6 @@ SystemCounterPipeline::SystemCounterPipeline(
     counter_holder.add(*lifetime_persistent_counter_);
 }
 
+} // namespace basic
 } // namespace pipeline
 } // namespace ocs

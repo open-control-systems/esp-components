@@ -20,6 +20,7 @@
 
 namespace ocs {
 namespace pipeline {
+namespace basic {
 
 //! Pipeline to initialize system-wide counters.
 class SystemCounterPipeline : public core::NonCopyable<> {
@@ -39,5 +40,6 @@ private:
     std::unique_ptr<diagnostic::PersistentCounter> lifetime_persistent_counter_;
 };
 
+} // namespace basic
 } // namespace pipeline
 } // namespace ocs

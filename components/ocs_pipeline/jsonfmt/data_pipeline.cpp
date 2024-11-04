@@ -32,7 +32,7 @@ DataPipeline::DataPipeline(core::IClock& clock,
     counter_formatter_.reset(new (std::nothrow) CounterFormatter());
     configASSERT(counter_formatter_);
 
-    system_counter_pipeline_.reset(new (std::nothrow) SystemCounterPipeline(
+    system_counter_pipeline_.reset(new (std::nothrow) basic::SystemCounterPipeline(
         clock, *system_counter_storage_, reboot_handler, task_scheduler,
         *counter_formatter_));
     configASSERT(system_counter_pipeline_);

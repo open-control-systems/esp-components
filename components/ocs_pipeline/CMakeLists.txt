@@ -23,8 +23,8 @@ idf_component_register(
     "jsonfmt/ds18b20_sensor_formatter.cpp"
     "jsonfmt/soil_analog_sensor_formatter.cpp"
 
-    "system_pipeline.cpp"
-    "system_counter_pipeline.cpp"
+    "basic/system_pipeline.cpp"
+    "basic/system_counter_pipeline.cpp"
 
     REQUIRES
     "ocs_io"
