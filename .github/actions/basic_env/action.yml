@@ -25,6 +25,10 @@ inputs:
     description: "path for various caches"
     required: true
     default: ".cache"
+  GITHUB_TOKEN:
+    description: "GitHub token for authentication"
+    required: true
+    default: "${{ github.token }}"
 runs:
   using: "composite"
   steps:
@@ -105,6 +109,14 @@ runs:
       shell: bash
       env:
           PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
+
+    - name: Remove ccache Hash File
+      if: env.ccache_hash_file_changed == 'true'
+      uses: open-control-systems/gh-action-cache-clear@v0.0.2
+      with:
+        PATTERN: "^ccache-last-hash"
+        GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
+
 
     - name: Store ccache Hash File
       if: env.ccache_hash_file_changed == 'true'
