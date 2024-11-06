@@ -13,9 +13,7 @@ idf_component_register(
     "async_flag_isr.cpp"
     "version.cpp"
     "version_to_str.cpp"
-    "bit_ops.cpp"
     "future.cpp"
-    "string_ops.cpp"
     "rate_limiter.cpp"
     "operation_guard.cpp"
 

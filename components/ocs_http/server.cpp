@@ -8,9 +8,9 @@
 
 #include <cstring>
 
+#include "ocs_algo/uri_ops.h"
 #include "ocs_core/log.h"
 #include "ocs_http/server.h"
-#include "ocs_http/uri_ops.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
@@ -93,7 +93,7 @@ esp_err_t Server::handle_request_(httpd_req_t* req) {
 }
 
 void Server::handle_request_get_(httpd_req_t* req) {
-    const auto handler = uris_get_.find(UriOps::parse_path(req->uri));
+    const auto handler = uris_get_.find(algo::UriOps::parse_path(req->uri));
     if (handler == uris_get_.end()) {
         ocs_loge(log_tag, "unknown URI: %s", req->uri);
 

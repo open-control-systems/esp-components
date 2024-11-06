@@ -7,8 +7,8 @@
  */
 
 #include "ocs_sensor/ds18b20/parse_configuration.h"
+#include "ocs_algo/string_ops.h"
 #include "ocs_core/macros.h"
-#include "ocs_core/string_ops.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/serial_number_to_str.h"
 
@@ -47,7 +47,7 @@ bool parse_serial_number(onewire::SerialNumber& serial_number,
         return false;
     }
 
-    const auto values = core::StringOps::split(':', str);
+    const auto values = algo::StringOps::split(':', str);
     if (values.size() != OCS_ARRAY_SIZE(serial_number)) {
         return false;
     }

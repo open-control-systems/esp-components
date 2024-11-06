@@ -11,9 +11,9 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_algo/bit_ops.h"
 #include "ocs_algo/crc_ops.h"
 #include "ocs_algo/math_ops.h"
-#include "ocs_core/bit_ops.h"
 #include "ocs_sensor/sht41/sensor.h"
 #include "ocs_status/macros.h"
 
@@ -51,14 +51,14 @@ status::StatusCode Sensor::run() {
 
     Data data;
 
-    const uint16_t temperature_ticks = core::BitOps::pack_u8(buf[0], buf[1]);
+    const uint16_t temperature_ticks = algo::BitOps::pack_u8(buf[0], buf[1]);
     const uint8_t temperature_checksum = buf[2];
     if (temperature_checksum == calculate_crc(buf[0], buf[1])) {
         data.temperature = -45 + (175.0 * temperature_ticks / UINT16_MAX);
         data.temperature = algo::MathOps::round_floor(data.temperature, 2);
     }
 
-    const uint16_t humidity_ticks = core::BitOps::pack_u8(buf[3], buf[4]);
+    const uint16_t humidity_ticks = algo::BitOps::pack_u8(buf[3], buf[4]);
     const uint8_t humidity_checksum = buf[5];
 
     if (humidity_checksum == calculate_crc(buf[3], buf[4])) {

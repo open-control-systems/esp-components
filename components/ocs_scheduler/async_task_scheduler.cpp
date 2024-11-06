@@ -8,7 +8,7 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_core/bit_ops.h"
+#include "ocs_algo/bit_ops.h"
 #include "ocs_core/log.h"
 #include "ocs_scheduler/async_task.h"
 #include "ocs_scheduler/async_task_scheduler.h"
@@ -45,7 +45,7 @@ ITask* AsyncTaskScheduler::add(ITask& task, const char* id) {
         }
     }
 
-    const EventBits_t event = core::BitOps::mask(nodes_.size());
+    const EventBits_t event = algo::BitOps::mask(nodes_.size());
 
     TaskNode node(&task, event_group_.get(), event, id);
     nodes_.emplace_back(node);

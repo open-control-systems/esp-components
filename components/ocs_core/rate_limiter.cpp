@@ -8,8 +8,8 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_algo/time_ops.h"
 #include "ocs_core/rate_limiter.h"
-#include "ocs_core/time_ops.h"
 
 namespace ocs {
 namespace core {
@@ -24,7 +24,7 @@ bool RateLimiter::allow() {
     const auto now = clock_.now();
 
     if (start_) {
-        if (!TimeOps::after(start_, now, interval_)) {
+        if (!algo::TimeOps::after(start_, now, interval_)) {
             return false;
         }
     }

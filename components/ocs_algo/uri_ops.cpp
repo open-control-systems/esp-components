@@ -10,10 +10,10 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_http/uri_ops.h"
+#include "ocs_algo/uri_ops.h"
 
 namespace ocs {
-namespace http {
+namespace algo {
 
 namespace {
 
@@ -84,5 +84,5 @@ UriOps::Values UriOps::parse_query(const char* uri) {
     return values;
 }
 
-} // namespace http
+} // namespace algo
 } // namespace ocs
