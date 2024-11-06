@@ -9,8 +9,8 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
+#include "ocs_io/spi/itransceiver.h"
 #include "ocs_sensor/bme280/itransceiver.h"
-#include "ocs_spi/itransceiver.h"
 
 namespace ocs {
 namespace sensor {
@@ -22,7 +22,7 @@ public:
     //!
     //! @params
     //!  - @p transceiver to communicate with SPI device.
-    explicit SpiTransceiver(spi::ITransceiver& transceiver);
+    explicit SpiTransceiver(io::spi::ITransceiver& transceiver);
 
     //! Send registers to SPI device.
     status::StatusCode
@@ -33,7 +33,7 @@ public:
     receive(uint8_t* buf, unsigned size, RegisterAddress addr) override;
 
 private:
-    spi::ITransceiver& transceiver_;
+    io::spi::ITransceiver& transceiver_;
 };
 
 } // namespace bme280

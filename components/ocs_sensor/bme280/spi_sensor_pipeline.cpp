@@ -16,7 +16,7 @@ namespace sensor {
 namespace bme280 {
 
 SpiSensorPipeline::SpiSensorPipeline(scheduler::ITaskScheduler& task_scheduler,
-                                     spi::IStore& store,
+                                     io::spi::IStore& store,
                                      SpiSensorPipeline::Params params) {
     configASSERT(params.read_interval);
 

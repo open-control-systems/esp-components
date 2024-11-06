@@ -16,7 +16,7 @@ namespace ocs {
 namespace sensor {
 namespace bme280 {
 
-SpiTransceiver::SpiTransceiver(spi::ITransceiver& transceiver)
+SpiTransceiver::SpiTransceiver(io::spi::ITransceiver& transceiver)
     : transceiver_(transceiver) {
 }
 
