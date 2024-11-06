@@ -14,9 +14,10 @@
 #include "driver/spi_master.h"
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_spi/itransceiver.h"
+#include "ocs_io/spi/itransceiver.h"
 
 namespace ocs {
+namespace io {
 namespace spi {
 
 class MasterTransceiver : public ITransceiver, public core::NonCopyable<> {
@@ -44,4 +45,5 @@ private:
 };
 
 } // namespace spi
+} // namespace io
 } // namespace ocs

@@ -11,10 +11,11 @@
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/log.h"
-#include "ocs_spi/master_store.h"
-#include "ocs_spi/master_transceiver.h"
+#include "ocs_io/spi/master_store.h"
+#include "ocs_io/spi/master_transceiver.h"
 
 namespace ocs {
+namespace io {
 namespace spi {
 
 namespace {
@@ -42,7 +43,7 @@ MasterStore::MasterStore(MasterStore::Params params)
 }
 
 IStore::ITransceiverPtr
-MasterStore::add(const char* id, io::gpio::Gpio cs, Mode mode, TransferSpeed speed) {
+MasterStore::add(const char* id, gpio::Gpio cs, Mode mode, TransferSpeed speed) {
     configASSERT(id);
     configASSERT(cs != GPIO_NUM_NC);
     configASSERT(speed > 0);
@@ -77,4 +78,5 @@ MasterStore::~MasterStore() {
 }
 
 } // namespace spi
+} // namespace io
 } // namespace ocs

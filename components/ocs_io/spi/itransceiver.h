@@ -11,6 +11,7 @@
 #include "ocs_status/code.h"
 
 namespace ocs {
+namespace io {
 namespace spi {
 
 class ITransceiver {
@@ -30,4 +31,5 @@ public:
 };
 
 } // namespace spi
+} // namespace io
 } // namespace ocs

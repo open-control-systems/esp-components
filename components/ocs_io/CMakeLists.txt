@@ -8,6 +8,9 @@ idf_component_register(
     "adc/oneshot_adc.cpp"
     "adc/default_store.cpp"
 
+    "spi/master_store.cpp"
+    "spi/master_transceiver.cpp"
+
     REQUIRES
     "driver"
     "esp_adc"

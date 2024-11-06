@@ -10,22 +10,23 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_io/gpio/types.h"
-#include "ocs_spi/istore.h"
+#include "ocs_io/spi/istore.h"
 
 namespace ocs {
+namespace io {
 namespace spi {
 
 class MasterStore : public IStore, public core::NonCopyable<> {
 public:
     struct Params {
         //! MOSI line.
-        io::gpio::Gpio mosi { GPIO_NUM_NC };
+        gpio::Gpio mosi { GPIO_NUM_NC };
 
         //! MISO line.
-        io::gpio::Gpio miso { GPIO_NUM_NC };
+        gpio::Gpio miso { GPIO_NUM_NC };
 
         //! SCLK line.
-        io::gpio::Gpio sclk { GPIO_NUM_NC };
+        gpio::Gpio sclk { GPIO_NUM_NC };
 
         //! Maximum number of bytes transferred over the SPI line in a single transaction.
         int max_transfer_size { 0 };
@@ -42,11 +43,12 @@ public:
 
     //! Add SPI slave device to the store.
     IStore::ITransceiverPtr
-    add(const char* id, io::gpio::Gpio cs, Mode mode, TransferSpeed speed) override;
+    add(const char* id, gpio::Gpio cs, Mode mode, TransferSpeed speed) override;
 
 private:
     const Params params_;
 };
 
 } // namespace spi
+} // namespace io
 } // namespace ocs

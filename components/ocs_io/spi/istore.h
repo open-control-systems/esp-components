@@ -11,10 +11,11 @@
 #include <memory>
 
 #include "ocs_io/gpio/types.h"
-#include "ocs_spi/itransceiver.h"
-#include "ocs_spi/types.h"
+#include "ocs_io/spi/itransceiver.h"
+#include "ocs_io/spi/types.h"
 
 namespace ocs {
+namespace io {
 namespace spi {
 
 class IStore {
@@ -32,8 +33,9 @@ public:
     //!  - @p cs - chip-select line for the device.
     //!  - @p speed - SPI transmission speed, in hertz.
     virtual ITransceiverPtr
-    add(const char* id, io::gpio::Gpio cs, Mode mode, TransferSpeed speed) = 0;
+    add(const char* id, gpio::Gpio cs, Mode mode, TransferSpeed speed) = 0;
 };
 
 } // namespace spi
+} // namespace io
 } // namespace ocs

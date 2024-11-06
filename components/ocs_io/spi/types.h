@@ -11,6 +11,7 @@
 #include "driver/spi_master.h"
 
 namespace ocs {
+namespace io {
 namespace spi {
 
 //! SPI mode, representing a pair of (CPOL, CPHA) configuration:
@@ -34,4 +35,5 @@ using TransferSpeed = int;
 const HostID VSPI = SPI3_HOST;
 
 } // namespace spi
+} // namespace io
 } // namespace ocs

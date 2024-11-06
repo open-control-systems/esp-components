@@ -9,9 +9,10 @@
 #include <cstring>
 
 #include "ocs_core/log.h"
-#include "ocs_spi/master_transceiver.h"
+#include "ocs_io/spi/master_transceiver.h"
 
 namespace ocs {
+namespace io {
 namespace spi {
 
 namespace {
@@ -60,4 +61,5 @@ status::StatusCode MasterTransceiver::transceive(const uint8_t* send_buf,
 }
 
 } // namespace spi
+} // namespace io
 } // namespace ocs
