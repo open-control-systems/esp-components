@@ -10,9 +10,10 @@
 
 #include <memory>
 
-#include "ocs_i2c/itransceiver.h"
+#include "ocs_io/i2c/itransceiver.h"
 
 namespace ocs {
+namespace io {
 namespace i2c {
 
 class IStore {
@@ -54,4 +55,5 @@ public:
 };
 
 } // namespace i2c
+} // namespace io
 } // namespace ocs

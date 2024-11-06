@@ -11,20 +11,21 @@
 #include "driver/i2c_master.h"
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_i2c/istore.h"
 #include "ocs_io/gpio/types.h"
+#include "ocs_io/i2c/istore.h"
 
 namespace ocs {
+namespace io {
 namespace i2c {
 
 class MasterStore : public IStore, public core::NonCopyable<> {
 public:
     struct Params {
         //! Data line.
-        io::gpio::Gpio sda { static_cast<io::gpio::Gpio>(-1) };
+        gpio::Gpio sda { static_cast<gpio::Gpio>(-1) };
 
         //! Clock line.
-        io::gpio::Gpio scl { static_cast<io::gpio::Gpio>(-1) };
+        gpio::Gpio scl { static_cast<gpio::Gpio>(-1) };
     };
 
     //! Initialize I2C master bus.
@@ -42,4 +43,5 @@ private:
 };
 
 } // namespace i2c
+} // namespace io
 } // namespace ocs

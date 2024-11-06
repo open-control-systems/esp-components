@@ -14,9 +14,10 @@
 #include "driver/i2c_master.h"
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_i2c/itransceiver.h"
+#include "ocs_io/i2c/itransceiver.h"
 
 namespace ocs {
+namespace io {
 namespace i2c {
 
 class MasterTransceiver : public ITransceiver, public core::NonCopyable<> {
@@ -46,4 +47,5 @@ private:
 };
 
 } // namespace i2c
+} // namespace io
 } // namespace ocs

@@ -13,7 +13,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/spmc_node.h"
-#include "ocs_i2c/itransceiver.h"
+#include "ocs_io/i2c/itransceiver.h"
 #include "ocs_scheduler/itask.h"
 
 namespace ocs {
@@ -53,7 +53,7 @@ public:
     //!
     //! @params
     //!  - @p transceiver to communicate with the I2C device.
-    Sensor(i2c::ITransceiver& transceiver, Params params);
+    Sensor(io::i2c::ITransceiver& transceiver, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
@@ -64,7 +64,7 @@ public:
 private:
     const Params params_;
 
-    i2c::ITransceiver& transceiver_;
+    io::i2c::ITransceiver& transceiver_;
 
     core::SpmcNode<Data> data_;
 };
