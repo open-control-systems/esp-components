@@ -12,78 +12,104 @@
 #include "unity.h"
 
 #include "ocs_scheduler/async_task_scheduler.h"
+#include "ocs_scheduler/constant_delay_estimator.h"
 #include "ocs_test/test_task.h"
 
 namespace ocs {
 namespace scheduler {
 
+namespace {
+
+void wait_task(ITaskScheduler& scheduler, test::TestTask& task) {
+    while (true) {
+        TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.run());
+
+        if (task.wait(pdMS_TO_TICKS(30)) == status::StatusCode::OK) {
+            break;
+        }
+    }
+}
+
+} // namespace
+
 TEST_CASE("Async task scheduler: wait for events",
           "[ocs_scheduler], [async_task_scheduler]") {
-    AsyncTaskScheduler scheduler;
+    const char* scheduler_id = "test";
+    ConstantDelayEstimator estimator(portMAX_DELAY);
+    AsyncTaskScheduler scheduler(estimator, scheduler_id);
+
     test::TestTask task(status::StatusCode::OK);
 
-    auto async_task = scheduler.add(task, "test_task");
-    TEST_ASSERT_NOT_NULL(async_task);
+    TEST_ASSERT_EQUAL(
+        status::StatusCode::OK,
+        scheduler.add(task, "test_task", core::Duration::millisecond * 100));
 
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, async_task->run());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.start());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.run());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.stop());
 
-    scheduler.wait();
     TEST_ASSERT_TRUE(task.was_run_called());
 }
 
 TEST_CASE("Async task scheduler: register same task multiple times",
           "[ocs_scheduler], [async_task_scheduler]") {
-    AsyncTaskScheduler scheduler;
+    const char* scheduler_id = "test";
+    ConstantDelayEstimator estimator(portMAX_DELAY);
+    AsyncTaskScheduler scheduler(estimator, scheduler_id);
+
     test::TestTask task(status::StatusCode::OK);
 
-    auto async_task1 = scheduler.add(task, "test_task_1");
-    auto async_task2 = scheduler.add(task, "test_task_2");
-    TEST_ASSERT_NOT_NULL(async_task1);
-    TEST_ASSERT_NULL(async_task2);
+    TEST_ASSERT_EQUAL(
+        status::StatusCode::OK,
+        scheduler.add(task, "test_task", core::Duration::millisecond * 100));
+    TEST_ASSERT_EQUAL(
+        status::StatusCode::InvalidArg,
+        scheduler.add(task, "test_task", core::Duration::millisecond * 100));
 }
 
 TEST_CASE("Async task scheduler: register maximum tasks",
           "[ocs_scheduler], [async_task_scheduler]") {
-    AsyncTaskScheduler scheduler;
+    const char* scheduler_id = "test";
+    ConstantDelayEstimator estimator(pdMS_TO_TICKS(30));
+    AsyncTaskScheduler scheduler(estimator, scheduler_id);
 
     using TaskPtr = std::shared_ptr<test::TestTask>;
     std::vector<TaskPtr> tasks;
 
-    for (unsigned n = 0; n < AsyncTaskScheduler::max_task_count; ++n) {
+    for (unsigned n = 0; n < scheduler.max_count(); ++n) {
         TaskPtr task(new (std::nothrow) test::TestTask(status::StatusCode::OK));
         TEST_ASSERT_NOT_NULL(task);
 
         tasks.push_back(task);
     }
 
-    std::vector<ITask*> async_tasks;
+    for (unsigned n = 0; n < tasks.size(); ++n) {
+        const std::string task_id = std::string("test_task_") + std::to_string(n);
+
+        TEST_ASSERT_EQUAL(
+            status::StatusCode::OK,
+            scheduler.add(*tasks[n], task_id.c_str(), core::Duration::millisecond * 30));
+    }
+
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.start());
 
     for (auto& task : tasks) {
-        auto async_task = scheduler.add(*task, "test_task");
-        TEST_ASSERT_NOT_NULL(async_task);
-
-        async_tasks.push_back(async_task);
+        wait_task(scheduler, *task);
     }
 
-    for (auto& async_task : async_tasks) {
-        TEST_ASSERT_EQUAL(status::StatusCode::OK, async_task->run());
-    }
-
-    scheduler.wait();
-
-    for (auto& task : tasks) {
-        TEST_ASSERT_EQUAL(status::StatusCode::OK, task->wait());
-    }
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.stop());
 }
 
 TEST_CASE("Async task scheduler: register maximum tasks: some failed",
           "[ocs_scheduler], [async_task_scheduler]") {
-    AsyncTaskScheduler scheduler;
+    const char* scheduler_id = "test";
+    ConstantDelayEstimator estimator(pdMS_TO_TICKS(30));
+    AsyncTaskScheduler scheduler(estimator, scheduler_id);
 
     using TaskPtr = std::shared_ptr<test::TestTask>;
     std::vector<TaskPtr> tasks;
 
-    for (unsigned n = 0; n < AsyncTaskScheduler::max_task_count; ++n) {
+    for (unsigned n = 0; n < scheduler.max_count(); ++n) {
         status::StatusCode code = status::StatusCode::OK;
         if (n % 2 == 0) {
             code = status::StatusCode::Error;
@@ -95,48 +121,51 @@ TEST_CASE("Async task scheduler: register maximum tasks: some failed",
         tasks.push_back(task);
     }
 
-    std::vector<ITask*> async_tasks;
+    for (unsigned n = 0; n < tasks.size(); ++n) {
+        const std::string task_id = std::string("test_task_") + std::to_string(n);
+
+        TEST_ASSERT_EQUAL(
+            status::StatusCode::OK,
+            scheduler.add(*tasks[n], task_id.c_str(), core::Duration::millisecond * 30));
+    }
+
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.start());
 
     for (auto& task : tasks) {
-        auto async_task = scheduler.add(*task, "test_task");
-        TEST_ASSERT_NOT_NULL(async_task);
-
-        async_tasks.push_back(async_task);
+        wait_task(scheduler, *task);
     }
 
-    for (auto& async_task : async_tasks) {
-        TEST_ASSERT_EQUAL(status::StatusCode::OK, async_task->run());
-    }
-
-    scheduler.wait();
-
-    for (auto& task : tasks) {
-        TEST_ASSERT_EQUAL(status::StatusCode::OK, task->wait());
-    }
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.stop());
 }
 
 TEST_CASE("Async task scheduler: register tasks overflow",
           "[ocs_scheduler], [async_task_scheduler]") {
-    AsyncTaskScheduler scheduler;
+    const char* scheduler_id = "test";
+    ConstantDelayEstimator estimator(pdMS_TO_TICKS(30));
+    AsyncTaskScheduler scheduler(estimator, scheduler_id);
 
-    using TaskPtr = std::shared_ptr<ITask>;
+    using TaskPtr = std::shared_ptr<test::TestTask>;
     std::vector<TaskPtr> tasks;
 
-    for (unsigned n = 0; n < AsyncTaskScheduler::max_task_count; ++n) {
+    for (unsigned n = 0; n < scheduler.max_count(); ++n) {
         TaskPtr task(new (std::nothrow) test::TestTask(status::StatusCode::OK));
         TEST_ASSERT_NOT_NULL(task);
+
         tasks.push_back(task);
     }
 
-    for (auto& task : tasks) {
-        auto async_task = scheduler.add(*task, "test_task");
-        TEST_ASSERT_NOT_NULL(async_task);
+    for (unsigned n = 0; n < tasks.size(); ++n) {
+        const std::string task_id = std::string("test_task_") + std::to_string(n);
+
+        TEST_ASSERT_EQUAL(
+            status::StatusCode::OK,
+            scheduler.add(*tasks[n], task_id.c_str(), core::Duration::millisecond * 30));
     }
 
     test::TestTask task(status::StatusCode::OK);
 
-    auto async_task = scheduler.add(task, "test_task");
-    TEST_ASSERT_NULL(async_task);
+    TEST_ASSERT_EQUAL(status::StatusCode::Error,
+                      scheduler.add(task, "test_task", core::Duration::millisecond * 10));
 }
 
 } // namespace scheduler
