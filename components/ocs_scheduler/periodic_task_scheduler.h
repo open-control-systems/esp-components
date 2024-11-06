@@ -68,7 +68,7 @@ public:
     status::StatusCode run() override;
 
 private:
-    class Node : public ITask {
+    class Node : public ITask, public core::NonCopyable<> {
     public:
         Node(core::IClock& clock, ITask& task, const char* id, core::Time interval);
 
@@ -79,8 +79,9 @@ private:
     private:
         const std::string id_;
 
+        ITask& task_;
+
         core::RateLimiter limiter_;
-        ITask* task_ { nullptr };
     };
 
     using NodePtr = std::shared_ptr<Node>;
