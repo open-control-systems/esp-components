@@ -30,7 +30,7 @@ uint8_t calculate_crc(uint8_t hi, uint8_t lo) {
 
 } // namespace
 
-Sensor::Sensor(i2c::ITransceiver& transceiver, Sensor::Params params)
+Sensor::Sensor(io::i2c::ITransceiver& transceiver, Sensor::Params params)
     : params_(params)
     , transceiver_(transceiver) {
     configASSERT(params_.send_wait_interval);

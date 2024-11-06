@@ -32,7 +32,6 @@ idf_component_register(
     "ocs_scheduler"
     "ocs_diagnostic"
     "ocs_onewire"
-    "ocs_i2c"
     "ocs_algo"
 
     INCLUDE_DIRS

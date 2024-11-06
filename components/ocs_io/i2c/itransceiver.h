@@ -12,6 +12,7 @@
 #include "ocs_status/code.h"
 
 namespace ocs {
+namespace io {
 namespace i2c {
 
 class ITransceiver {
@@ -39,4 +40,5 @@ public:
 };
 
 } // namespace i2c
+} // namespace io
 } // namespace ocs

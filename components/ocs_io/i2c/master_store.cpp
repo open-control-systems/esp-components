@@ -14,10 +14,11 @@
 #include "driver/i2c_types.h"
 
 #include "ocs_core/log.h"
-#include "ocs_i2c/master_store.h"
-#include "ocs_i2c/master_transceiver.h"
+#include "ocs_io/i2c/master_store.h"
+#include "ocs_io/i2c/master_transceiver.h"
 
 namespace ocs {
+namespace io {
 namespace i2c {
 
 namespace {
@@ -87,4 +88,5 @@ MasterStore::~MasterStore() {
 }
 
 } // namespace i2c
+} // namespace io
 } // namespace ocs

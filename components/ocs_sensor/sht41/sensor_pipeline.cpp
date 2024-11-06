@@ -14,11 +14,11 @@ namespace ocs {
 namespace sensor {
 namespace sht41 {
 
-SensorPipeline::SensorPipeline(i2c::IStore& store,
+SensorPipeline::SensorPipeline(io::i2c::IStore& store,
                                scheduler::ITaskScheduler& task_scheduler,
                                SensorPipeline::Params params) {
-    transceiver_ = store.add("sht41", i2c::IStore::AddressLength::Bit_7, 0x44,
-                             i2c::IStore::TransferSpeed::Fast);
+    transceiver_ = store.add("sht41", io::i2c::IStore::AddressLength::Bit_7, 0x44,
+                             io::i2c::IStore::TransferSpeed::Fast);
     configASSERT(transceiver_);
 
     sensor_.reset(new (std::nothrow)

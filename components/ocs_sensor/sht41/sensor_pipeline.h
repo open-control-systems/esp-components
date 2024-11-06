@@ -12,7 +12,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/time.h"
-#include "ocs_i2c/istore.h"
+#include "ocs_io/i2c/istore.h"
 #include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/sht41/sensor.h"
 
@@ -31,7 +31,7 @@ public:
     //! @params
     //!  - @p store to register an I2C device.
     //!  - @p task_scheduler to register a task for periodic sensor reading.
-    SensorPipeline(i2c::IStore& store,
+    SensorPipeline(io::i2c::IStore& store,
                    scheduler::ITaskScheduler& task_scheduler,
                    Params params);
 
@@ -39,7 +39,7 @@ public:
     Sensor& get_sensor();
 
 private:
-    i2c::IStore::ITransceiverPtr transceiver_;
+    io::i2c::IStore::ITransceiverPtr transceiver_;
     std::unique_ptr<Sensor> sensor_;
 };
 
