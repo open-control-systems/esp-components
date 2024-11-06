@@ -10,7 +10,7 @@
 #include <vector>
 
 namespace ocs {
-namespace core {
+namespace algo {
 
 struct StringOps {
     using Value = std::string_view;
@@ -20,5 +20,5 @@ struct StringOps {
     static Values split(char delimiter, const Value& value);
 };
 
-} // namespace core
+} // namespace algo
 } // namespace ocs

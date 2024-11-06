@@ -11,8 +11,8 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_algo/bit_ops.h"
 #include "ocs_algo/math_ops.h"
-#include "ocs_core/bit_ops.h"
 #include "ocs_core/log.h"
 #include "ocs_sensor/bme280/protocol.h"
 #include "ocs_sensor/bme280/sensor.h"
@@ -26,7 +26,7 @@ namespace bme280 {
 namespace {
 
 uint32_t format_20bit_data(uint8_t msb, uint8_t lsb, uint8_t xlsb) {
-    const uint16_t high_bits = core::BitOps::pack_u8(msb, lsb);
+    const uint16_t high_bits = algo::BitOps::pack_u8(msb, lsb);
     const uint8_t low_bits = (xlsb & 0xF0) >> 4;
 
     return static_cast<uint32_t>(high_bits) << 4 | low_bits;
@@ -253,7 +253,7 @@ status::StatusCode Sensor::read_calibration2_() {
     OCS_STATUS_RETURN_ON_ERROR(transceiver_.receive(recv_buf, sizeof(recv_buf), 0xE1));
 
     calibration2_.dig_H2 =
-        static_cast<int16_t>(core::BitOps::pack_u8(recv_buf[1], recv_buf[0]));
+        static_cast<int16_t>(algo::BitOps::pack_u8(recv_buf[1], recv_buf[0]));
 
     calibration2_.dig_H3 = recv_buf[2];
 
@@ -292,7 +292,7 @@ status::StatusCode Sensor::read_data_() {
         register_data.temp_msb, register_data.temp_lsb, register_data.temp_xlsb));
 
     const int32_t humidity_raw = static_cast<int32_t>(
-        core::BitOps::pack_u8(register_data.hum_msb, register_data.hum_lsb));
+        algo::BitOps::pack_u8(register_data.hum_msb, register_data.hum_lsb));
 
     Data data;
 

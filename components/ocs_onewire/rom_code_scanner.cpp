@@ -8,7 +8,7 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_core/bit_ops.h"
+#include "ocs_algo/bit_ops.h"
 #include "ocs_onewire/rom_code_scanner.h"
 #include "ocs_onewire/serial_number_to_str.h"
 #include "ocs_status/macros.h"
@@ -77,9 +77,9 @@ status::StatusCode RomCodeScanner::scan_(uint8_t* buf, unsigned size) {
         const unsigned bit_pos = n % bits_in_byte_;
 
         if (bit) {
-            buf[byte_pos] |= core::BitOps::mask(bit_pos);
+            buf[byte_pos] |= algo::BitOps::mask(bit_pos);
         } else {
-            buf[byte_pos] &= core::BitOps::umask(bit_pos);
+            buf[byte_pos] &= algo::BitOps::umask(bit_pos);
         }
 
         OCS_STATUS_RETURN_ON_ERROR(bus_.write_bit(bit));
@@ -131,7 +131,7 @@ uint8_t RomCodeScanner::handle_discrepancy_(const uint8_t* buf, int position) {
 
     prev_discrepancy_ = position;
 
-    return core::BitOps::nth(buf[byte_pos], bit_pos);
+    return algo::BitOps::nth(buf[byte_pos], bit_pos);
 }
 
 } // namespace onewire

@@ -9,11 +9,11 @@
 #include <charconv>
 #include <cstring>
 
+#include "ocs_algo/uri_ops.h"
 #include "ocs_core/operation_guard.h"
 #include "ocs_fmt/json/cjson_array_formatter.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 #include "ocs_fmt/json/dynamic_formatter.h"
-#include "ocs_http/uri_ops.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/rom_code_scanner.h"
 #include "ocs_onewire/serial_number_to_str.h"
@@ -159,7 +159,7 @@ DS18B20Handler::DS18B20Handler(http::Server& server,
 }
 
 status::StatusCode DS18B20Handler::handle_scan_(httpd_req_t* req) {
-    const auto values = http::UriOps::parse_query(req->uri);
+    const auto values = algo::UriOps::parse_query(req->uri);
     const auto it = values.find("gpio");
     if (it == values.end()) {
         return status::StatusCode::InvalidArg;
@@ -289,7 +289,7 @@ DS18B20Handler::handle_configuration_(httpd_req_t* req,
                                       unsigned wait_interval,
                                       unsigned response_size,
                                       DS18B20Handler::HandleConfigurationFunc func) {
-    const auto values = http::UriOps::parse_query(req->uri);
+    const auto values = algo::UriOps::parse_query(req->uri);
 
     const auto gpio_it = values.find("gpio");
     if (gpio_it == values.end()) {
@@ -357,7 +357,7 @@ status::StatusCode DS18B20Handler::read_configuration_(cJSON* json,
 }
 
 status::StatusCode DS18B20Handler::handle_write_configuration_(httpd_req_t* req) {
-    const auto values = http::UriOps::parse_query(req->uri);
+    const auto values = algo::UriOps::parse_query(req->uri);
 
     const auto gpio_it = values.find("gpio");
     if (gpio_it == values.end()) {

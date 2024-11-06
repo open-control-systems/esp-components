@@ -11,7 +11,7 @@
 #include "ocs_core/time.h"
 
 namespace ocs {
-namespace core {
+namespace algo {
 
 struct TimeOps {
     //! Return true if @p interval is passed since @p start time.
@@ -42,5 +42,5 @@ struct TimeOps {
     }
 };
 
-} // namespace core
+} // namespace algo
 } // namespace ocs

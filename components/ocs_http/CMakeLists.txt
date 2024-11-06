@@ -3,7 +3,6 @@ idf_component_register(
     "server.cpp"
     "client_builder.cpp"
     "client_reader.cpp"
-    "uri_ops.cpp"
 
     REQUIRES
     "esp_http_server"

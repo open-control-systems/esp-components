@@ -8,7 +8,7 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_core/bit_ops.h"
+#include "ocs_algo/bit_ops.h"
 #include "ocs_onewire/bus.h"
 #include "ocs_status/macros.h"
 
@@ -114,9 +114,9 @@ status::StatusCode Bus::read_byte(uint8_t& byte) {
         OCS_STATUS_RETURN_ON_ERROR(read_bit(bit));
 
         if (bit) {
-            byte |= core::BitOps::mask(n);
+            byte |= algo::BitOps::mask(n);
         } else {
-            byte &= core::BitOps::umask(n);
+            byte &= algo::BitOps::umask(n);
         }
     }
 

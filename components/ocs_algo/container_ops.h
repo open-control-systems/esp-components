@@ -12,7 +12,7 @@
 #include <string_view>
 
 namespace ocs {
-namespace core {
+namespace algo {
 
 //! Custom hasher for std::string_view.
 struct StringHash {
@@ -53,5 +53,5 @@ template <typename T, unsigned N> struct ArrayHasher {
     }
 };
 
-} // namespace core
+} // namespace algo
 } // namespace ocs

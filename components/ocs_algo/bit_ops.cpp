@@ -6,10 +6,10 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_core/bit_ops.h"
+#include "ocs_algo/bit_ops.h"
 
 namespace ocs {
-namespace core {
+namespace algo {
 
 unsigned BitOps::mask(uint8_t pos) {
     return (1UL << pos);
@@ -36,5 +36,5 @@ void BitOps::unpack_u8(uint16_t value, uint8_t& hi, uint8_t& lo) {
     lo = value & 0x00FF;
 }
 
-} // namespace core
+} // namespace algo
 } // namespace ocs

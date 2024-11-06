@@ -11,7 +11,7 @@
 #include <cstdint>
 
 namespace ocs {
-namespace core {
+namespace algo {
 
 struct BitOps {
     //! Create a mask with the n-th bit set.
@@ -33,5 +33,5 @@ struct BitOps {
     static void unpack_u8(uint16_t value, uint8_t& hi, uint8_t& lo);
 };
 
-} // namespace core
+} // namespace algo
 } // namespace ocs

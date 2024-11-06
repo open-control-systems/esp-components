@@ -14,7 +14,7 @@
 
 #include "esp_http_server.h"
 
-#include "ocs_core/container_ops.h"
+#include "ocs_algo/container_ops.h"
 #include "ocs_core/noncopyable.h"
 #include "ocs_status/code.h"
 
@@ -59,7 +59,7 @@ private:
     };
 
     using URIMap =
-        std::unordered_map<std::string, Handler, core::StringHash, core::StringEqual>;
+        std::unordered_map<std::string, Handler, algo::StringHash, algo::StringEqual>;
 
     static esp_err_t handle_request_(httpd_req_t* req);
 

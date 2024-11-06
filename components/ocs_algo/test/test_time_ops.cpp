@@ -11,41 +11,41 @@
 
 #include "unity.h"
 
+#include "ocs_algo/time_ops.h"
 #include "ocs_core/time.h"
-#include "ocs_core/time_ops.h"
 
 namespace ocs {
-namespace core {
+namespace algo {
 
-TEST_CASE("Time ops: after: check equal", "[ocs_core], [time_ops]") {
-    const Time start = 237;
-    const Time interval = 331;
-    const Time now = start + interval;
+TEST_CASE("Time ops: after: check equal", "[ocs_algo], [time_ops]") {
+    const core::Time start = 237;
+    const core::Time interval = 331;
+    const core::Time now = start + interval;
 
     TEST_ASSERT_TRUE(TimeOps::after(start, now, interval));
 }
 
-TEST_CASE("Time ops: after: check less", "[ocs_core], [time_ops]") {
-    const Time start = 237;
-    const Time interval = 331;
-    const Time now = start + interval - 1;
+TEST_CASE("Time ops: after: check less", "[ocs_algo], [time_ops]") {
+    const core::Time start = 237;
+    const core::Time interval = 331;
+    const core::Time now = start + interval - 1;
 
     TEST_ASSERT_FALSE(TimeOps::after(start, now, interval));
 }
 
-TEST_CASE("Time ops: after: check greater", "[ocs_core], [time_ops]") {
-    const Time start = 237;
-    const Time interval = 331;
-    const Time now = start + interval + 1;
+TEST_CASE("Time ops: after: check greater", "[ocs_algo], [time_ops]") {
+    const core::Time start = 237;
+    const core::Time interval = 331;
+    const core::Time now = start + interval + 1;
 
     TEST_ASSERT_TRUE(TimeOps::after(start, now, interval));
 }
 
-TEST_CASE("Time ops: after: check back in time", "[ocs_core], [time_ops]") {
+TEST_CASE("Time ops: after: check back in time", "[ocs_algo], [time_ops]") {
     { // check signed
-        const Time start = -123;
-        const Time interval = 321;
-        const Time now = start + interval;
+        const core::Time start = -123;
+        const core::Time interval = 321;
+        const core::Time now = start + interval;
 
         TEST_ASSERT_TRUE(TimeOps::after(start, now, interval));
     }
@@ -59,5 +59,5 @@ TEST_CASE("Time ops: after: check back in time", "[ocs_core], [time_ops]") {
     }
 }
 
-} // namespace core
+} // namespace algo
 } // namespace ocs

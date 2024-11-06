@@ -9,7 +9,7 @@
 #include <cmath>
 #include <cstring>
 
-#include "ocs_core/bit_ops.h"
+#include "ocs_algo/bit_ops.h"
 #include "ocs_onewire/crc.h"
 #include "ocs_sensor/ds18b20/scratchpad.h"
 #include "ocs_status/macros.h"
@@ -33,64 +33,64 @@ float Scratchpad::get_temperature() const {
 
     if (configuration.r0 == 1 && configuration.r1 == 1) {
         // 12-bits.
-        if (core::BitOps::nth(temperature_lsb, 0)) {
+        if (algo::BitOps::nth(temperature_lsb, 0)) {
             result += std::pow(2, -4);
         }
-        if (core::BitOps::nth(temperature_lsb, 1)) {
+        if (algo::BitOps::nth(temperature_lsb, 1)) {
             result += std::pow(2, -3);
         }
-        if (core::BitOps::nth(temperature_lsb, 2)) {
+        if (algo::BitOps::nth(temperature_lsb, 2)) {
             result += std::pow(2, -2);
         }
-        if (core::BitOps::nth(temperature_lsb, 3)) {
+        if (algo::BitOps::nth(temperature_lsb, 3)) {
             result += std::pow(2, -1);
         }
     } else if (configuration.r0 == 0 && configuration.r1 == 1) {
         // 11-bits
-        if (core::BitOps::nth(temperature_lsb, 1)) {
+        if (algo::BitOps::nth(temperature_lsb, 1)) {
             result += std::pow(2, -3);
         }
-        if (core::BitOps::nth(temperature_lsb, 2)) {
+        if (algo::BitOps::nth(temperature_lsb, 2)) {
             result += std::pow(2, -2);
         }
-        if (core::BitOps::nth(temperature_lsb, 3)) {
+        if (algo::BitOps::nth(temperature_lsb, 3)) {
             result += std::pow(2, -1);
         }
     } else if (configuration.r0 == 1 && configuration.r1 == 0) {
         // 10-bits
-        if (core::BitOps::nth(temperature_lsb, 2)) {
+        if (algo::BitOps::nth(temperature_lsb, 2)) {
             result += std::pow(2, -2);
         }
-        if (core::BitOps::nth(temperature_lsb, 3)) {
+        if (algo::BitOps::nth(temperature_lsb, 3)) {
             result += std::pow(2, -1);
         }
     } else {
         // 9-bits
-        if (core::BitOps::nth(temperature_lsb, 3)) {
+        if (algo::BitOps::nth(temperature_lsb, 3)) {
             result += std::pow(2, -1);
         }
     }
 
-    if (core::BitOps::nth(temperature_lsb, 4)) {
+    if (algo::BitOps::nth(temperature_lsb, 4)) {
         result += std::pow(2, 0);
     }
-    if (core::BitOps::nth(temperature_lsb, 5)) {
+    if (algo::BitOps::nth(temperature_lsb, 5)) {
         result += std::pow(2, 1);
     }
-    if (core::BitOps::nth(temperature_lsb, 6)) {
+    if (algo::BitOps::nth(temperature_lsb, 6)) {
         result += std::pow(2, 2);
     }
-    if (core::BitOps::nth(temperature_lsb, 7)) {
+    if (algo::BitOps::nth(temperature_lsb, 7)) {
         result += std::pow(2, 3);
     }
 
-    if (core::BitOps::nth(temperature_msb, 0)) {
+    if (algo::BitOps::nth(temperature_msb, 0)) {
         result += std::pow(2, 4);
     }
-    if (core::BitOps::nth(temperature_msb, 1)) {
+    if (algo::BitOps::nth(temperature_msb, 1)) {
         result += std::pow(2, 5);
     }
-    if (core::BitOps::nth(temperature_msb, 2)) {
+    if (algo::BitOps::nth(temperature_msb, 2)) {
         result += std::pow(2, 6);
     }
 

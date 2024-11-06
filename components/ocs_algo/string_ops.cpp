@@ -8,10 +8,10 @@
 
 #include <cstring>
 
-#include "ocs_core/string_ops.h"
+#include "ocs_algo/string_ops.h"
 
 namespace ocs {
-namespace core {
+namespace algo {
 
 StringOps::Values StringOps::split(char delimiter, const StringOps::Value& value) {
     if (value.size() < 2) {
@@ -56,5 +56,5 @@ StringOps::Values StringOps::split(char delimiter, const StringOps::Value& value
     return values;
 }
 
-} // namespace core
+} // namespace algo
 } // namespace ocs
