@@ -8,23 +8,15 @@
 
 #pragma once
 
-#include "ocs_core/noncopyable.h"
-#include "ocs_io/igpio.h"
+#include "hal/adc_types.h"
 
 namespace ocs {
 namespace io {
+namespace adc {
 
-class GpioGuard : public core::NonCopyable<> {
-public:
-    //! Turn on @p gpio on initialization.
-    explicit GpioGuard(IGpio& gpio);
+//! ADC channel.
+using Channel = adc_channel_t;
 
-    //! Turn off gpio on de-initialization.
-    ~GpioGuard();
-
-private:
-    IGpio& gpio_;
-};
-
+} // namespace adc
 } // namespace io
 } // namespace ocs

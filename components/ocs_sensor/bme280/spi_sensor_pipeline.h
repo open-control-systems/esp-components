@@ -8,10 +8,9 @@
 
 #pragma once
 
-#include "driver/gpio.h"
-
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/time.h"
+#include "ocs_io/gpio/types.h"
 #include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/bme280/itransceiver.h"
 #include "ocs_sensor/bme280/sensor.h"
@@ -25,7 +24,7 @@ class SpiSensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         core::Time read_interval { 0 };
-        gpio_num_t cs_gpio { GPIO_NUM_NC };
+        io::gpio::Gpio cs_gpio { GPIO_NUM_NC };
         Sensor::Params sensor;
     };
 

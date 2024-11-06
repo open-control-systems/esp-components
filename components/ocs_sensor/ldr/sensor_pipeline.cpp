@@ -14,7 +14,7 @@ namespace ocs {
 namespace sensor {
 namespace ldr {
 
-SensorPipeline::SensorPipeline(io::AdcStore& adc_store,
+SensorPipeline::SensorPipeline(io::adc::IStore& adc_store,
                                scheduler::ITaskScheduler& task_scheduler,
                                const char* id,
                                SensorPipeline::Params params)

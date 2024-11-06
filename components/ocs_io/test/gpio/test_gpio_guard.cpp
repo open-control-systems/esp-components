@@ -8,13 +8,14 @@
 
 #include "unity.h"
 
-#include "ocs_io/gpio_guard.h"
+#include "ocs_io/gpio/gpio_guard.h"
 #include "ocs_test/test_gpio.h"
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
-TEST_CASE("GPIO guard: no error", "[ocs_io], [gpio_guard]") {
+TEST_CASE("GPIO guard: no error", "[ocs_io], [gpio], [gpio_guard]") {
     test::TestGpio gpio(status::StatusCode::OK, status::StatusCode::OK,
                         status::StatusCode::OK);
 
@@ -25,7 +26,7 @@ TEST_CASE("GPIO guard: no error", "[ocs_io], [gpio_guard]") {
     TEST_ASSERT_EQUAL(1, gpio.turn_off_call_count);
 }
 
-TEST_CASE("GPIO guard: turn off error", "[ocs_io], [gpio_guard]") {
+TEST_CASE("GPIO guard: turn off error", "[ocs_io], [gpio], [gpio_guard]") {
     test::TestGpio gpio(status::StatusCode::OK, status::StatusCode::OK,
                         status::StatusCode::Error);
 
@@ -36,7 +37,7 @@ TEST_CASE("GPIO guard: turn off error", "[ocs_io], [gpio_guard]") {
     TEST_ASSERT_EQUAL(1, gpio.turn_off_call_count);
 }
 
-TEST_CASE("GPIO guard: turn on error", "[ocs_io], [gpio_guard]") {
+TEST_CASE("GPIO guard: turn on error", "[ocs_io], [gpio], [gpio_guard]") {
     test::TestGpio gpio(status::StatusCode::OK, status::StatusCode::Error,
                         status::StatusCode::OK);
 
@@ -47,7 +48,7 @@ TEST_CASE("GPIO guard: turn on error", "[ocs_io], [gpio_guard]") {
     TEST_ASSERT_EQUAL(1, gpio.turn_off_call_count);
 }
 
-TEST_CASE("GPIO guard: turn on/off errors", "[ocs_io], [gpio_guard]") {
+TEST_CASE("GPIO guard: turn on/off errors", "[ocs_io], [gpio], [gpio_guard]") {
     test::TestGpio gpio(status::StatusCode::OK, status::StatusCode::Error,
                         status::StatusCode::Error);
 
@@ -58,5 +59,6 @@ TEST_CASE("GPIO guard: turn on/off errors", "[ocs_io], [gpio_guard]") {
     TEST_ASSERT_EQUAL(1, gpio.turn_off_call_count);
 }
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

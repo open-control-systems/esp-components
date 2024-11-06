@@ -7,7 +7,7 @@
  */
 
 #include "ocs_sensor/ds18b20/sensor_pipeline.h"
-#include "ocs_io/default_gpio.h"
+#include "ocs_io/gpio/default_gpio.h"
 #include "ocs_scheduler/operation_guard_task.h"
 
 namespace ocs {

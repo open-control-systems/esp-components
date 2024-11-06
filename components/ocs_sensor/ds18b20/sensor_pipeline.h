@@ -10,9 +10,8 @@
 
 #include <memory>
 
-#include "driver/gpio.h"
-
 #include "ocs_core/noncopyable.h"
+#include "ocs_io/gpio/types.h"
 #include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/ds18b20/store.h"
 
@@ -24,7 +23,7 @@ class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         core::Time read_interval { 0 };
-        gpio_num_t data_pin { GPIO_NUM_NC };
+        io::gpio::Gpio data_pin { GPIO_NUM_NC };
     };
 
     //! Initialize.

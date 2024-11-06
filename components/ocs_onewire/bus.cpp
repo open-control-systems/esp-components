@@ -15,7 +15,7 @@
 namespace ocs {
 namespace onewire {
 
-Bus::Bus(system::IDelayer& delayer, io::IGpio& gpio, Bus::Params params)
+Bus::Bus(system::IDelayer& delayer, io::gpio::IGpio& gpio, Bus::Params params)
     : params_(params)
     , delayer_(delayer)
     , gpio_(gpio) {
@@ -45,7 +45,7 @@ Bus::Bus(system::IDelayer& delayer, io::IGpio& gpio, Bus::Params params)
 
 status::StatusCode Bus::reset() {
     // Start transmission.
-    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::IGpio::Direction::Output));
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::gpio::IGpio::Direction::Output));
 
     // Hold the line.
     OCS_STATUS_RETURN_ON_ERROR(gpio_.turn_off());
@@ -56,7 +56,7 @@ status::StatusCode Bus::reset() {
     OCS_STATUS_RETURN_ON_ERROR(delayer_.delay(params_.presence_pulse_interval));
 
     // Start receiving.
-    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::IGpio::Direction::Input));
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::gpio::IGpio::Direction::Input));
 
     const auto level = gpio_.get();
 
@@ -72,7 +72,7 @@ status::StatusCode Bus::write_bit(uint8_t bit) {
 
 status::StatusCode Bus::read_bit(uint8_t& bit) {
     // Start transmission.
-    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::IGpio::Direction::Output));
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::gpio::IGpio::Direction::Output));
 
     // Hold the line.
     OCS_STATUS_RETURN_ON_ERROR(gpio_.turn_off());
@@ -84,7 +84,7 @@ status::StatusCode Bus::read_bit(uint8_t& bit) {
     OCS_STATUS_RETURN_ON_ERROR(delayer_.delay(params_.read_bit_rc_interval));
 
     // Start receiving.
-    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::IGpio::Direction::Input));
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::gpio::IGpio::Direction::Input));
 
     bit = gpio_.get();
 
@@ -147,7 +147,7 @@ status::StatusCode Bus::write_bytes(const uint8_t* buf, unsigned size) {
 
 status::StatusCode Bus::write_bit_one_() {
     // Start transmission.
-    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::IGpio::Direction::Output));
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::gpio::IGpio::Direction::Output));
 
     // Hold the line.
     OCS_STATUS_RETURN_ON_ERROR(gpio_.turn_off());
@@ -167,7 +167,7 @@ status::StatusCode Bus::write_bit_one_() {
 
 status::StatusCode Bus::write_bit_zero_() {
     // Start transmission.
-    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::IGpio::Direction::Output));
+    OCS_STATUS_RETURN_ON_ERROR(gpio_.set_direction(io::gpio::IGpio::Direction::Output));
 
     // Hold the line.
     OCS_STATUS_RETURN_ON_ERROR(gpio_.turn_off());

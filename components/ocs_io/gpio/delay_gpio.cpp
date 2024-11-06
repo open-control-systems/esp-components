@@ -6,11 +6,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_io/delay_gpio.h"
+#include "ocs_io/gpio/delay_gpio.h"
 #include "ocs_status/macros.h"
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
 DelayGpio::DelayGpio(IGpio& gpio, DelayGpio::Params params)
     : params_(params)
@@ -55,5 +56,6 @@ status::StatusCode DelayGpio::set_direction(IGpio::Direction direction) {
     return gpio_.set_direction(direction);
 }
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

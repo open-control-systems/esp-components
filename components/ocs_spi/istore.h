@@ -10,8 +10,7 @@
 
 #include <memory>
 
-#include "driver/gpio.h"
-
+#include "ocs_io/gpio/types.h"
 #include "ocs_spi/itransceiver.h"
 #include "ocs_spi/types.h"
 
@@ -33,7 +32,7 @@ public:
     //!  - @p cs - chip-select line for the device.
     //!  - @p speed - SPI transmission speed, in hertz.
     virtual ITransceiverPtr
-    add(const char* id, gpio_num_t cs, Mode mode, TransferSpeed speed) = 0;
+    add(const char* id, io::gpio::Gpio cs, Mode mode, TransferSpeed speed) = 0;
 };
 
 } // namespace spi

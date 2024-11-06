@@ -11,10 +11,11 @@
 #include "freertos/FreeRTOS.h"
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_io/igpio.h"
+#include "ocs_io/gpio/igpio.h"
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
 class DelayGpio : public IGpio, public core::NonCopyable<> {
 public:
@@ -53,5 +54,6 @@ private:
     IGpio& gpio_;
 };
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

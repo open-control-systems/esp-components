@@ -15,7 +15,7 @@
 #include "ocs_control/ifsm_handler.h"
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/spmc_node.h"
-#include "ocs_io/iadc.h"
+#include "ocs_io/adc/iadc.h"
 #include "ocs_sensor/soil/soil_status.h"
 
 namespace ocs {
@@ -44,7 +44,7 @@ public:
     };
 
     //! Initialize.
-    AnalogSensor(io::IAdc& adc, control::FsmBlock& fsm_block, Params params);
+    AnalogSensor(io::adc::IAdc& adc, control::FsmBlock& fsm_block, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
@@ -64,7 +64,7 @@ private:
 
     const Params params_;
 
-    io::IAdc& adc_;
+    io::adc::IAdc& adc_;
     control::FsmBlock& fsm_block_;
 
     uint16_t status_len_ { 0 };

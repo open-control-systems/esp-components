@@ -181,7 +181,7 @@ status::StatusCode DS18B20Handler::handle_scan_(httpd_req_t* req) {
     }
 
     auto future = store_.schedule(
-        static_cast<gpio_num_t>(gpio),
+        static_cast<io::gpio::Gpio>(gpio),
         [this, &json, &builder](onewire::Bus& bus,
                                 sensor::ds18b20::Store::SensorList& sensors) {
             return scan_(json.get(), builder, bus, sensors);
@@ -317,7 +317,7 @@ DS18B20Handler::handle_configuration_(httpd_req_t* req,
     }
 
     auto future = store_.schedule(
-        static_cast<gpio_num_t>(gpio),
+        static_cast<io::gpio::Gpio>(gpio),
         [this, &json, &sensor_id, func](onewire::Bus& bus,
                                         sensor::ds18b20::Store::SensorList& sensors) {
             auto sensor = get_sensor(sensor_id->second, sensors);
@@ -395,7 +395,7 @@ status::StatusCode DS18B20Handler::handle_write_configuration_(httpd_req_t* req)
     }
 
     auto future = store_.schedule(
-        static_cast<gpio_num_t>(gpio),
+        static_cast<io::gpio::Gpio>(gpio),
         [this, &json, &sensor_id, &serial_number,
          &resolution](onewire::Bus& bus, sensor::ds18b20::Store::SensorList& sensors) {
             return write_configuration_(json.get(), bus,

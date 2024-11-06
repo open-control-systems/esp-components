@@ -8,28 +8,26 @@
 
 #pragma once
 
-#include "ocs_status/code.h"
+#include <memory>
+
+#include "ocs_io/adc/iadc.h"
+#include "ocs_io/adc/types.h"
 
 namespace ocs {
 namespace io {
+namespace adc {
 
-class IAdc {
+class IStore {
 public:
-    //! ADC operation result.
-    struct Result {
-        status::StatusCode code { status::StatusCode::OK };
-        int value { 0 };
-    };
+    using IAdcPtr = std::shared_ptr<IAdc>;
 
     //! Destroy.
-    virtual ~IAdc() = default;
+    virtual ~IStore() = default;
 
-    //! Read raw ADC value.
-    virtual Result read() = 0;
-
-    //! Convert raw ADC value into voltage, in mV.
-    virtual Result convert(int raw) = 0;
+    //! Configure ADC reading for @p channel.
+    virtual IAdcPtr add(Channel channel) = 0;
 };
 
+} // namespace adc
 } // namespace io
 } // namespace ocs

@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include <memory>
 #include <utility>
 #include <vector>
 
@@ -16,12 +17,14 @@
 #include "esp_adc/adc_oneshot.h"
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_io/oneshot_adc.h"
+#include "ocs_io/adc/istore.h"
+#include "ocs_io/adc/oneshot_adc.h"
 
 namespace ocs {
 namespace io {
+namespace adc {
 
-class AdcStore : public core::NonCopyable<> {
+class DefaultStore : public IStore, public core::NonCopyable<> {
 public:
     struct Params {
         adc_unit_t unit { ADC_UNIT_1 };
@@ -30,10 +33,10 @@ public:
     };
 
     //! Configure ADC unit.
-    explicit AdcStore(Params);
+    explicit DefaultStore(Params);
 
     //! Release ADC unit resources.
-    ~AdcStore();
+    ~DefaultStore();
 
     //! Configure ADC reading for @p channel.
     //!
@@ -41,12 +44,10 @@ public:
     //!  A valid pointer if the ADC was configured properly.
     //!  nullptr if ADC was already configured.
     //!  nullptr if maximum number of channels were already configured.
-    IAdc* add(adc_channel_t channel);
+    IStore::IAdcPtr add(Channel channel) override;
 
 private:
     const Params params_;
-
-    const unsigned max_channel_count_ { 0 };
 
     adc_oneshot_chan_cfg_t config_;
     adc_oneshot_unit_init_cfg_t unit_config_;
@@ -55,8 +56,9 @@ private:
     adc_oneshot_unit_handle_t unit_handle_ { nullptr };
     adc_cali_handle_t calibration_handle_ { nullptr };
 
-    std::vector<std::pair<adc_channel_t, OneshotAdc>> adcs_;
+    std::vector<std::pair<Channel, IStore::IAdcPtr>> adcs_;
 };
 
+} // namespace adc
 } // namespace io
 } // namespace ocs

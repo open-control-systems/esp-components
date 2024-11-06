@@ -17,7 +17,7 @@
 #include "ocs_fmt/json/cjson_builder.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 #include "ocs_fmt/json/dynamic_formatter.h"
-#include "ocs_io/default_gpio.h"
+#include "ocs_io/gpio/default_gpio.h"
 #include "ocs_onewire/bus.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/rom_code_scanner.h"
@@ -33,7 +33,7 @@ namespace {
 const char* log_tag = "ds18b20_verifier";
 
 struct VerifyParams {
-    gpio_num_t gpio { GPIO_NUM_NC };
+    io::gpio::Gpio gpio { GPIO_NUM_NC };
     unsigned total_attempts { 0 };
     TickType_t delay { pdMS_TO_TICKS(0) };
 };
@@ -143,7 +143,7 @@ void verify_bus_operations(VerifyParams verify_params, onewire::Bus::Params bus_
 
     format_bus_params(formatter, bus_params);
 
-    io::DefaultGpio gpio("test_GPIO_onewire_bus", verify_params.gpio);
+    io::gpio::DefaultGpio gpio("test_GPIO_onewire_bus", verify_params.gpio);
     system::DefaultDelayer delayer;
 
     onewire::Bus bus(delayer, gpio, bus_params);
@@ -184,7 +184,7 @@ void verify_bus_operations(VerifyParams verify_params, onewire::Bus::Params bus_
 extern "C" void app_main(void) {
     verify_bus_operations(
         VerifyParams {
-            .gpio = static_cast<gpio_num_t>(CONFIG_OCS_TOOLS_DS18B20_VERIFIER_GPIO),
+            .gpio = static_cast<io::gpio::Gpio>(CONFIG_OCS_TOOLS_DS18B20_VERIFIER_GPIO),
             .total_attempts = CONFIG_OCS_TOOLS_DS18B20_VERIFIER_TOTAL_ATTEMPTS,
             .delay = pdMS_TO_TICKS(1000 * CONFIG_OCS_TOOLS_DS18B20_VERIFIER_DELAY),
         },

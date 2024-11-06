@@ -11,7 +11,7 @@
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/log.h"
-#include "ocs_io/default_gpio.h"
+#include "ocs_io/gpio/default_gpio.h"
 #include "ocs_sensor/ds18b20/resolution_to_str.h"
 #include "ocs_sensor/ds18b20/store.h"
 #include "ocs_status/code_to_str.h"
@@ -45,7 +45,7 @@ status::StatusCode Store::run() {
     return status::StatusCode::OK;
 }
 
-status::StatusCode Store::add(Sensor& sensor, gpio_num_t gpio, const char* gpio_id) {
+status::StatusCode Store::add(Sensor& sensor, io::gpio::Gpio gpio, const char* gpio_id) {
     NodePtr node = get_node_(gpio);
     if (!node) {
         node = add_node_(gpio, gpio_id);
@@ -55,7 +55,7 @@ status::StatusCode Store::add(Sensor& sensor, gpio_num_t gpio, const char* gpio_
     return node->add(sensor);
 }
 
-scheduler::AsyncFuncScheduler::FuturePtr Store::schedule(gpio_num_t gpio,
+scheduler::AsyncFuncScheduler::FuturePtr Store::schedule(io::gpio::Gpio gpio,
                                                          Store::Func func) {
     NodePtr node = get_node_(gpio);
     if (!node) {
@@ -65,7 +65,7 @@ scheduler::AsyncFuncScheduler::FuturePtr Store::schedule(gpio_num_t gpio,
     return node->schedule(func);
 }
 
-Store::NodePtr Store::get_node_(gpio_num_t gpio) {
+Store::NodePtr Store::get_node_(io::gpio::Gpio gpio) {
     for (const auto& item : nodes_) {
         if (item.first == gpio) {
             return item.second;
@@ -75,7 +75,7 @@ Store::NodePtr Store::get_node_(gpio_num_t gpio) {
     return nullptr;
 }
 
-Store::NodePtr Store::add_node_(gpio_num_t gpio, const char* gpio_id) {
+Store::NodePtr Store::add_node_(io::gpio::Gpio gpio, const char* gpio_id) {
     auto node = NodePtr(new (std::nothrow) Node(gpio, gpio_id, max_event_count_));
     if (!node) {
         return nullptr;
@@ -86,9 +86,9 @@ Store::NodePtr Store::add_node_(gpio_num_t gpio, const char* gpio_id) {
     return node;
 }
 
-Store::Node::Node(gpio_num_t gpio, const char* gpio_id, unsigned max_event_count)
+Store::Node::Node(io::gpio::Gpio gpio, const char* gpio_id, unsigned max_event_count)
     : func_scheduler_(max_event_count) {
-    gpio_.reset(new (std::nothrow) io::DefaultGpio(gpio_id, gpio));
+    gpio_.reset(new (std::nothrow) io::gpio::DefaultGpio(gpio_id, gpio));
     configASSERT(gpio_);
 
     delayer_ = system::make_delayer(system::DelayerStrategy::Default);

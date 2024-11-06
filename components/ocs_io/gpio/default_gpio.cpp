@@ -6,20 +6,16 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#pragma once
-
-#include "ocs_core/noncopyable.h"
-#include "ocs_io/basic_gpio.h"
+#include "ocs_io/gpio/default_gpio.h"
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
-//! High logic level is used to enable GPIO.
-class DefaultGpio : public BasicGpio, public core::NonCopyable<> {
-public:
-    //! Initialize.
-    DefaultGpio(const char* id, gpio_num_t gpio);
-};
+DefaultGpio::DefaultGpio(const char* id, Gpio gpio)
+    : BasicGpio(id, gpio, true) {
+}
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

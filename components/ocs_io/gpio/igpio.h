@@ -12,6 +12,7 @@
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
 class IGpio {
 public:
@@ -46,5 +47,6 @@ public:
     virtual status::StatusCode set_direction(Direction direction) = 0;
 };
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

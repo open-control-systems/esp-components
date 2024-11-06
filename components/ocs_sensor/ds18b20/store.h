@@ -12,8 +12,7 @@
 #include <utility>
 #include <vector>
 
-#include "driver/gpio.h"
-
+#include "ocs_io/gpio/types.h"
 #include "ocs_onewire/bus.h"
 #include "ocs_scheduler/async_func_scheduler.h"
 #include "ocs_sensor/ds18b20/sensor.h"
@@ -50,16 +49,16 @@ public:
     //! @remarks
     //!  - @p sensor should be used in the same context as a run() method, in other words,
     //!    the sensor and the store should be scheduled on the same task scheduler.
-    status::StatusCode add(Sensor& sensor, gpio_num_t gpio, const char* gpio_id);
+    status::StatusCode add(Sensor& sensor, io::gpio::Gpio gpio, const char* gpio_id);
 
     //! Schedule an asynchronous event to the bus.
-    scheduler::AsyncFuncScheduler::FuturePtr schedule(gpio_num_t gpio, Func func);
+    scheduler::AsyncFuncScheduler::FuturePtr schedule(io::gpio::Gpio gpio, Func func);
 
 private:
     class Node : public scheduler::ITask, public core::NonCopyable<> {
     public:
         //! Initialize.
-        Node(gpio_num_t gpio, const char* gpio_id, unsigned max_event_count);
+        Node(io::gpio::Gpio gpio, const char* gpio_id, unsigned max_event_count);
 
         //! Handle operations on the 1-Wire bus.
         status::StatusCode run() override;
@@ -73,20 +72,20 @@ private:
     private:
         scheduler::AsyncFuncScheduler func_scheduler_;
 
-        std::unique_ptr<io::IGpio> gpio_;
+        std::unique_ptr<io::gpio::IGpio> gpio_;
         std::unique_ptr<system::IDelayer> delayer_;
         std::unique_ptr<onewire::Bus> bus_;
         SensorList sensors_;
     };
 
     using NodePtr = std::shared_ptr<Node>;
-    using NodeListItem = std::pair<gpio_num_t, NodePtr>;
+    using NodeListItem = std::pair<io::gpio::Gpio, NodePtr>;
     using NodeList = std::vector<NodeListItem>;
 
     const unsigned max_event_count_ { 0 };
 
-    NodePtr get_node_(gpio_num_t gpio);
-    NodePtr add_node_(gpio_num_t gpio, const char* gpio_id);
+    NodePtr get_node_(io::gpio::Gpio gpio);
+    NodePtr add_node_(io::gpio::Gpio gpio, const char* gpio_id);
 
     NodeList nodes_;
 };

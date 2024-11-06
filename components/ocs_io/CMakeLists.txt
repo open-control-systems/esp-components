@@ -1,14 +1,14 @@
 idf_component_register(
     SRCS
-    "default_gpio.cpp"
-    "basic_gpio.cpp"
-    "delay_gpio.cpp"
-    "gpio_guard.cpp"
-    "oneshot_adc.cpp"
-    "adc_store.cpp"
+    "gpio/default_gpio.cpp"
+    "gpio/basic_gpio.cpp"
+    "gpio/delay_gpio.cpp"
+    "gpio/gpio_guard.cpp"
+
+    "adc/oneshot_adc.cpp"
+    "adc/default_store.cpp"
 
     REQUIRES
-    "soc"
     "driver"
     "esp_adc"
     "ocs_scheduler"
