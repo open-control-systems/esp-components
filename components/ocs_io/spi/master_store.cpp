@@ -45,7 +45,7 @@ MasterStore::MasterStore(MasterStore::Params params)
 IStore::ITransceiverPtr
 MasterStore::add(const char* id, gpio::Gpio cs, Mode mode, TransferSpeed speed) {
     configASSERT(id);
-    configASSERT(cs != GPIO_NUM_NC);
+    configASSERT(cs != static_cast<io::gpio::Gpio>(-1));
     configASSERT(speed > 0);
 
     spi_device_interface_config_t config;

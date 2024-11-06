@@ -33,7 +33,7 @@ namespace {
 const char* log_tag = "ds18b20_verifier";
 
 struct VerifyParams {
-    io::gpio::Gpio gpio { GPIO_NUM_NC };
+    io::gpio::Gpio gpio { static_cast<io::gpio::Gpio>(-1) };
     unsigned total_attempts { 0 };
     TickType_t delay { pdMS_TO_TICKS(0) };
 };

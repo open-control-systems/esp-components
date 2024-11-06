@@ -31,7 +31,7 @@ namespace {
 const char* log_tag = "ds_rom_code_scanner";
 
 struct ScanParams {
-    io::gpio::Gpio gpio { GPIO_NUM_NC };
+    io::gpio::Gpio gpio { static_cast<io::gpio::Gpio>(-1) };
 };
 
 void format_bus_params(fmt::json::CjsonObjectFormatter& formatter,

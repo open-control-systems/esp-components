@@ -21,10 +21,10 @@ class MasterStore : public IStore, public core::NonCopyable<> {
 public:
     struct Params {
         //! Data line.
-        io::gpio::Gpio sda { GPIO_NUM_NC };
+        io::gpio::Gpio sda { static_cast<io::gpio::Gpio>(-1) };
 
         //! Clock line.
-        io::gpio::Gpio scl { GPIO_NUM_NC };
+        io::gpio::Gpio scl { static_cast<io::gpio::Gpio>(-1) };
     };
 
     //! Initialize I2C master bus.

@@ -23,7 +23,7 @@ class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         core::Time read_interval { 0 };
-        io::gpio::Gpio data_pin { GPIO_NUM_NC };
+        io::gpio::Gpio data_pin { static_cast<io::gpio::Gpio>(-1) };
     };
 
     //! Initialize.

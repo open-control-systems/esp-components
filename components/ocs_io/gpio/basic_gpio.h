@@ -48,7 +48,7 @@ public:
 
 private:
     const std::string id_;
-    const Gpio gpio_ { GPIO_NUM_NC };
+    const Gpio gpio_ { static_cast<io::gpio::Gpio>(-1) };
     const bool enable_value_ { false };
 };
 

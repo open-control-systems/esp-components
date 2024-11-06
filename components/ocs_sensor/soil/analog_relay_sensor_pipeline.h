@@ -37,7 +37,7 @@ public:
         io::adc::Channel adc_channel { static_cast<io::adc::Channel>(0) };
         control::FsmBlockPipeline::Params fsm_block;
         core::Time read_interval { 0 };
-        io::gpio::Gpio relay_gpio { GPIO_NUM_NC };
+        io::gpio::Gpio relay_gpio { static_cast<io::gpio::Gpio>(-1) };
         TickType_t power_on_delay_interval { 0 };
     };
 
