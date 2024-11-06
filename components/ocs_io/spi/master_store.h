@@ -20,13 +20,13 @@ class MasterStore : public IStore, public core::NonCopyable<> {
 public:
     struct Params {
         //! MOSI line.
-        gpio::Gpio mosi { GPIO_NUM_NC };
+        gpio::Gpio mosi { static_cast<io::gpio::Gpio>(-1) };
 
         //! MISO line.
-        gpio::Gpio miso { GPIO_NUM_NC };
+        gpio::Gpio miso { static_cast<io::gpio::Gpio>(-1) };
 
         //! SCLK line.
-        gpio::Gpio sclk { GPIO_NUM_NC };
+        gpio::Gpio sclk { static_cast<io::gpio::Gpio>(-1) };
 
         //! Maximum number of bytes transferred over the SPI line in a single transaction.
         int max_transfer_size { 0 };
