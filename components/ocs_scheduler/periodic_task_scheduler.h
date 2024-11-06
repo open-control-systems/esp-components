@@ -48,7 +48,7 @@ public:
     //! @params
     //!  - @p task - task to be executed periodically.
     //!  - @p id - unique task identifier.
-    //!  - @p interval - task running frequency.
+    //!  - @p interval - task running frequency, milliseconds resolution.
     //!
     //! @notes
     //! It's possible for the task's frequency to drift over time. There are several
