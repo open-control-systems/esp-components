@@ -37,6 +37,9 @@ public:
     //! Start scheduling registered tasks.
     virtual status::StatusCode start() = 0;
 
+    //! Stop scheduling registered tasks.
+    virtual status::StatusCode stop() = 0;
+
     //! Run all registered tasks.
     virtual status::StatusCode run() = 0;
 };

@@ -72,6 +72,14 @@ status::StatusCode PeriodicTaskScheduler::start() {
     return status::StatusCode::OK;
 }
 
+status::StatusCode PeriodicTaskScheduler::stop() {
+    ocs_logi(log_tag_.c_str(),
+             "stop tasks scheduling: count=%u/%u task_min_interval=%lli(ms)", count(),
+             max_count(), task_min_interval_ / core::Duration::millisecond);
+
+    return status::StatusCode::OK;
+}
+
 status::StatusCode PeriodicTaskScheduler::run() {
     estimator_.begin();
 
