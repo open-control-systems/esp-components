@@ -66,7 +66,7 @@ PeriodicTaskScheduler::add(ITask& task, const char* id, core::Time interval) {
 
 status::StatusCode PeriodicTaskScheduler::start() {
     ocs_logi(log_tag_.c_str(),
-             "start handling tasks: count=%u/%u task_min_interval=%lli(ms)", count(),
+             "start tasks scheduling: count=%u/%u task_min_interval=%lli(ms)", count(),
              max_count(), task_min_interval_ / core::Duration::millisecond);
 
     return status::StatusCode::OK;
@@ -111,12 +111,12 @@ PeriodicTaskScheduler::Node::Node(core::IClock& clock,
                                   const char* id,
                                   core::Time interval)
     : id_(id)
-    , limiter_(clock, interval)
-    , task_(&task) {
+    , task_(task)
+    , limiter_(clock, interval) {
 }
 
 status::StatusCode PeriodicTaskScheduler::Node::run() {
-    return limiter_.allow() ? task_->run() : status::StatusCode::OK;
+    return limiter_.allow() ? task_.run() : status::StatusCode::OK;
 }
 
 const char* PeriodicTaskScheduler::Node::id() const {
