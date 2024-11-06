@@ -10,7 +10,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/spmc_node.h"
-#include "ocs_io/iadc.h"
+#include "ocs_io/adc/iadc.h"
 #include "ocs_scheduler/itask.h"
 
 namespace ocs {
@@ -32,7 +32,7 @@ public:
     };
 
     //! Initialize.
-    Sensor(io::IAdc& adc, Params params);
+    Sensor(io::adc::IAdc& adc, Params params);
 
     //! Read sensor data.
     status::StatusCode run() override;
@@ -47,7 +47,7 @@ private:
 
     const Params params_;
 
-    io::IAdc& adc_;
+    io::adc::IAdc& adc_;
     core::SpmcNode<Data> data_;
 };
 

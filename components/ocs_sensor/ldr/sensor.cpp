@@ -14,7 +14,7 @@ namespace ocs {
 namespace sensor {
 namespace ldr {
 
-Sensor::Sensor(io::IAdc& adc, Sensor::Params params)
+Sensor::Sensor(io::adc::IAdc& adc, Sensor::Params params)
     : params_(params)
     , adc_(adc) {
     configASSERT(params_.value_min < params_.value_max);

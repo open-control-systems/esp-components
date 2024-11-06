@@ -42,7 +42,7 @@ MasterStore::MasterStore(MasterStore::Params params)
 }
 
 IStore::ITransceiverPtr
-MasterStore::add(const char* id, gpio_num_t cs, Mode mode, TransferSpeed speed) {
+MasterStore::add(const char* id, io::gpio::Gpio cs, Mode mode, TransferSpeed speed) {
     configASSERT(id);
     configASSERT(cs != GPIO_NUM_NC);
     configASSERT(speed > 0);

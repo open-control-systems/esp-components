@@ -32,7 +32,9 @@ const char* log_tag = "soil_analog_sensor";
 
 } // namespace
 
-AnalogSensor::AnalogSensor(io::IAdc& adc, control::FsmBlock& fsm_block, Params params)
+AnalogSensor::AnalogSensor(io::adc::IAdc& adc,
+                           control::FsmBlock& fsm_block,
+                           Params params)
     : params_(params)
     , adc_(adc)
     , fsm_block_(fsm_block) {

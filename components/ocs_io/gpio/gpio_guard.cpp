@@ -6,12 +6,13 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_io/gpio_guard.h"
+#include "ocs_io/gpio/gpio_guard.h"
 #include "ocs_core/log.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
 namespace {
 
@@ -34,5 +35,6 @@ GpioGuard::~GpioGuard() {
     }
 }
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

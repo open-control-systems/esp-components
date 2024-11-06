@@ -8,9 +8,8 @@
 
 #pragma once
 
-#include "driver/gpio.h"
-
 #include "ocs_core/noncopyable.h"
+#include "ocs_io/gpio/types.h"
 #include "ocs_spi/istore.h"
 
 namespace ocs {
@@ -20,13 +19,13 @@ class MasterStore : public IStore, public core::NonCopyable<> {
 public:
     struct Params {
         //! MOSI line.
-        gpio_num_t mosi { GPIO_NUM_NC };
+        io::gpio::Gpio mosi { GPIO_NUM_NC };
 
         //! MISO line.
-        gpio_num_t miso { GPIO_NUM_NC };
+        io::gpio::Gpio miso { GPIO_NUM_NC };
 
         //! SCLK line.
-        gpio_num_t sclk { GPIO_NUM_NC };
+        io::gpio::Gpio sclk { GPIO_NUM_NC };
 
         //! Maximum number of bytes transferred over the SPI line in a single transaction.
         int max_transfer_size { 0 };
@@ -43,7 +42,7 @@ public:
 
     //! Add SPI slave device to the store.
     IStore::ITransceiverPtr
-    add(const char* id, gpio_num_t cs, Mode mode, TransferSpeed speed) override;
+    add(const char* id, io::gpio::Gpio cs, Mode mode, TransferSpeed speed) override;
 
 private:
     const Params params_;

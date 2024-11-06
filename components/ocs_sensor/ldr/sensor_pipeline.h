@@ -13,7 +13,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/time.h"
-#include "ocs_io/adc_store.h"
+#include "ocs_io/adc/istore.h"
 #include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/ldr/sensor.h"
 
@@ -25,17 +25,17 @@ class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         Sensor::Params sensor;
-        adc_channel_t adc_channel { ADC_CHANNEL_0 };
+        io::adc::Channel adc_channel { static_cast<io::adc::Channel>(0) };
         core::Time read_interval { 0 };
     };
 
     //! Initialize.
     //!
     //! @params
-    //!  - @p adc_store to perform ADC readings.
+    //!  - @p adc_store to configure ADC channels.
     //!  - @p task_scheduler to schedule periodic ADC readings.
     //!  - @p id to distringuish one sensor from another.
-    SensorPipeline(io::AdcStore& adc_store,
+    SensorPipeline(io::adc::IStore& adc_store,
                    scheduler::ITaskScheduler& task_scheduler,
                    const char* id,
                    Params params);
@@ -46,7 +46,7 @@ public:
 private:
     const std::string task_id_;
 
-    io::IAdc* adc_ { nullptr };
+    io::adc::IStore::IAdcPtr adc_;
     std::unique_ptr<Sensor> sensor_;
 };
 

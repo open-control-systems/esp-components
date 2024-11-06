@@ -16,7 +16,7 @@ namespace soil {
 
 AnalogRelaySensorPipeline::AnalogRelaySensorPipeline(
     core::IClock& clock,
-    io::AdcStore& adc_store,
+    io::adc::IStore& adc_store,
     storage::StorageBuilder& storage_builder,
     system::FanoutRebootHandler& reboot_handler,
     scheduler::ITaskScheduler& task_scheduler,

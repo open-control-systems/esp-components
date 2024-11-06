@@ -9,12 +9,12 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_io/igpio.h"
+#include "ocs_io/gpio/igpio.h"
 
 namespace ocs {
 namespace test {
 
-class TestGpio : public io::IGpio, public core::NonCopyable<> {
+class TestGpio : public io::gpio::IGpio, public core::NonCopyable<> {
 public:
     TestGpio(status::StatusCode flip_code,
              status::StatusCode turn_on_code,

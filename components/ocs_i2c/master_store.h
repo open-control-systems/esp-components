@@ -8,11 +8,11 @@
 
 #pragma once
 
-#include "driver/gpio.h"
 #include "driver/i2c_master.h"
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_i2c/istore.h"
+#include "ocs_io/gpio/types.h"
 
 namespace ocs {
 namespace i2c {
@@ -21,10 +21,10 @@ class MasterStore : public IStore, public core::NonCopyable<> {
 public:
     struct Params {
         //! Data line.
-        gpio_num_t sda { GPIO_NUM_NC };
+        io::gpio::Gpio sda { GPIO_NUM_NC };
 
         //! Clock line.
-        gpio_num_t scl { GPIO_NUM_NC };
+        io::gpio::Gpio scl { GPIO_NUM_NC };
     };
 
     //! Initialize I2C master bus.

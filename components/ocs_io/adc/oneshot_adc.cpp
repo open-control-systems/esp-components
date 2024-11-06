@@ -6,11 +6,12 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_io/oneshot_adc.h"
+#include "ocs_io/adc/oneshot_adc.h"
 #include "ocs_core/log.h"
 
 namespace ocs {
 namespace io {
+namespace adc {
 
 namespace {
 
@@ -18,7 +19,7 @@ const char* log_tag = "oneshot_adc";
 
 } // namespace
 
-OneshotAdc::OneshotAdc(adc_channel_t channel,
+OneshotAdc::OneshotAdc(Channel channel,
                        adc_oneshot_unit_handle_t unit_handle,
                        adc_cali_handle_t calibration_handle)
     : channel_(channel)
@@ -54,5 +55,6 @@ IAdc::Result OneshotAdc::convert(int raw) {
     return { status::StatusCode::OK, voltage };
 }
 
+} // namespace adc
 } // namespace io
 } // namespace ocs

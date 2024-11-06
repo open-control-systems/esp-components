@@ -9,7 +9,7 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_io/igpio.h"
+#include "ocs_io/gpio/igpio.h"
 #include "ocs_status/code.h"
 #include "ocs_system/idelayer.h"
 
@@ -54,7 +54,7 @@ public:
     //! @params
     //!  - @p delayer to perform required delays between bus operations.
     //!  - @p gpio to read/write data to the bus.
-    Bus(system::IDelayer& delayer, io::IGpio& gpio, Params params);
+    Bus(system::IDelayer& delayer, io::gpio::IGpio& gpio, Params params);
 
     //! Reset the bus.
     status::StatusCode reset();
@@ -96,7 +96,7 @@ private:
     core::Time read_remain_time_slot_ { 0 };
 
     system::IDelayer& delayer_;
-    io::IGpio& gpio_;
+    io::gpio::IGpio& gpio_;
 };
 
 } // namespace onewire

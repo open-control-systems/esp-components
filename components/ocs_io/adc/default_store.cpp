@@ -8,27 +8,23 @@
 
 #include <cstring>
 
-#include "soc/soc_caps.h"
+#include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/log.h"
-#include "ocs_io/adc_store.h"
+#include "ocs_io/adc/default_store.h"
 
 namespace ocs {
 namespace io {
+namespace adc {
 
 namespace {
 
-const char* log_tag = "adc_store";
+const char* log_tag = "default_adc_store";
 
 } // namespace
 
-AdcStore::AdcStore(AdcStore::Params params)
-    : params_(params)
-    , max_channel_count_(SOC_ADC_CHANNEL_NUM(params.unit)) {
-    // Ensure memory won't be reallocated, otherwise pointers, returned by
-    // add() function will point to the invalid memory region.
-    adcs_.reserve(max_channel_count_);
-
+DefaultStore::DefaultStore(DefaultStore::Params params)
+    : params_(params) {
     // Unit configuration.
     memset(&unit_config_, 0, sizeof(unit_config_));
     unit_config_.unit_id = params.unit;
@@ -48,12 +44,12 @@ AdcStore::AdcStore(AdcStore::Params params)
         adc_cali_create_scheme_line_fitting(&calibration_config_, &calibration_handle_));
 }
 
-AdcStore::~AdcStore() {
+DefaultStore::~DefaultStore() {
     ESP_ERROR_CHECK(adc_oneshot_del_unit(unit_handle_));
     ESP_ERROR_CHECK(adc_cali_delete_scheme_line_fitting(calibration_handle_));
 }
 
-IAdc* AdcStore::add(adc_channel_t channel) {
+IStore::IAdcPtr DefaultStore::add(Channel channel) {
     for (const auto& adc : adcs_) {
         if (adc.first == channel) {
             ocs_loge(log_tag, "channel %u already configured", channel);
@@ -69,11 +65,15 @@ IAdc* AdcStore::add(adc_channel_t channel) {
         return nullptr;
     }
 
-    adcs_.emplace_back(std::pair<adc_channel_t, OneshotAdc>(
-        channel, OneshotAdc(channel, unit_handle_, calibration_handle_)));
+    IStore::IAdcPtr adc(new (std::nothrow)
+                            OneshotAdc(channel, unit_handle_, calibration_handle_));
+    configASSERT(adc);
 
-    return &adcs_.back().second;
+    adcs_.emplace_back(std::pair<Channel, IStore::IAdcPtr>(channel, adc));
+
+    return adc;
 }
 
+} // namespace adc
 } // namespace io
 } // namespace ocs

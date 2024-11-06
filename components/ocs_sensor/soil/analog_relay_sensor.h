@@ -13,10 +13,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#include "driver/gpio.h"
-
 #include "ocs_core/noncopyable.h"
-#include "ocs_io/igpio.h"
+#include "ocs_io/gpio/igpio.h"
+#include "ocs_io/gpio/types.h"
 #include "ocs_scheduler/itask.h"
 
 namespace ocs {
@@ -33,7 +32,7 @@ public:
     //!  - @p gpio - relay GPIO.
     //!  - @p turn_on_delay_interval - how long to wait after the relay is activated.
     AnalogRelaySensor(scheduler::ITask& task,
-                      gpio_num_t gpio,
+                      io::gpio::Gpio gpio,
                       TickType_t turn_on_delay_interval);
 
     //! Energize the relay, run the underlying task, de-energized the relay.
@@ -42,10 +41,10 @@ public:
 private:
     scheduler::ITask& task_;
 
-    std::unique_ptr<io::IGpio> default_gpio_;
-    std::unique_ptr<io::IGpio> delay_gpio_;
+    std::unique_ptr<io::gpio::IGpio> default_gpio_;
+    std::unique_ptr<io::gpio::IGpio> delay_gpio_;
 
-    io::IGpio* gpio_ { nullptr };
+    io::gpio::IGpio* gpio_ { nullptr };
 };
 
 } // namespace soil

@@ -10,13 +10,13 @@
 
 #include <string>
 
-#include "driver/gpio.h"
-
 #include "ocs_core/noncopyable.h"
-#include "ocs_io/igpio.h"
+#include "ocs_io/gpio/igpio.h"
+#include "ocs_io/gpio/types.h"
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
 class BasicGpio : public IGpio, public core::NonCopyable<BasicGpio> {
 public:
@@ -26,7 +26,7 @@ public:
     //!  - @p id to distinguish one GPIO from another.
     //!  - @p gpio - actual GPIO to operate with.
     //!  - @p enable_value - which value should be used to activate the GPIO.
-    BasicGpio(const char* id, gpio_num_t gpio, bool enable_value);
+    BasicGpio(const char* id, Gpio gpio, bool enable_value);
 
     //! Destroy.
     virtual ~BasicGpio() = default;
@@ -48,9 +48,10 @@ public:
 
 private:
     const std::string id_;
-    const gpio_num_t gpio_ { GPIO_NUM_NC };
+    const Gpio gpio_ { GPIO_NUM_NC };
     const bool enable_value_ { false };
 };
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

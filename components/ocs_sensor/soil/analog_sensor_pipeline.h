@@ -14,7 +14,7 @@
 #include "ocs_control/fsm_block_pipeline.h"
 #include "ocs_core/iclock.h"
 #include "ocs_core/noncopyable.h"
-#include "ocs_io/adc_store.h"
+#include "ocs_io/adc/istore.h"
 #include "ocs_scheduler/itask.h"
 #include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/soil/analog_sensor.h"
@@ -29,14 +29,14 @@ class AnalogSensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         AnalogSensor::Params sensor;
-        adc_channel_t adc_channel { ADC_CHANNEL_0 };
+        io::adc::Channel adc_channel { static_cast<io::adc::Channel>(0) };
         control::FsmBlockPipeline::Params fsm_block;
         core::Time read_interval { 0 };
     };
 
     //! Initialize.
     AnalogSensorPipeline(core::IClock& clock,
-                         io::AdcStore& adc_store,
+                         io::adc::IStore& adc_store,
                          storage::StorageBuilder& storage_builder,
                          system::FanoutRebootHandler& reboot_handler,
                          scheduler::ITaskScheduler& task_scheduler,
@@ -49,7 +49,7 @@ public:
 private:
     const std::string task_id_;
 
-    io::IAdc* adc_ { nullptr };
+    io::adc::IStore::IAdcPtr adc_;
     std::unique_ptr<control::FsmBlockPipeline> fsm_block_pipeline_;
     std::unique_ptr<AnalogSensor> sensor_;
 };

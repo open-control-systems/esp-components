@@ -9,10 +9,11 @@
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/log.h"
-#include "ocs_io/basic_gpio.h"
+#include "ocs_io/gpio/basic_gpio.h"
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
 namespace {
 
@@ -20,7 +21,7 @@ const char* log_tag = "basic-gpio";
 
 } // namespace
 
-BasicGpio::BasicGpio(const char* id, gpio_num_t gpio, bool enable_value)
+BasicGpio::BasicGpio(const char* id, Gpio gpio, bool enable_value)
     : id_(id)
     , gpio_(gpio)
     , enable_value_(enable_value) {
@@ -93,5 +94,6 @@ status::StatusCode BasicGpio::set_direction(IGpio::Direction direction) {
     return status::StatusCode::OK;
 }
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

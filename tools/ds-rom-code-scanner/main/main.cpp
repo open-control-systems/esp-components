@@ -16,7 +16,7 @@
 #include "ocs_fmt/json/cjson_builder.h"
 #include "ocs_fmt/json/cjson_object_formatter.h"
 #include "ocs_fmt/json/dynamic_formatter.h"
-#include "ocs_io/default_gpio.h"
+#include "ocs_io/gpio/default_gpio.h"
 #include "ocs_onewire/bus.h"
 #include "ocs_onewire/rom_code.h"
 #include "ocs_onewire/rom_code_scanner.h"
@@ -31,7 +31,7 @@ namespace {
 const char* log_tag = "ds_rom_code_scanner";
 
 struct ScanParams {
-    gpio_num_t gpio { GPIO_NUM_NC };
+    io::gpio::Gpio gpio { GPIO_NUM_NC };
 };
 
 void format_bus_params(fmt::json::CjsonObjectFormatter& formatter,
@@ -92,7 +92,7 @@ void scan_rom_codes(ScanParams scan_params, onewire::Bus::Params bus_params) {
     fmt::json::CjsonObjectFormatter formatter(json.get());
     format_bus_params(formatter, bus_params);
 
-    io::DefaultGpio gpio("test_gpio_onewire_bus", scan_params.gpio);
+    io::gpio::DefaultGpio gpio("test_gpio_onewire_bus", scan_params.gpio);
     system::DefaultDelayer delayer;
 
     onewire::Bus bus(delayer, gpio, bus_params);
@@ -127,7 +127,7 @@ void scan_rom_codes(ScanParams scan_params, onewire::Bus::Params bus_params) {
 extern "C" void app_main(void) {
     scan_rom_codes(
         ScanParams {
-            .gpio = static_cast<gpio_num_t>(CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_GPIO),
+            .gpio = static_cast<io::gpio::Gpio>(CONFIG_OCS_TOOLS_ROM_CODE_SCANNER_GPIO),
         },
         onewire::Bus::Params {
             .reset_pulse_interval = core::Duration::microsecond

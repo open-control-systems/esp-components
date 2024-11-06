@@ -7,24 +7,24 @@
  */
 
 #include "ocs_sensor/soil/analog_relay_sensor.h"
-#include "ocs_io/default_gpio.h"
-#include "ocs_io/delay_gpio.h"
-#include "ocs_io/gpio_guard.h"
+#include "ocs_io/gpio/default_gpio.h"
+#include "ocs_io/gpio/delay_gpio.h"
+#include "ocs_io/gpio/gpio_guard.h"
 
 namespace ocs {
 namespace sensor {
 namespace soil {
 
 AnalogRelaySensor::AnalogRelaySensor(scheduler::ITask& task,
-                                     gpio_num_t gpio,
+                                     io::gpio::Gpio gpio,
                                      TickType_t turn_on_delay_interval)
     : task_(task) {
-    default_gpio_.reset(new (std::nothrow) io::DefaultGpio("relay_sensor", gpio));
+    default_gpio_.reset(new (std::nothrow) io::gpio::DefaultGpio("relay_sensor", gpio));
     configASSERT(default_gpio_);
 
-    delay_gpio_.reset(new (std::nothrow) io::DelayGpio(
+    delay_gpio_.reset(new (std::nothrow) io::gpio::DelayGpio(
         *default_gpio_,
-        io::DelayGpio::Params {
+        io::gpio::DelayGpio::Params {
             .flip_delay_interval = pdMS_TO_TICKS(0),
             .turn_on_delay_interval = turn_on_delay_interval,
             .turn_off_delay_interval = pdMS_TO_TICKS(0),
@@ -36,7 +36,7 @@ AnalogRelaySensor::AnalogRelaySensor(scheduler::ITask& task,
 }
 
 status::StatusCode AnalogRelaySensor::run() {
-    io::GpioGuard gpio(*gpio_);
+    io::gpio::GpioGuard gpio(*gpio_);
 
     return task_.run();
 }

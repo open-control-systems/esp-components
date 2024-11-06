@@ -6,14 +6,17 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_io/default_gpio.h"
+#pragma once
+
+#include "driver/gpio.h"
 
 namespace ocs {
 namespace io {
+namespace gpio {
 
-DefaultGpio::DefaultGpio(const char* id, gpio_num_t gpio)
-    : BasicGpio(id, gpio, true) {
-}
+//! GPIO number.
+using Gpio = gpio_num_t;
 
+} // namespace gpio
 } // namespace io
 } // namespace ocs

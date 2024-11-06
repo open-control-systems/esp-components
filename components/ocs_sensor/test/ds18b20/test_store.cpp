@@ -6,10 +6,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "driver/gpio.h"
-
 #include "unity.h"
 
+#include "ocs_io/gpio/types.h"
 #include "ocs_sensor/ds18b20/sensor.h"
 #include "ocs_sensor/ds18b20/store.h"
 #include "ocs_test/test_storage.h"
@@ -25,7 +24,7 @@ using TestStorage = test::TestStorage<Sensor::Configuration>;
 } // namespace
 
 TEST_CASE("DS18B20 store: schedule: empty store", "[ocs_sensor], [ds18b20_store]") {
-    const gpio_num_t gpio = GPIO_NUM_26;
+    const io::gpio::Gpio gpio = GPIO_NUM_26;
 
     Store store(16);
 
@@ -38,8 +37,8 @@ TEST_CASE("DS18B20 store: schedule: empty store", "[ocs_sensor], [ds18b20_store]
 TEST_CASE("DS18B20 store: schedule: invalid GPIO", "[ocs_sensor], [ds18b20_store]") {
     const char* sensor_id = "test_sensor";
     const char* gpio_id = "test_gpio_id";
-    const gpio_num_t gpio = GPIO_NUM_26;
-    const gpio_num_t invalid_gpio = GPIO_NUM_27;
+    const io::gpio::Gpio gpio = GPIO_NUM_26;
+    const io::gpio::Gpio invalid_gpio = GPIO_NUM_27;
 
     TEST_ASSERT_NOT_EQUAL(gpio, invalid_gpio);
 
@@ -58,7 +57,7 @@ TEST_CASE("DS18B20 store: schedule: invalid GPIO", "[ocs_sensor], [ds18b20_store
 
 TEST_CASE("DS18B20 store: add sensor", "[ocs_sensor], [ds18b20_store]") {
     const char* sensor_id = "test_sensor";
-    const gpio_num_t gpio = GPIO_NUM_26;
+    const io::gpio::Gpio gpio = GPIO_NUM_26;
     const char* gpio_id = "test_gpio_id";
 
     Store store(16);
@@ -82,7 +81,7 @@ TEST_CASE("DS18B20 store: add sensor", "[ocs_sensor], [ds18b20_store]") {
 TEST_CASE("DS18B20 store: read sensor configuration: non-configured",
           "[ocs_sensor], [ds18b20_store]") {
     const char* sensor_id = "test_sensor";
-    const gpio_num_t gpio = GPIO_NUM_26;
+    const io::gpio::Gpio gpio = GPIO_NUM_26;
     const char* gpio_id = "test_gpio_id";
 
     Store store(16);

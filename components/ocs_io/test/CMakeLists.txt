@@ -1,7 +1,8 @@
 idf_component_register(
     SRCS
-    "test_gpio_guard.cpp"
-    "test_adc_store.cpp"
+    "gpio/test_gpio_guard.cpp"
+
+    "adc/test_default_store.cpp"
 
     REQUIRES
     "unity"
