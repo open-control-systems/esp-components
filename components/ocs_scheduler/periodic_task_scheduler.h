@@ -64,6 +64,9 @@ public:
     //! Start tasks scheduling.
     status::StatusCode start() override;
 
+    //! Stop tasks scheduling.
+    status::StatusCode stop() override;
+
     //! Run all periodic tasks.
     status::StatusCode run() override;
 
