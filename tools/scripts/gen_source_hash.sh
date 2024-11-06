@@ -4,6 +4,6 @@ set -xe
 
 find $PROJECT_PATH \
     -type f -name "*.cpp" -o -name "*.h" \
-    | xargs sha512sum \
-    | sha512sum \
+    | xargs sha256sum \
+    | sha256sum \
     | awk '{print $1}'
