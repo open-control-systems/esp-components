@@ -10,7 +10,6 @@
 
 #include "ocs_core/log.h"
 #include "ocs_core/version.h"
-#include "ocs_core/version_to_str.h"
 #include "ocs_pipeline/jsonfmt/registration_formatter.h"
 
 namespace ocs {
@@ -27,17 +26,19 @@ RegistrationFormatter::RegistrationFormatter(RegistrationFormatter::Params param
     fanout_formatter_.reset(new (std::nothrow) fmt::json::FanoutFormatter());
     configASSERT(fanout_formatter_);
 
-    core::Version version;
-    if (!version.parse(params.fw_version.c_str())) {
-        ocs_loge(log_tag, "failed to parse FW version: %s", params.fw_version.c_str());
-    }
-
-    core::version_to_str version_str(version);
-
     version_formatter_.reset(new (std::nothrow) VersionFormatter());
     configASSERT(version_formatter_);
 
-    version_formatter_->add(params.fw_name.c_str(), version_str.c_str());
+    core::Version version;
+    if (!version.parse(params.fw_version.c_str())) {
+        ocs_loge(log_tag, "failed to parse FW version: %s", params.fw_version.c_str());
+
+        params.fw_version = "none";
+    }
+
+    version_formatter_->add("fw_version", params.fw_version.c_str());
+    version_formatter_->add("fw_name", params.fw_name.c_str());
+
     fanout_formatter_->add(*version_formatter_);
 }
 
