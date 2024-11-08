@@ -21,6 +21,7 @@ runs:
   using: "composite"
   steps:
     - name: Build ESP-IDF Project
+      shell: bash
       run: |
         echo "Using IDF Path: ${{ inputs.IDF_PATH }}"
         echo "Using Project Path: ${{ inputs.PROJECT_PATH }}"
@@ -42,4 +43,3 @@ runs:
         IDF_CCACHE_ENABLE=1 idf.py build
 
         ccache -xvps
-      shell: bash
