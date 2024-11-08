@@ -1,0 +1,38 @@
+name: "Format Build Version"
+description: "Format a build version."
+
+# Ref: https://docs.github.com/en/actions/sharing-automations/creating-actions/creating-a-composite-action#creating-an-action-metadata-file
+outputs:
+  build_version:
+    description: "The formatted build version."
+    value: ${{ steps.build_version_formatter.outputs.build_version }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Format build version"
+      id: build_version_formatter
+      shell: bash
+      run: |
+        build_prefix=""
+
+        # Check if GITHUB_REF is a tag and follows the correct format.
+        if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+          ci_commit_tag="${GITHUB_REF#refs/tags/}"
+          if [[ ! "$ci_commit_tag" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-.+)?$ ]]; then
+            echo "Tag format mismatch. Exiting..."
+            exit 1
+          fi
+          build_prefix="$ci_commit_tag"
+        else
+          # Use short SHA if not a tag
+          build_prefix="0.0.0-${GITHUB_SHA::8}"
+        fi
+
+        # Set build number from GitHub Actions' run number
+        build_number="$GITHUB_RUN_ID"
+
+        # Format the full version
+        build_version="${build_prefix}.${build_number}"
+
+        echo "build_version=$build_version" >> $GITHUB_OUTPUT
