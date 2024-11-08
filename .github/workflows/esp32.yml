@@ -51,9 +51,15 @@ jobs:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}
           OCS_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
 
+      - name: Format firmware build version
+        id: version_formatter
+        uses: ./project/.github/actions/format_build_version
+
       - name: Prepare Configuration for Unit Tests Build
         run: |
           echo "CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED=y" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
+          echo "CONFIG_OCS_CORE_FW_VERSION=\"${{ steps.version_formatter.outputs.build_version }}\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
+          echo "CONFIG_OCS_CORE_FW_NAME=\"unittest\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
         shell: bash
 
       - name: Build Unit Tests
