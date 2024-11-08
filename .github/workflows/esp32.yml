@@ -56,11 +56,11 @@ jobs:
         uses: ./project/.github/actions/format_build_version
 
       - name: Prepare Configuration for Unit Tests Build
+        shell: bash
         run: |
           echo "CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED=y" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
           echo "CONFIG_OCS_CORE_FW_VERSION=\"${{ steps.version_formatter.outputs.build_version }}\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
           echo "CONFIG_OCS_CORE_FW_NAME=\"unittest\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
-        shell: bash
 
       - name: Build Unit Tests
         uses: ./project/.github/actions/esp32_build

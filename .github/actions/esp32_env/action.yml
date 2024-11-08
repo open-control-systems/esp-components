@@ -21,6 +21,7 @@ runs:
         key: esp-idf-${{ runner.os }}-${{ inputs.IDF_VERSION }}
 
     - name: Setup ESP-IDF
+      shell: bash
       run: |
         if [ ! -d "${{ inputs.IDF_PATH }}" ]; then
             set -xe
@@ -30,4 +31,3 @@ runs:
 
         cd ${{ inputs.IDF_PATH }}
         ./install.sh
-      shell: bash

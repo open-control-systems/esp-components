@@ -33,6 +33,7 @@ runs:
   using: "composite"
   steps:
     - name: Setup Configuration Paths
+      shell: bash
       run: |
         echo "Using Configuration Path: ${{ inputs.CONFIGURATION_PATH }}"
         echo "Using Log Path: ${{ inputs.LOG_PATH }}"
@@ -41,18 +42,18 @@ runs:
         mkdir -p "${{ inputs.CONFIGURATION_PATH }}"
         mkdir -p "${{ inputs.LOG_PATH }}"
         mkdir -p "${{ inputs.CACHE_PATH }}"
-      shell: bash
 
     - name: Install Prerequisites
+      shell: bash
       run: |
         set -xe
         sudo apt-get update
         sudo apt-get install -y \
             git wget flex bison gperf python3 python3-pip python3-venv \
             cmake ninja-build ccache libffi-dev libssl-dev dfu-util libusb-1.0-0
-      shell: bash
 
     - name: Setup ccache Configuration
+      shell: bash
       run: |
         ccache_path="${{ inputs.CACHE_PATH }}/ccache"
         ccache_log_file="${{ inputs.LOG_PATH }}/ccache"
@@ -69,7 +70,6 @@ runs:
         echo "export CCACHE_DIR=$GITHUB_WORKSPACE/$ccache_path" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
 
         echo "export CCACHE_LOGFILE=$GITHUB_WORKSPACE/$ccache_log_file" >> "${{ inputs.CONFIGURATION_PATH_CCACHE }}"
-      shell: bash
 
     - name: Restore ccache Hash File
       uses: actions/cache/restore@v4
@@ -78,6 +78,9 @@ runs:
         key: ccache-last-hash-${{ runner.os }}
 
     - name: Update ccache Hash File
+      env:
+          PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
+      shell: bash
       run: |
         # Compute new hash
         new_hash=$("${{ inputs.OCS_COMPONENTS_PATH }}/tools/scripts/gen_source_hash.sh")
@@ -106,9 +109,6 @@ runs:
 
         echo "ccache_cache_key=ccache-${{ runner.os }}-$new_hash" >> $GITHUB_ENV
         echo "ccache_cache_restore_key=ccache-${{ runner.os }}-$prev_hash" >> $GITHUB_ENV
-      shell: bash
-      env:
-          PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
 
     - name: Remove ccache Hash File
       if: env.ccache_hash_file_changed == 'true'
