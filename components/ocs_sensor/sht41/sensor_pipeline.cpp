@@ -24,7 +24,7 @@ SensorPipeline::SensorPipeline(io::i2c::IStore& store,
     sensor_.reset(new (std::nothrow)
                       Sensor(*transceiver_,
                              Sensor::Params {
-                                 .send_wait_interval = pdMS_TO_TICKS(10),
+                                 .send_wait_interval = pdMS_TO_TICKS(20),
                                  .bus_wait_interval = core::Duration::second * 5,
                                  .measure_command = params.measure_command,
                              }));
