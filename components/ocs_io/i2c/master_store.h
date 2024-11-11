@@ -20,16 +20,8 @@ namespace i2c {
 
 class MasterStore : public IStore, public core::NonCopyable<> {
 public:
-    struct Params {
-        //! Data line.
-        gpio::Gpio sda { static_cast<gpio::Gpio>(-1) };
-
-        //! Clock line.
-        gpio::Gpio scl { static_cast<gpio::Gpio>(-1) };
-    };
-
     //! Initialize I2C master bus.
-    explicit MasterStore(Params params);
+    explicit MasterStore(IStore::Params params);
 
     //! De-initialize I2C master bus.
     ~MasterStore();

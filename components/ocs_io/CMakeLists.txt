@@ -13,6 +13,7 @@ idf_component_register(
 
     "i2c/master_store.cpp"
     "i2c/master_transceiver.cpp"
+    "i2c/master_store_pipeline.cpp"
 
     REQUIRES
     "driver"

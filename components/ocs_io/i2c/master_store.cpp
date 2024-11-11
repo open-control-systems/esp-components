@@ -27,7 +27,7 @@ const char* log_tag = "i2c_master_store";
 
 } // namespace
 
-MasterStore::MasterStore(MasterStore::Params params) {
+MasterStore::MasterStore(IStore::Params params) {
     i2c_master_bus_config_t config;
     memset(&config, 0, sizeof(config));
 
