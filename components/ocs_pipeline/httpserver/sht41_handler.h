@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <functional>
+
 #include "ocs_core/noncopyable.h"
 #include "ocs_http/server.h"
 #include "ocs_net/mdns_provider.h"
@@ -27,7 +29,9 @@ public:
                  sensor::sht41::Sensor& sensor);
 
 private:
-    status::StatusCode handle_reset_(httpd_req_t* req);
+    using HandleOperationFunc = std::function<status::StatusCode(sensor::sht41::Sensor&)>;
+
+    status::StatusCode handle_operation_(httpd_req_t* req, HandleOperationFunc func);
 
     static const TickType_t wait_op_interval_ { pdMS_TO_TICKS(5 * 1000) };
 

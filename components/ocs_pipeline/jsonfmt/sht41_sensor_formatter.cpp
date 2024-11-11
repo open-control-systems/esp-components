@@ -32,12 +32,20 @@ status::StatusCode SHT41SensorFormatter::format(cJSON* json) {
         if (!formatter.add_number_cs("sensor_sht41_temperature", data.temperature)) {
             return status::StatusCode::NoMem;
         }
+
+        if (!formatter.add_number_cs("sensor_sht41_heating_count", data.heating_count)) {
+            return status::StatusCode::NoMem;
+        }
     } else {
         if (!formatter.add_number_cs("humidity", data.humidity)) {
             return status::StatusCode::NoMem;
         }
 
         if (!formatter.add_number_cs("temperature", data.temperature)) {
+            return status::StatusCode::NoMem;
+        }
+
+        if (!formatter.add_number_cs("heating_count", data.heating_count)) {
             return status::StatusCode::NoMem;
         }
     }
