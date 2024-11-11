@@ -32,10 +32,10 @@ public:
         double temperature { 0.0 };
     };
 
-    enum class MeasureMode : uint8_t {
-        HighPrecision = 0xFD,
-        MediumPrecision = 0xF6,
-        LowPrecision = 0xE0,
+    enum class Command {
+        MeasureHighPrecision = 0xFD,
+        MeasureMediumPrecision = 0xF6,
+        MeasureLowPrecision = 0xE0,
     };
 
     struct Params {
@@ -46,7 +46,7 @@ public:
         core::Time bus_wait_interval { core::Duration::second * 5 };
 
         //! How precise data should be measured.
-        MeasureMode measure_mode { MeasureMode::HighPrecision };
+        Command measure_command { Command::MeasureHighPrecision };
     };
 
     //! Initialize.
@@ -62,6 +62,8 @@ public:
     Data get_data() const;
 
 private:
+    status::StatusCode send_command_(Command command);
+
     const Params params_;
 
     io::i2c::ITransceiver& transceiver_;

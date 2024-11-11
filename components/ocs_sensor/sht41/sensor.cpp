@@ -38,11 +38,7 @@ Sensor::Sensor(io::i2c::ITransceiver& transceiver, Sensor::Params params)
 }
 
 status::StatusCode Sensor::run() {
-    OCS_STATUS_RETURN_ON_ERROR(
-        transceiver_.send(reinterpret_cast<const uint8_t*>(&params_.measure_mode),
-                          sizeof(params_.measure_mode), params_.bus_wait_interval));
-
-    vTaskDelay(params_.send_wait_interval);
+    OCS_STATUS_RETURN_ON_ERROR(send_command_(params_.measure_command));
 
     uint8_t buf[6];
     memset(buf, 0, sizeof(buf));
@@ -74,6 +70,16 @@ status::StatusCode Sensor::run() {
 
 Sensor::Data Sensor::get_data() const {
     return data_.get();
+}
+
+status::StatusCode Sensor::send_command_(Sensor::Command command) {
+    OCS_STATUS_RETURN_ON_ERROR(
+        transceiver_.send(reinterpret_cast<const uint8_t*>(&command), sizeof(command),
+                          params_.bus_wait_interval));
+
+    vTaskDelay(params_.send_wait_interval);
+
+    return status::StatusCode::OK;
 }
 
 } // namespace sht41
