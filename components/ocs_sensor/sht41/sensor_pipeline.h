@@ -15,6 +15,7 @@
 #include "ocs_io/i2c/istore.h"
 #include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_sensor/sht41/sensor.h"
+#include "ocs_storage/storage_builder.h"
 
 namespace ocs {
 namespace sensor {
@@ -25,6 +26,7 @@ public:
     struct Params {
         core::Time read_interval { 0 };
         Sensor::Command measure_command { Sensor::Command::MeasureHighPrecision };
+        Sensor::Command heating_command { Sensor::Command::ActivateHeater_20mW_100ms };
     };
 
     //! Initialize.
@@ -32,14 +34,17 @@ public:
     //! @params
     //!  - @p store to register an I2C device.
     //!  - @p task_scheduler to register a task for periodic sensor reading.
+    //!  - @p storage_builder to register storage for the sensor.
     SensorPipeline(io::i2c::IStore& store,
                    scheduler::ITaskScheduler& task_scheduler,
+                   storage::StorageBuilder& storage_builder,
                    Params params);
 
     //! Return the underlying sensor.
     Sensor& get_sensor();
 
 private:
+    storage::StoragePtr storage_;
     io::i2c::IStore::ITransceiverPtr transceiver_;
     std::unique_ptr<Sensor> sensor_;
 };
