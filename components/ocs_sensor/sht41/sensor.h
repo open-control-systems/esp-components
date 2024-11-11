@@ -36,6 +36,7 @@ public:
         MeasureHighPrecision = 0xFD,
         MeasureMediumPrecision = 0xF6,
         MeasureLowPrecision = 0xE0,
+        SoftReset = 0x94,
     };
 
     struct Params {
@@ -62,6 +63,7 @@ public:
     Data get_data() const;
 
 private:
+    status::StatusCode reset_();
     status::StatusCode send_command_(Command command);
 
     const Params params_;

@@ -14,7 +14,9 @@
 #include "ocs_algo/bit_ops.h"
 #include "ocs_algo/crc_ops.h"
 #include "ocs_algo/math_ops.h"
+#include "ocs_core/log.h"
 #include "ocs_sensor/sht41/sensor.h"
+#include "ocs_status/code_to_str.h"
 #include "ocs_status/macros.h"
 
 namespace ocs {
@@ -28,6 +30,8 @@ uint8_t calculate_crc(uint8_t hi, uint8_t lo) {
     return algo::CrcOps::crc8(buf, sizeof(buf), 0xFF, 0x31, algo::CrcOps::BitOrder::MSB);
 }
 
+const char* log_tag = "sht41_sensor";
+
 } // namespace
 
 Sensor::Sensor(io::i2c::ITransceiver& transceiver, Sensor::Params params)
@@ -35,6 +39,10 @@ Sensor::Sensor(io::i2c::ITransceiver& transceiver, Sensor::Params params)
     , transceiver_(transceiver) {
     configASSERT(params_.send_wait_interval);
     configASSERT(params_.bus_wait_interval);
+
+    if (const auto code = reset_(); code != status::StatusCode::OK) {
+        ocs_loge(log_tag, "failed to reset sensor: code=%s", status::code_to_str(code));
+    }
 }
 
 status::StatusCode Sensor::run() {
@@ -72,6 +80,11 @@ Sensor::Data Sensor::get_data() const {
     return data_.get();
 }
 
+status::StatusCode Sensor::reset_() {
+    OCS_STATUS_RETURN_ON_ERROR(send_command_(Command::SoftReset));
+
+    return status::StatusCode::OK;
+}
 status::StatusCode Sensor::send_command_(Sensor::Command command) {
     OCS_STATUS_RETURN_ON_ERROR(
         transceiver_.send(reinterpret_cast<const uint8_t*>(&command), sizeof(command),
