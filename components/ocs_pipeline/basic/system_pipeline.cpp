@@ -89,6 +89,10 @@ storage::StorageBuilder& SystemPipeline::get_storage_builder() {
     return *storage_builder_;
 }
 
+scheduler::AsyncFuncScheduler& SystemPipeline::get_func_scheduler() {
+    return *func_scheduler_;
+}
+
 scheduler::ITaskScheduler& SystemPipeline::get_task_scheduler() {
     return *task_scheduler_;
 }
