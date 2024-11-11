@@ -1,0 +1,31 @@
+menu "Senserion SHT41 Sensor Verification"
+    config OCS_TOOLS_SHT41_VERIFIER_TOTAL_ATTEMPTS
+        int "Number of attempts to read sensor data"
+        default 15
+        help
+            Number of times to read the data from the sensor.
+
+    config OCS_TOOLS_SHT41_VERIFIER_DELAY_INTERVAL
+        int "Delay after each sensor reading, in seconds"
+        default 1
+        help
+            Number of seconds to wait after each sensor reading.
+
+    config OCS_TOOL_SHT41_VERIFIER_I2C_MASTER_SDA_GPIO
+        int "I2C master SDA GPIO"
+        default 21
+        help
+            I2C master SDA GPIO.
+
+    config OCS_TOOL_SHT41_VERIFIER_I2C_MASTER_SCL_GPIO
+        int "I2C master SCL GPIO"
+        default 22
+        help
+            I2C master SCL GPIO.
+
+    config OCS_TOOLS_SHT41_VERIFIER_I2C_SEND_WAIT_INTERVAL
+        int "How long to wait before receiving the operation result from the I2C device"
+        default 10
+        help
+            Interval to wait before receiving the operation result from the I2C device, in ms.
+endmenu
