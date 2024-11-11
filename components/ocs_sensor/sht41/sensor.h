@@ -36,6 +36,7 @@ public:
         MeasureHighPrecision = 0xFD,
         MeasureMediumPrecision = 0xF6,
         MeasureLowPrecision = 0xE0,
+        ReadSerialNumber = 0x89,
         SoftReset = 0x94,
     };
 
@@ -64,6 +65,7 @@ public:
 
 private:
     status::StatusCode reset_();
+    status::StatusCode read_serial_number_();
     status::StatusCode send_command_(Command command);
 
     const Params params_;
