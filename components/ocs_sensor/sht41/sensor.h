@@ -63,6 +63,12 @@ public:
     //! Return the latest sensor data.
     Data get_data() const;
 
+    //! Reset the sensor.
+    //!
+    //! @remarks
+    //!  Should be called in the same context as run() call.
+    status::StatusCode reset();
+
 private:
     status::StatusCode reset_();
     status::StatusCode read_serial_number_();

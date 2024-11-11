@@ -46,6 +46,7 @@ public:
 
     core::IClock& get_clock();
     storage::StorageBuilder& get_storage_builder();
+    scheduler::AsyncFuncScheduler& get_func_scheduler();
     scheduler::ITaskScheduler& get_task_scheduler();
     scheduler::ITask& get_reboot_task();
     system::FanoutRebootHandler& get_reboot_handler();

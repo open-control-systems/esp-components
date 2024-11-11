@@ -40,9 +40,7 @@ Sensor::Sensor(io::i2c::ITransceiver& transceiver, Sensor::Params params)
     configASSERT(params_.send_wait_interval);
     configASSERT(params_.bus_wait_interval);
 
-    if (const auto code = reset_(); code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to reset sensor: code=%s", status::code_to_str(code));
-    }
+    reset();
 
     if (const auto code = read_serial_number_(); code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to read sensor serial number: code=%s",
@@ -90,6 +88,17 @@ status::StatusCode Sensor::run() {
 
 Sensor::Data Sensor::get_data() const {
     return data_.get();
+}
+
+status::StatusCode Sensor::reset() {
+    const auto code = reset_();
+    if (code != status::StatusCode::OK) {
+        ocs_loge(log_tag, "failed to reset sensor: %s", status::code_to_str(code));
+    } else {
+        ocs_logi(log_tag, "reset completed");
+    }
+
+    return code;
 }
 
 status::StatusCode Sensor::reset_() {

@@ -3,6 +3,7 @@ idf_component_register(
     "httpserver/http_pipeline.cpp"
     "httpserver/server_pipeline.cpp"
     "httpserver/ds18b20_handler.cpp"
+    "httpserver/sht41_handler.cpp"
     "httpserver/data_handler.cpp"
     "httpserver/system_handler.cpp"
     "httpserver/system_state_handler.cpp"
