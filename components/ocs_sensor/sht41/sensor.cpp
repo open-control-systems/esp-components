@@ -62,18 +62,25 @@ status::StatusCode Sensor::run() {
 
     const uint16_t temperature_ticks = algo::BitOps::pack_u8(buf[0], buf[1]);
     const uint8_t temperature_checksum = buf[2];
-    if (temperature_checksum == calculate_crc(buf[0], buf[1])) {
+    const uint8_t temperature_checksum_calculated = calculate_crc(buf[0], buf[1]);
+    if (temperature_checksum == temperature_checksum_calculated) {
         data.temperature = -45 + (175.0 * temperature_ticks / UINT16_MAX);
         data.temperature = algo::MathOps::round_floor(data.temperature, 2);
+    } else {
+        ocs_logw(log_tag, "failed to read temperature: checksum mismatch: want=%u got=%u",
+                 temperature_checksum, temperature_checksum_calculated);
     }
 
     const uint16_t humidity_ticks = algo::BitOps::pack_u8(buf[3], buf[4]);
     const uint8_t humidity_checksum = buf[5];
-
-    if (humidity_checksum == calculate_crc(buf[3], buf[4])) {
+    const uint8_t humidity_checksum_calculcated = calculate_crc(buf[3], buf[4]);
+    if (humidity_checksum == humidity_checksum_calculcated) {
         data.humidity = -6 + (125.0 * humidity_ticks / UINT16_MAX);
         data.humidity = algo::MathOps::round_floor(data.humidity, 2);
         data.humidity = std::clamp(data.humidity, 0.0, 100.0);
+    } else {
+        ocs_logw(log_tag, "failed to read humidity: checksum mismatch: want=%u got=%u",
+                 humidity_checksum, humidity_checksum_calculcated);
     }
 
     data_.set(data);
