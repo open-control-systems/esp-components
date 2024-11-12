@@ -1,6 +1,6 @@
 ## Introduction
 
-`control-components` is a C++ library to speed up the development of embedded and IoT systems.
+`control-components` is a C++ library to simplify and speed up the development of embedded and IoT systems.
 
 ## Installation Instructions
 
