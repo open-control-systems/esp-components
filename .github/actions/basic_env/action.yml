@@ -1,5 +1,6 @@
 name: "Platform Independent Environment Setup"
 description: "Setup all prerequisites"
+
 inputs:
   PROJECT_PATH:
     description: "Path where the project is checked out"
@@ -29,6 +30,11 @@ inputs:
     description: "GitHub token for authentication"
     required: true
     default: "${{ github.token }}"
+  CCACHE_HASH_FILE_KEY:
+    description: "Unique cache key for ccache hash file"
+    required: true
+    default: "ccache-last-hash-${{ runner.os }}-${{ github.repository_owner }}-${{ github.event.repository.name }}"
+
 runs:
   using: "composite"
   steps:
@@ -75,7 +81,8 @@ runs:
       uses: actions/cache/restore@v4
       with:
         path: ${{ inputs.CACHE_PATH }}/ccache_last_hash
-        key: ccache-last-hash-${{ runner.os }}
+        key: ${{ inputs.CCACHE_HASH_FILE_KEY }}
+
 
     - name: Update ccache Hash File
       env:
@@ -95,14 +102,18 @@ runs:
 
         # If no previous hash or hashes differ, use new hash and update file
         if [[ "$prev_hash" != "$new_hash" ]]; then
-          echo "Updating cache key: prev_hash=$prev_hash new_hash=$new_hash"
-          echo "$new_hash" > "$hash_file"
+          if [[ "${GITHUB_REF}" == "refs/heads/main" || "${GITHUB_REF}" == "refs/heads/master" ]]; then
+            echo "Updating cache key: prev_hash=$prev_hash new_hash=$new_hash"
+            echo "$new_hash" > "$hash_file"
+
+            echo "ccache_hash_file_changed=true" >> $GITHUB_ENV
+          else
+            echo "ccache_hash_file_changed=false" >> $GITHUB_ENV
+          fi
 
           if [[ -z "$prev_hash" ]]; then
             prev_hash=$new_hash
           fi
-
-          echo "ccache_hash_file_changed=true" >> $GITHUB_ENV
         else
           echo "ccache_hash_file_changed=false" >> $GITHUB_ENV
         fi
@@ -114,7 +125,7 @@ runs:
       if: env.ccache_hash_file_changed == 'true'
       uses: open-control-systems/gh-action-cache-clear@v0.0.2
       with:
-        PATTERN: "^ccache-last-hash"
+        PATTERN: "^${{ inputs.CCACHE_HASH_FILE_KEY }}"
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
 
 
@@ -123,7 +134,7 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: ${{ inputs.CACHE_PATH }}/ccache_last_hash
-        key: ccache-last-hash-${{ runner.os }}
+        key: ${{ inputs.CCACHE_HASH_FILE_KEY }}
 
     - name: Setup ccache Cache
       uses: actions/cache@v4
