@@ -84,9 +84,11 @@ Sensor::Data Sensor::get_data() const {
 }
 
 status::StatusCode Sensor::reset() {
+    ocs_logi(log_tag, "start resetting");
+
     const auto code = reset_();
     if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to reset sensor: %s", status::code_to_str(code));
+        ocs_loge(log_tag, "reset failed: %s", status::code_to_str(code));
     } else {
         ocs_logi(log_tag, "reset completed");
     }
