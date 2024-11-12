@@ -55,14 +55,14 @@ jobs:
         id: version_formatter
         uses: ./project/.github/actions/format_build_version
 
-      - name: Prepare Configuration for Unit Tests Build
+      - name: unittests prepare configuration
         shell: bash
         run: |
           echo "CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED=y" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
           echo "CONFIG_OCS_CORE_FW_VERSION=\"${{ steps.version_formatter.outputs.build_version }}\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
-          echo "CONFIG_OCS_CORE_FW_NAME=\"unittest\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
+          echo "CONFIG_OCS_CORE_FW_NAME=\"unittests\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
 
-      - name: Build Unit Tests
+      - name: unittests build
         uses: ./project/.github/actions/esp32_build
         with:
           IDF_PATH: ${{ env.IDF_PATH }}
@@ -70,32 +70,32 @@ jobs:
           CONFIGURATION_PATH_CCACHE: ${{ env.CONFIGURATION_PATH_CCACHE }}
           CONFIGURATION_PATH_PROJECT: ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
 
-      - name: Build DS18B20 Verifier
+      - name: ds18b20-verifier build
         uses: ./project/.github/actions/esp32_build
         with:
           IDF_PATH: ${{ env.IDF_PATH }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds18b20-verifier
 
-      - name: Build DS Rom Code Scanner
+      - name: ds-rom-code-scanner build
         uses: ./project/.github/actions/esp32_build
         with:
           IDF_PATH: ${{ env.IDF_PATH }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds-rom-code-scanner
 
-      - name: Upload Unit Tests Artifacts
+      - name: unittests upload
         uses: ./project/.github/actions/esp32_upload
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tests
-          PROJECT_ID: artifacts-unittests
+          PROJECT_ID: unittests
 
-      - name: Upload DS18B20 Verifier Artifacts
+      - name: ds18b20-verifier upload
         uses: ./project/.github/actions/esp32_upload
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds18b20-verifier
-          PROJECT_ID: artifacts-ds18b20-verifier
+          PROJECT_ID: ds18b20-verifier
 
-      - name: Upload DS Rom Code Scanner Artifacts
+      - name: ds-rom-code-scanner upload
         uses: ./project/.github/actions/esp32_upload
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds-rom-code-scanner
-          PROJECT_ID: artifacts-ds-rom-code-scanner
+          PROJECT_ID: ds-rom-code-scanner
