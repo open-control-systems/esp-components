@@ -11,6 +11,7 @@
 #include "ocs_core/log.h"
 #include "ocs_io/i2c/master_store_pipeline.h"
 #include "ocs_sensor/sht41/sensor.h"
+#include "ocs_storage/storage_builder.h"
 
 using namespace ocs;
 
@@ -35,9 +36,15 @@ extern "C" void app_main(void) {
                                         0x44, io::i2c::IStore::TransferSpeed::Fast);
     configASSERT(transceiver);
 
+    std::unique_ptr<storage::StorageBuilder> storage_builder(
+        new (std::nothrow) storage::StorageBuilder());
+    configASSERT(storage_builder);
+
+    auto storage = storage_builder->make("sensor_sht41");
+
     std::unique_ptr<sensor::sht41::Sensor> sensor(
         new (std::nothrow) sensor::sht41::Sensor(
-            *transceiver,
+            *transceiver, *storage,
             sensor::sht41::Sensor::Params {
                 .send_wait_interval =
                     pdMS_TO_TICKS(CONFIG_OCS_TOOLS_SHT41_VERIFIER_I2C_SEND_WAIT_INTERVAL),

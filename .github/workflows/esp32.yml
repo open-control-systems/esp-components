@@ -82,6 +82,12 @@ jobs:
           IDF_PATH: ${{ env.IDF_PATH }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds-rom-code-scanner
 
+      - name: sht41-verifier build
+        uses: ./project/.github/actions/esp32_build
+        with:
+          IDF_PATH: ${{ env.IDF_PATH }}
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/sht41-verifier
+
       - name: unittests upload
         uses: ./project/.github/actions/esp32_upload
         with:
@@ -99,3 +105,9 @@ jobs:
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds-rom-code-scanner
           PROJECT_ID: ds-rom-code-scanner
+
+      - name: sht41-verifier upload
+        uses: ./project/.github/actions/esp32_upload
+        with:
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/sht41-verifier
+          PROJECT_ID: sht41-verifier
