@@ -25,7 +25,7 @@ class SensorPipeline : public core::NonCopyable<> {
 public:
     struct Params {
         core::Time read_interval { 0 };
-        Sensor::Command measure_command { Sensor::Command::MeasureHighPrecision };
+        Sensor::Command measure_command { Sensor::Command::MeasureLowPrecision };
         Sensor::Command heating_command { Sensor::Command::ActivateHeater_20mW_100ms };
     };
 

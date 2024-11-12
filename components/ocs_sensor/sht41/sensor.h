@@ -56,7 +56,7 @@ public:
         core::Time bus_wait_interval { core::Duration::second * 5 };
 
         //! How precise data should be measured.
-        Command measure_command { Command::MeasureHighPrecision };
+        Command measure_command { Command::MeasureLowPrecision };
 
         //! Heater activation command.
         Command heating_command { Command::ActivateHeater_20mW_100ms };
