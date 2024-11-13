@@ -6,7 +6,7 @@ inputs:
     description: "Path where the project is checked out"
     required: true
     default: "project"
-  OCS_COMPONENTS_PATH:
+  CONTROL_COMPONENTS_PATH:
     description: "Path to the OCS components library"
     required: true
     default: "project"
@@ -90,7 +90,7 @@ runs:
       shell: bash
       run: |
         # Compute new hash
-        new_hash=$("${{ inputs.OCS_COMPONENTS_PATH }}/tools/scripts/gen_source_hash.sh")
+        new_hash=$("${{ inputs.CONTROL_COMPONENTS_PATH }}/tools/scripts/gen_source_hash.sh")
 
         # Load previous hash if exists
         hash_file="${{ inputs.CACHE_PATH }}/ccache_last_hash"
