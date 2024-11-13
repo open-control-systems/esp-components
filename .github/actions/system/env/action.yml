@@ -1,0 +1,30 @@
+name: "Basic Environment Setup"
+description: "Setup basic environment"
+
+inputs:
+  CONFIGURATION_PATH:
+    description: "path for various build configurations"
+    required: true
+    default: ".env"
+  LOG_PATH:
+    description: "path for various log files"
+    required: true
+    default: ".log"
+  CACHE_PATH:
+    description: "path for various caches"
+    required: true
+    default: ".cache"
+
+runs:
+  using: "composite"
+  steps:
+    - name: system setup configuration paths
+      shell: bash
+      run: |
+        echo "Using Configuration Path: ${{ inputs.CONFIGURATION_PATH }}"
+        echo "Using Log Path: ${{ inputs.LOG_PATH }}"
+        echo "Using Cache Path: ${{ inputs.CACHE_PATH }}"
+
+        mkdir -p "${{ inputs.CONFIGURATION_PATH }}"
+        mkdir -p "${{ inputs.LOG_PATH }}"
+        mkdir -p "${{ inputs.CACHE_PATH }}"

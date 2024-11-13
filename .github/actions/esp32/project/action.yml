@@ -20,7 +20,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Build ESP-IDF Project
+    - name: esp32 build project
       shell: bash
       run: |
         echo "Using IDF Path: ${{ inputs.IDF_PATH }}"
