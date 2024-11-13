@@ -6,7 +6,7 @@ inputs:
     required: true
     default: "project"
   CONTROL_COMPONENTS_PATH:
-    description: "Path to the OCS components library"
+    description: "Path to the control components library"
     required: true
     default: "project"
 runs:
