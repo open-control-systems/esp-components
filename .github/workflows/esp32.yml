@@ -26,34 +26,37 @@ jobs:
       CONFIGURATION_PATH_CCACHE: .env/ccache
       CONFIGURATION_PATH_UNIT_TESTS: .env/esp32_configuration_unit_tests
     steps:
-      - name: Checkout Repository
+      - name: checkout repository
         uses: actions/checkout@v4
         with:
           path: ${{ env.PROJECT_PATH }}
 
-      - name: Setup Prerequisites
-        uses: ./project/.github/actions/basic_env
+      - name: fmt check formatting
+        uses: ./project/.github/actions/core/fmt
+        with:
+          PROJECT_PATH: ${{ env.PROJECT_PATH }}
+          CONTROL_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
+
+      - name: esp32 setup env
+        uses: ./project/.github/actions/esp32/env
+        with:
+          IDF_PATH: ${{ env.IDF_PATH }}
+          IDF_VERSION: ${{ env.IDF_VERSION }}
+
+      - name: system setup env
+        uses: ./project/.github/actions/system/env
+
+      - name: system setup ccache
+        uses: ./project/.github/actions/system/ccache
         with:
           GITHUB_TOKEN: ${{ github.token }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}
           CONTROL_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
           CONFIGURATION_PATH_CCACHE: ${{ env.CONFIGURATION_PATH_CCACHE }}
 
-      - name: Setup ESP-IDF
-        uses: ./project/.github/actions/esp32_env
-        with:
-          IDF_PATH: ${{ env.IDF_PATH }}
-          IDF_VERSION: ${{ env.IDF_VERSION }}
-
-      - name: Perform All Checks
-        uses: ./project/.github/actions/basic_checks
-        with:
-          PROJECT_PATH: ${{ env.PROJECT_PATH }}
-          CONTROL_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
-
-      - name: Format firmware build version
+      - name: core format firmware build version
         id: version_formatter
-        uses: ./project/.github/actions/format_build_version
+        uses: ./project/.github/actions/core/version
 
       - name: unittests prepare configuration
         shell: bash
@@ -63,7 +66,7 @@ jobs:
           echo "CONFIG_OCS_CORE_FW_NAME=\"unittests\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
 
       - name: unittests build
-        uses: ./project/.github/actions/esp32_build
+        uses: ./project/.github/actions/esp32/project
         with:
           IDF_PATH: ${{ env.IDF_PATH }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tests
@@ -71,43 +74,43 @@ jobs:
           CONFIGURATION_PATH_PROJECT: ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
 
       - name: ds18b20-verifier build
-        uses: ./project/.github/actions/esp32_build
+        uses: ./project/.github/actions/esp32/project
         with:
           IDF_PATH: ${{ env.IDF_PATH }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds18b20-verifier
 
       - name: ds-rom-code-scanner build
-        uses: ./project/.github/actions/esp32_build
+        uses: ./project/.github/actions/esp32/project
         with:
           IDF_PATH: ${{ env.IDF_PATH }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds-rom-code-scanner
 
       - name: sht41-verifier build
-        uses: ./project/.github/actions/esp32_build
+        uses: ./project/.github/actions/esp32/project
         with:
           IDF_PATH: ${{ env.IDF_PATH }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/sht41-verifier
 
       - name: unittests upload
-        uses: ./project/.github/actions/esp32_upload
+        uses: ./project/.github/actions/esp32/upload
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tests
           PROJECT_ID: unittests
 
       - name: ds18b20-verifier upload
-        uses: ./project/.github/actions/esp32_upload
+        uses: ./project/.github/actions/esp32/upload
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds18b20-verifier
           PROJECT_ID: ds18b20-verifier
 
       - name: ds-rom-code-scanner upload
-        uses: ./project/.github/actions/esp32_upload
+        uses: ./project/.github/actions/esp32/upload
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/ds-rom-code-scanner
           PROJECT_ID: ds-rom-code-scanner
 
       - name: sht41-verifier upload
-        uses: ./project/.github/actions/esp32_upload
+        uses: ./project/.github/actions/esp32/upload
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}/tools/sht41-verifier
           PROJECT_ID: sht41-verifier
