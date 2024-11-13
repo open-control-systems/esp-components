@@ -5,7 +5,7 @@ inputs:
     description: "Path where the project is checked out"
     required: true
     default: "project"
-  OCS_COMPONENTS_PATH:
+  CONTROL_COMPONENTS_PATH:
     description: "Path to the OCS components library"
     required: true
     default: "project"
@@ -13,14 +13,14 @@ runs:
   using: "composite"
   steps:
     - name: Check Code Formatting
-      run: "${{ inputs.OCS_COMPONENTS_PATH }}/tools/scripts/check_format.sh"
+      run: "${{ inputs.CONTROL_COMPONENTS_PATH }}/tools/scripts/check_format.sh"
       shell: bash
       env:
         PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
 
     - name: Check License Headers
-      run: "${{ inputs.OCS_COMPONENTS_PATH }}/tools/scripts/check_license.sh"
+      run: "${{ inputs.CONTROL_COMPONENTS_PATH }}/tools/scripts/check_license.sh"
       shell: bash
       env:
           PROJECT_PATH: "${{ inputs.PROJECT_PATH }}"
-          OCS_COMPONENTS_PATH: "${{ inputs.OCS_COMPONENTS_PATH }}"
+          CONTROL_COMPONENTS_PATH: "${{ inputs.CONTROL_COMPONENTS_PATH }}"

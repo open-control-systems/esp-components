@@ -36,7 +36,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ github.token }}
           PROJECT_PATH: ${{ env.PROJECT_PATH }}
-          OCS_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
+          CONTROL_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
           CONFIGURATION_PATH_CCACHE: ${{ env.CONFIGURATION_PATH_CCACHE }}
 
       - name: Setup ESP-IDF
@@ -49,7 +49,7 @@ jobs:
         uses: ./project/.github/actions/basic_checks
         with:
           PROJECT_PATH: ${{ env.PROJECT_PATH }}
-          OCS_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
+          CONTROL_COMPONENTS_PATH: ${{ env.PROJECT_PATH }}
 
       - name: Format firmware build version
         id: version_formatter
