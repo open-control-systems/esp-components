@@ -1,0 +1,60 @@
+name: "Acquire and Release Lock"
+description: "Manages locking for critical sections"
+
+inputs:
+  LOCK_FILE_PATH:
+    description: "Path to the lock file"
+    required: true
+  LOCK_FILE_MAGIC:
+    description: "Some random symbols used to determine the right lock file"
+    required: true
+    default: 0xABCD
+  RETRY_COUNT:
+    description: "Maximum number of attempts to acquire a lock"
+    require: true
+    default: 10
+  RETRY_DELAY:
+    description: "Delay between each attempt to acquire a lock, in seconds"
+    require: true
+    default: 60
+
+runs:
+  using: "composite"
+  steps:
+    - name: lock acquire
+      shell: bash
+      run: |
+        lock_file="${{ inputs.LOCK_FILE_PATH }}"
+        lock_file_dir="$(dirname "$lock_file")"
+
+        mkdir -p "$lock_file_dir"
+
+        for i in $(seq 1 ${{ inputs.RETRY_COUNT }}); do
+          if [ -f "$lock_file" ]; then
+            echo "Lock file exists, waiting... ($i/${{ inputs.RETRY_COUNT }})"
+            sleep ${{ inputs.RETRY_DELAY }}
+          else
+            echo "Creating lock file"
+            echo "${{ inputs.LOCK_FILE_MAGIC }}" > "$lock_file"
+            break
+          fi
+
+          if [ "$i" -eq ${{ inputs.RETRY_COUNT }} ]; then
+            echo "Failed to acquire lock"
+            exit 1
+          fi
+        done
+
+    - name: lock release
+      if: always()
+      shell: bash
+      run: |
+        lock_file="${{ inputs.LOCK_FILE_PATH }}"
+
+        if [ -f "$lock_file" ]; then
+          lock_file_magic=$(cat "$lock_file")
+          if [ "$lock_file_magic" == "${{ inputs.LOCK_FILE_MAGIC }}" ]; then
+            echo "Releasing lock file"
+            rm -f "$lock_file"
+          fi
+        fi

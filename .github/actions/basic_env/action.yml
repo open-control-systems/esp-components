@@ -83,6 +83,10 @@ runs:
         path: ${{ inputs.CACHE_PATH }}/ccache_last_hash
         key: ${{ inputs.CCACHE_HASH_FILE_KEY }}
 
+    - name: ccache lock acquire
+      uses: ./project/.github/actions/core/lock
+      with:
+        LOCK_FILE_PATH: ${{ github.workspace }}/.cache/my_lock.lock
 
     - name: Update ccache Hash File
       env:
@@ -128,13 +132,17 @@ runs:
         PATTERN: "^${{ inputs.CCACHE_HASH_FILE_KEY }}"
         GITHUB_TOKEN: ${{ inputs.GITHUB_TOKEN }}
 
-
     - name: Store ccache Hash File
       if: env.ccache_hash_file_changed == 'true'
       uses: actions/cache/save@v4
       with:
         path: ${{ inputs.CACHE_PATH }}/ccache_last_hash
         key: ${{ inputs.CCACHE_HASH_FILE_KEY }}
+
+    - name: ccache lock release
+      uses: ./project/.github/actions/core/lock
+      with:
+        LOCK_FILE_PATH: ${{ github.workspace }}/.cache/my_lock.lock
 
     - name: Setup ccache Cache
       uses: actions/cache@v4
