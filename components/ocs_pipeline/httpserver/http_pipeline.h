@@ -77,10 +77,10 @@ public:
     net::MdnsProvider& get_mdns_provider();
 
 private:
+    status::StatusCode start_();
     status::StatusCode try_start_wifi_();
-    void stop_wifi_();
-
     status::StatusCode try_start_mdns_();
+    void stop_();
 
     std::unique_ptr<net::BasicNetwork> wifi_network_;
     std::unique_ptr<http::Server> http_server_;

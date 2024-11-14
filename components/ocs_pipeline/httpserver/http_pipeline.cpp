@@ -102,26 +102,12 @@ status::StatusCode HttpPipeline::handle_resume() {
 }
 
 status::StatusCode HttpPipeline::start() {
-    auto code = try_start_wifi_();
+    const auto code = start_();
     if (code != status::StatusCode::OK) {
-        stop_wifi_();
-        return code;
+        stop_();
     }
 
-    code = try_start_mdns_();
-    if (code != status::StatusCode::OK) {
-        return mdns_provider_->stop();
-    }
-
-    code = mdns_provider_->flush_txt_records();
-    if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to register mDNS txt records: code=%s",
-                 status::code_to_str(code));
-
-        return code;
-    }
-
-    return status::StatusCode::OK;
+    return code;
 }
 
 net::BasicNetwork& HttpPipeline::get_network() {
@@ -134,6 +120,28 @@ http::Server& HttpPipeline::get_server() {
 
 net::MdnsProvider& HttpPipeline::get_mdns_provider() {
     return *mdns_provider_;
+}
+
+status::StatusCode HttpPipeline::start_() {
+    auto code = try_start_wifi_();
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    code = try_start_mdns_();
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    code = mdns_provider_->flush_txt_records();
+    if (code != status::StatusCode::OK) {
+        ocs_loge(log_tag, "failed to register mDNS txt records: code=%s",
+                 status::code_to_str(code));
+
+        return code;
+    }
+
+    return status::StatusCode::OK;
 }
 
 status::StatusCode HttpPipeline::try_start_wifi_() {
@@ -172,10 +180,16 @@ status::StatusCode HttpPipeline::try_start_mdns_() {
     return status::StatusCode::OK;
 }
 
-void HttpPipeline::stop_wifi_() {
-    const auto code = wifi_network_->stop();
+void HttpPipeline::stop_() {
+    auto code = wifi_network_->stop();
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to stop the WiFi connection process: code=%s",
+                 status::code_to_str(code));
+    }
+
+    code = mdns_provider_->stop();
+    if (code != status::StatusCode::OK) {
+        ocs_loge(log_tag, "failed to stop mDNS provider: code=%s",
                  status::code_to_str(code));
     }
 }
