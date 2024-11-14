@@ -1,7 +1,6 @@
 idf_component_register(
     SRCS
     "httpserver/http_pipeline.cpp"
-    "httpserver/server_pipeline.cpp"
     "httpserver/ds18b20_handler.cpp"
     "httpserver/sht41_handler.cpp"
     "httpserver/data_handler.cpp"
