@@ -10,17 +10,18 @@
 
 #include "unity.h"
 
-#include "ocs_net/wifi_network.h"
+#include "ocs_net/sta_network.h"
 #include "ocs_storage/flash_initializer.h"
 
 namespace ocs {
 namespace net {
 
-TEST_CASE("Connect to WiFi AP: invalid credentials", "[ocs_net], [wifi_network]") {
+TEST_CASE("WiFi STA: connect to AP: invalid credentials",
+          "[ocs_net], [sta_network| update]") {
     { // Invalid SSID
         storage::FlashInitializer flash_initializer;
 
-        WiFiNetwork network(WiFiNetwork::Params {
+        StaNetwork network(StaNetwork::Params {
             .max_retry_count = 1,
             .ssid = "foo",
             .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
@@ -33,7 +34,7 @@ TEST_CASE("Connect to WiFi AP: invalid credentials", "[ocs_net], [wifi_network]"
     { // Invalid password
         storage::FlashInitializer flash_initializer;
 
-        WiFiNetwork network(WiFiNetwork::Params {
+        StaNetwork network(StaNetwork::Params {
             .max_retry_count = 1,
             .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
             .password = "bar",
@@ -46,7 +47,7 @@ TEST_CASE("Connect to WiFi AP: invalid credentials", "[ocs_net], [wifi_network]"
     { // Invalid SSID and password
         storage::FlashInitializer flash_initializer;
 
-        WiFiNetwork network(WiFiNetwork::Params {
+        StaNetwork network(StaNetwork::Params {
             .max_retry_count = 1,
             .ssid = "foo",
             .password = "bar",
@@ -59,10 +60,11 @@ TEST_CASE("Connect to WiFi AP: invalid credentials", "[ocs_net], [wifi_network]"
 }
 
 #ifdef CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
-TEST_CASE("Connect to WiFi AP: valid credentials", "[ocs_net], [wifi_network]") {
+TEST_CASE("WiFi STA: connect to AP: valid credentials",
+          "[ocs_net], [sta_network| update]") {
     storage::FlashInitializer flash_initializer;
 
-    WiFiNetwork network(WiFiNetwork::Params {
+    StaNetwork network(StaNetwork::Params {
         .max_retry_count = 3,
         .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
         .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
