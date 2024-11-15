@@ -6,8 +6,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
+#include <cstring>
+
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_algo/storage_ops.h"
 #include "ocs_core/log.h"
 #include "ocs_net/sta_network.h"
 #include "ocs_pipeline/basic/network_pipeline.h"
@@ -23,13 +26,11 @@ const char* log_tag = "network_pipeline";
 
 } // namespace
 
-NetworkPipeline::NetworkPipeline() {
-    network_.reset(new (std::nothrow) net::StaNetwork(net::StaNetwork::Params {
-        .max_retry_count = CONFIG_OCS_NETWORK_WIFI_STA_RETRY_COUNT,
-        .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
-        .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
-    }));
-    configASSERT(network_);
+NetworkPipeline::NetworkPipeline(storage::StorageBuilder& storage_builder) {
+    sta_storage_ = storage_builder.make("net_sta");
+    configASSERT(sta_storage_);
+
+    initialize_nework_();
 
     mdns_provider_.reset(new (std::nothrow) net::MdnsProvider(net::MdnsProvider::Params {
         .hostname = CONFIG_OCS_NETWORK_MDNS_HOSTNAME,
@@ -53,6 +54,39 @@ net::BasicNetwork& NetworkPipeline::get_network() {
 
 net::MdnsProvider& NetworkPipeline::get_mdns_provider() {
     return *mdns_provider_;
+}
+
+void NetworkPipeline::initialize_nework_() {
+    char ssid[max_ssid_size_];
+    memset(ssid, 0, sizeof(ssid));
+
+    auto code =
+        algo::StorageOps::prob_read(*sta_storage_, "net_sta_ssid", ssid, max_ssid_size_);
+    if (code != status::StatusCode::OK) {
+        ocs_logw(log_tag, "failed to read STA SSID from storage, use builtin: %s",
+                 status::code_to_str(code));
+
+        strncpy(ssid, CONFIG_OCS_NETWORK_WIFI_STA_SSID, sizeof(ssid));
+    }
+
+    char password[max_password_size_];
+    memset(password, 0, sizeof(password));
+
+    code = algo::StorageOps::prob_read(*sta_storage_, "net_sta_pswd", password,
+                                       max_password_size_);
+    if (code != status::StatusCode::OK) {
+        ocs_logw(log_tag, "failed to read STA password from storage, use builtin: %s",
+                 status::code_to_str(code));
+
+        strncpy(password, CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD, sizeof(password));
+    }
+
+    network_.reset(new (std::nothrow) net::StaNetwork(net::StaNetwork::Params {
+        .max_retry_count = CONFIG_OCS_NETWORK_WIFI_STA_RETRY_COUNT,
+        .ssid = ssid,
+        .password = password,
+    }));
+    configASSERT(network_);
 }
 
 status::StatusCode NetworkPipeline::start_() {

@@ -39,6 +39,7 @@ idf_component_register(
     "ocs_storage"
     "ocs_fmt"
     "ocs_control"
+    "ocs_algo"
 
     INCLUDE_DIRS
     ".."
