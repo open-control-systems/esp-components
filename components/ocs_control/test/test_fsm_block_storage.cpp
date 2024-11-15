@@ -23,6 +23,10 @@ TestFsmBlockStorage::TestFsmBlockStorage(status::StatusCode read_status,
     , erase_status(erase_status) {
 }
 
+status::StatusCode TestFsmBlockStorage::probe(const char* key, unsigned& size) {
+    return status::StatusCode::Error;
+}
+
 status::StatusCode TestFsmBlockStorage::read(const char* key, void* data, unsigned size) {
     if (read_status != status::StatusCode::OK) {
         return read_status;

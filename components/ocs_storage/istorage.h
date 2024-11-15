@@ -18,6 +18,9 @@ public:
     //! Destroy.
     virtual ~IStorage() = default;
 
+    //! Read the size of the value for @p key.
+    virtual status::StatusCode probe(const char* key, unsigned& size) = 0;
+
     //! Read a key-value pair.
     //!
     //! @params

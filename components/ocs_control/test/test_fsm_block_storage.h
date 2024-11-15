@@ -19,6 +19,7 @@ public:
                         status::StatusCode write_status = status::StatusCode::OK,
                         status::StatusCode erase_status = status::StatusCode::OK);
 
+    status::StatusCode probe(const char* key, unsigned& size) override;
     status::StatusCode read(const char* key, void* data, unsigned size) override;
     status::StatusCode write(const char* key, const void* data, unsigned size) override;
     status::StatusCode erase(const char* key) override;
