@@ -30,6 +30,9 @@ public:
     //!  NVS should be initialized.
     explicit NvsStorage(const char* ns);
 
+    //! Read data size from the configured namespace.
+    status::StatusCode probe(const char* key, size_t& size) override;
+
     //! Read data from the configured namespace.
     status::StatusCode read(const char* key, void* value, size_t size) override;
 
@@ -43,7 +46,7 @@ private:
     std::pair<nvs_handle_t, status::StatusCode> open_(nvs_open_mode_t mode);
 
     status::StatusCode
-    read_(nvs_handle_t handle, const char* key, void* value, size_t size);
+    read_(nvs_handle_t handle, const char* key, void* value, size_t& size);
 
     status::StatusCode
     write_(nvs_handle_t handle, const char* key, const void* value, size_t size);

@@ -28,6 +28,18 @@ NvsStorage::NvsStorage(const char* ns) {
     strncpy(ns_, ns, std::min(bufsize_, strlen(ns)));
 }
 
+status::StatusCode NvsStorage::probe(const char* key, unsigned& size) {
+    configASSERT(key);
+
+    auto [handle, code] = open_(NVS_READONLY);
+    if (code == status::StatusCode::OK) {
+        code = read_(handle, key, nullptr, size);
+        nvs_close(handle);
+    }
+
+    return code;
+}
+
 status::StatusCode NvsStorage::read(const char* key, void* value, size_t size) {
     configASSERT(key);
     configASSERT(value);
@@ -85,7 +97,7 @@ std::pair<nvs_handle_t, status::StatusCode> NvsStorage::open_(nvs_open_mode_t mo
 }
 
 status::StatusCode
-NvsStorage::read_(nvs_handle_t handle, const char* key, void* value, size_t size) {
+NvsStorage::read_(nvs_handle_t handle, const char* key, void* value, size_t& size) {
     const auto err = nvs_get_blob(handle, key, value, &size);
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         return status::StatusCode::NoData;

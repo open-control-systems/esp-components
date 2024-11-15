@@ -22,6 +22,17 @@ namespace test {
 
 template <typename T>
 struct TestStorage : public storage::IStorage, public core::NonCopyable<> {
+    status::StatusCode probe(const char* id, size_t& size) {
+        const auto read_value = get(id);
+        if (!read_value) {
+            return status::StatusCode::NoData;
+        }
+
+        size = sizeof(T);
+
+        return status::StatusCode::OK;
+    }
+
     status::StatusCode read(const char* id, void* value, size_t size) {
         TEST_ASSERT_EQUAL(sizeof(T), size);
 
