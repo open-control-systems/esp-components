@@ -24,6 +24,7 @@ idf_component_register(
     "jsonfmt/soil_analog_sensor_formatter.cpp"
 
     "basic/system_pipeline.cpp"
+    "basic/network_pipeline.cpp"
     "basic/system_counter_pipeline.cpp"
 
     REQUIRES

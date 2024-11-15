@@ -12,7 +12,6 @@
 #include "ocs_fmt/json/fanout_formatter.h"
 #include "ocs_http/server.h"
 #include "ocs_net/basic_network.h"
-#include "ocs_net/inetwork_handler.h"
 #include "ocs_net/mdns_provider.h"
 #include "ocs_pipeline/httpserver/data_handler.h"
 #include "ocs_pipeline/httpserver/system_handler.h"
@@ -43,11 +42,10 @@ public:
     };
 
     //! Initialize.
-    //!
-    //! @remarks
-    //!  NVS should be initialized.
     HttpPipeline(scheduler::ITask& reboot_task,
                  system::FanoutSuspender& suspender,
+                 net::BasicNetwork& network,
+                 net::MdnsProvider& mdns_provider,
                  fmt::json::IFormatter& telemetry_formatter,
                  fmt::json::FanoutFormatter& registration_formatter,
                  Params params);
@@ -64,28 +62,15 @@ public:
     //! Enable mDNS.
     status::StatusCode handle_resume() override;
 
-    //! Start the pipeline.
-    status::StatusCode start();
-
-    //! Return network instance.
-    net::BasicNetwork& get_network();
-
     //! Return HTTP server.
     http::Server& get_server();
 
-    //! Return mDNS instance.
-    net::MdnsProvider& get_mdns_provider();
-
 private:
-    status::StatusCode start_();
-    status::StatusCode try_start_wifi_();
-    status::StatusCode try_start_mdns_();
-    void stop_();
+    status::StatusCode start_mdns_();
 
-    std::unique_ptr<net::BasicNetwork> wifi_network_;
+    net::MdnsProvider& mdns_provider_;
+
     std::unique_ptr<http::Server> http_server_;
-    std::unique_ptr<net::MdnsProvider> mdns_provider_;
-
     std::unique_ptr<DataHandler> telemetry_handler_;
     std::unique_ptr<DataHandler> registration_handler_;
     std::unique_ptr<SystemHandler> system_handler_;
