@@ -14,7 +14,7 @@
 #include "ocs_http/client_reader.h"
 #include "ocs_http/server.h"
 #include "ocs_net/ip_addr_to_str.h"
-#include "ocs_net/wifi_network.h"
+#include "ocs_net/sta_network.h"
 #include "ocs_storage/flash_initializer.h"
 
 namespace ocs {
@@ -28,7 +28,7 @@ TEST_CASE("Stop HTTP server: no start", "[ocs_http], [server]") {
 TEST_CASE("Start HTTP server: WiFi not started", "[ocs_http], [server]") {
     storage::FlashInitializer flash_initializer;
 
-    net::WiFiNetwork wifi_network(net::WiFiNetwork::Params {
+    net::StaNetwork network(net::StaNetwork::Params {
         .max_retry_count = 1,
         .ssid = "foo",
         .password = "bar",
@@ -42,19 +42,19 @@ TEST_CASE("Start HTTP server: WiFi not started", "[ocs_http], [server]") {
 TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_http], [server]") {
     storage::FlashInitializer flash_initializer;
 
-    net::WiFiNetwork wifi_network(net::WiFiNetwork::Params {
+    net::StaNetwork network(net::StaNetwork::Params {
         .max_retry_count = 1,
         .ssid = "foo",
         .password = "bar",
     });
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, wifi_network.start());
-    TEST_ASSERT_EQUAL(status::StatusCode::Error, wifi_network.wait());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
+    TEST_ASSERT_EQUAL(status::StatusCode::Error, network.wait());
 
     Server server(Server::Params {});
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
 
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, wifi_network.stop());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, network.stop());
 }
 
 #ifdef CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
@@ -79,16 +79,16 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
 
     storage::FlashInitializer flash_initializer;
 
-    net::WiFiNetwork wifi_network(net::WiFiNetwork::Params {
+    net::StaNetwork network(net::StaNetwork::Params {
         .max_retry_count = 1,
         .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
         .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
     });
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, wifi_network.start());
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, wifi_network.wait());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, network.wait());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.start());
 
-    const auto ip_addr = wifi_network.get_ip_addr();
+    const auto ip_addr = network.get_ip_addr();
     TEST_ASSERT_TRUE(ip_addr);
 
     net::ip_addr_to_str ip_addr_str(*ip_addr);
@@ -111,7 +111,7 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
     TEST_ASSERT_EQUAL_STRING(want_response, got_response);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
-    TEST_ASSERT_EQUAL(status::StatusCode::OK, wifi_network.stop());
+    TEST_ASSERT_EQUAL(status::StatusCode::OK, network.stop());
 }
 #endif // CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
 

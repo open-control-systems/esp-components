@@ -22,7 +22,7 @@ namespace ocs {
 namespace net {
 
 //! Handle WiFi network operations.
-class WiFiNetwork : public BasicNetwork, public core::NonCopyable<> {
+class StaNetwork : public BasicNetwork, public core::NonCopyable<> {
 public:
     struct Params {
         //! Maximum number of attempts to establish a WiFi connection.
@@ -39,10 +39,10 @@ public:
     //!
     //! @remarks
     //!  - NVS should be initialized.
-    explicit WiFiNetwork(const Params& params);
+    explicit StaNetwork(const Params& params);
 
     //! Destroy.
-    ~WiFiNetwork();
+    ~StaNetwork();
 
     //! Start the WiFi connection process.
     status::StatusCode start() override;

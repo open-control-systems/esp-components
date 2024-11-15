@@ -9,7 +9,7 @@
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_core/log.h"
-#include "ocs_net/wifi_network.h"
+#include "ocs_net/sta_network.h"
 #include "ocs_pipeline/basic/network_pipeline.h"
 #include "ocs_status/code_to_str.h"
 
@@ -24,7 +24,7 @@ const char* log_tag = "network_pipeline";
 } // namespace
 
 NetworkPipeline::NetworkPipeline() {
-    network_.reset(new (std::nothrow) net::WiFiNetwork(net::WiFiNetwork::Params {
+    network_.reset(new (std::nothrow) net::StaNetwork(net::StaNetwork::Params {
         .max_retry_count = CONFIG_OCS_NETWORK_WIFI_STA_RETRY_COUNT,
         .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
         .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,

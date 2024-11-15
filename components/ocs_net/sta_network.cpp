@@ -11,7 +11,7 @@
 #include "esp_netif.h"
 
 #include "ocs_core/log.h"
-#include "ocs_net/wifi_network.h"
+#include "ocs_net/sta_network.h"
 
 #define EVENT_BIT_CONNECTED BIT0
 #define EVENT_BIT_FAILED BIT1
@@ -21,7 +21,7 @@ namespace net {
 
 namespace {
 
-const char* log_tag = "wifi_network";
+const char* log_tag = "sta_network";
 
 int8_t get_rssi() {
     wifi_ap_record_t record;
@@ -38,7 +38,7 @@ int8_t get_rssi() {
 
 } // namespace
 
-WiFiNetwork::WiFiNetwork(const Params& params)
+StaNetwork::StaNetwork(const Params& params)
     : params_(params) {
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -69,7 +69,7 @@ WiFiNetwork::WiFiNetwork(const Params& params)
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
 }
 
-WiFiNetwork::~WiFiNetwork() {
+StaNetwork::~StaNetwork() {
     ESP_ERROR_CHECK(esp_event_handler_instance_unregister(WIFI_EVENT, ESP_EVENT_ANY_ID,
                                                           &instance_any_id_));
 
@@ -84,7 +84,7 @@ WiFiNetwork::~WiFiNetwork() {
     configASSERT(esp_netif_deinit() == ESP_ERR_NOT_SUPPORTED);
 }
 
-status::StatusCode WiFiNetwork::start() {
+status::StatusCode StaNetwork::start() {
     const auto err = esp_wifi_start();
     if (err != ESP_OK) {
         ocs_loge(log_tag, "esp_wifi_start(): %s", esp_err_to_name(err));
@@ -94,7 +94,7 @@ status::StatusCode WiFiNetwork::start() {
     return status::StatusCode::OK;
 }
 
-status::StatusCode WiFiNetwork::stop() {
+status::StatusCode StaNetwork::stop() {
     const auto err = esp_wifi_stop();
     if (err != ESP_OK) {
         ocs_loge(log_tag, "esp_wifi_stop(): %s", esp_err_to_name(err));
@@ -104,7 +104,7 @@ status::StatusCode WiFiNetwork::stop() {
     return status::StatusCode::OK;
 }
 
-status::StatusCode WiFiNetwork::wait() {
+status::StatusCode StaNetwork::wait() {
     const EventBits_t bits =
         xEventGroupWaitBits(event_group_.get(), EVENT_BIT_CONNECTED | EVENT_BIT_FAILED,
                             pdFALSE, pdFALSE, portMAX_DELAY);
@@ -125,7 +125,7 @@ status::StatusCode WiFiNetwork::wait() {
     configASSERT(false);
 }
 
-std::optional<ip_addr_t> WiFiNetwork::get_ip_addr() const {
+std::optional<ip_addr_t> StaNetwork::get_ip_addr() const {
     const EventBits_t bits = xEventGroupGetBits(event_group_.get());
     if (!(bits & EVENT_BIT_CONNECTED)) {
         return std::nullopt;
@@ -144,14 +144,14 @@ std::optional<ip_addr_t> WiFiNetwork::get_ip_addr() const {
     return addr;
 }
 
-void WiFiNetwork::handle_event_(void* event_arg,
-                                esp_event_base_t event_base,
-                                int32_t event_id,
-                                void* event_data) {
+void StaNetwork::handle_event_(void* event_arg,
+                               esp_event_base_t event_base,
+                               int32_t event_id,
+                               void* event_data) {
     configASSERT(event_base == WIFI_EVENT || event_base == IP_EVENT);
     configASSERT(event_arg);
 
-    WiFiNetwork& self = *static_cast<WiFiNetwork*>(event_arg);
+    StaNetwork& self = *static_cast<StaNetwork*>(event_arg);
 
     if (event_base == WIFI_EVENT) {
         self.handle_wifi_event_(event_id, event_data);
@@ -162,7 +162,7 @@ void WiFiNetwork::handle_event_(void* event_arg,
     }
 }
 
-void WiFiNetwork::handle_wifi_event_(int32_t event_id, void* event_data) {
+void StaNetwork::handle_wifi_event_(int32_t event_id, void* event_data) {
     switch (event_id) {
     case WIFI_EVENT_STA_START:
         handle_wifi_event_sta_start_();
@@ -177,7 +177,7 @@ void WiFiNetwork::handle_wifi_event_(int32_t event_id, void* event_data) {
     }
 }
 
-void WiFiNetwork::handle_wifi_event_sta_start_() {
+void StaNetwork::handle_wifi_event_sta_start_() {
     ocs_logi(log_tag, "WIFI_EVENT_STA_START");
 
     const esp_err_t err = esp_wifi_connect();
@@ -186,7 +186,7 @@ void WiFiNetwork::handle_wifi_event_sta_start_() {
     }
 }
 
-void WiFiNetwork::handle_wifi_event_sta_disconnected_(void* event_data) {
+void StaNetwork::handle_wifi_event_sta_disconnected_(void* event_data) {
     configASSERT(event_data);
 
     wifi_event_sta_disconnected_t& data =
@@ -213,7 +213,7 @@ void WiFiNetwork::handle_wifi_event_sta_disconnected_(void* event_data) {
     handle_disconnect_();
 }
 
-void WiFiNetwork::handle_ip_event_(int32_t event_id, void* event_data) {
+void StaNetwork::handle_ip_event_(int32_t event_id, void* event_data) {
     switch (event_id) {
     case IP_EVENT_STA_GOT_IP:
         handle_ip_event_sta_got_ip_(event_data);
@@ -224,7 +224,7 @@ void WiFiNetwork::handle_ip_event_(int32_t event_id, void* event_data) {
     }
 }
 
-void WiFiNetwork::handle_ip_event_sta_got_ip_(void* event_data) {
+void StaNetwork::handle_ip_event_sta_got_ip_(void* event_data) {
     ip_event_got_ip_t& event = *static_cast<ip_event_got_ip_t*>(event_data);
     ocs_logi(log_tag, "got ip:" IPSTR "", IP2STR(&event.ip_info.ip));
 
