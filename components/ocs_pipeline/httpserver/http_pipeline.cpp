@@ -29,6 +29,10 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
                            fmt::json::FanoutFormatter& registration_formatter,
                            Params params)
     : mdns_provider_(mdns_provider) {
+    mdns_provider_.add_service(net::MdnsProvider::Service::Http,
+                               net::MdnsProvider::Proto::Tcp,
+                               CONFIG_OCS_HTTP_SERVER_PORT);
+
     network.add(*this);
 
     http_server_.reset(new (std::nothrow) http::Server(http::Server::Params {
@@ -87,27 +91,11 @@ status::StatusCode HttpPipeline::handle_suspend() {
 }
 
 status::StatusCode HttpPipeline::handle_resume() {
-    return start_mdns_();
+    return mdns_provider_.start();
 }
 
 http::Server& HttpPipeline::get_server() {
     return *http_server_;
-}
-
-status::StatusCode HttpPipeline::start_mdns_() {
-    auto code = mdns_provider_.start();
-    if (code != status::StatusCode::OK) {
-        return code;
-    }
-
-    code = mdns_provider_.add_service(net::MdnsProvider::Service::Http,
-                                      net::MdnsProvider::Proto::Tcp,
-                                      CONFIG_OCS_HTTP_SERVER_PORT);
-    if (code != status::StatusCode::OK) {
-        return code;
-    }
-
-    return status::StatusCode::OK;
 }
 
 } // namespace httpserver

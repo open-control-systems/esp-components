@@ -8,8 +8,8 @@
 
 #include "unity.h"
 
+#include "ocs_net/ap_network.h"
 #include "ocs_net/mdns_provider.h"
-#include "ocs_net/sta_network.h"
 #include "ocs_storage/flash_initializer.h"
 
 namespace ocs {
@@ -18,10 +18,9 @@ namespace net {
 TEST_CASE("mDNS start/stop", "[ocs_net], [mdns_provider]") {
     storage::FlashInitializer flash_initializer;
 
-    StaNetwork network(StaNetwork::Params {
-        .max_retry_count = 3,
-        .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
-        .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
+    ApNetwork network(ApNetwork::Params {
+        .ssid = "test-ssid",
+        .password = "test-password",
     });
 
     MdnsProvider provider(MdnsProvider::Params {

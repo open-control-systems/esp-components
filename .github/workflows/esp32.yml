@@ -61,7 +61,7 @@ jobs:
       - name: unittests prepare configuration
         shell: bash
         run: |
-          echo "CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED=y" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
+          echo "CONFIG_OCS_TEST_UNIT_WIFI_STA_ENABLED=y" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
           echo "CONFIG_OCS_CORE_FW_VERSION=\"${{ steps.version_formatter.outputs.build_version }}\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
           echo "CONFIG_OCS_CORE_FW_NAME=\"unittests\"" >> ${{ env.CONFIGURATION_PATH_UNIT_TESTS }}
 

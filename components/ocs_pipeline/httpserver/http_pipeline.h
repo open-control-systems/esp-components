@@ -66,8 +66,6 @@ public:
     http::Server& get_server();
 
 private:
-    status::StatusCode start_mdns_();
-
     net::MdnsProvider& mdns_provider_;
 
     std::unique_ptr<http::Server> http_server_;

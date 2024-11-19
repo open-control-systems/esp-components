@@ -1,23 +1,26 @@
 menu "OCS Network Configuration"
     menu "WiFi Configuration"
         menu "STA Configuration"
-            config OCS_NETWORK_WIFI_STA_SSID
-                string "WiFi STA SSID"
-                default "your-ssid"
-                help
-                    SSID for the WiFi access point, to which ESP32 is connected.
-
-            config OCS_NETWORK_WIFI_STA_PASSWORD
-                string "WiFi STA Password"
-                default "your-password"
-                help
-                    Password for the WiFi access point, to which ESP32 is connected.
-
             config OCS_NETWORK_WIFI_STA_RETRY_COUNT
                 int "WiFi Retry Count"
                 default 5
                 help
                     Maximum number of attempts to establish a WiFi connection.
+        endmenu
+
+        menu "AP Configuration"
+            config OCS_NETWORK_WIFI_AP_CHANNEL
+                int "WiFi Channel"
+                range 1 13
+                default 1
+                help
+                    WiFi channel (network channel).
+
+            config OCS_NETWORK_WIFI_AP_MAX_CONN
+                int "Maximum number of STA connections"
+                default 7
+                help
+                    Maximum number of the STA connects to AP.
         endmenu
     endmenu
 

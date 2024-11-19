@@ -16,6 +16,7 @@
 namespace ocs {
 namespace net {
 
+#ifdef CONFIG_OCS_TEST_UNIT_WIFI_STA_ENABLED
 TEST_CASE("WiFi STA: connect to AP: invalid credentials",
           "[ocs_net], [sta_network| update]") {
     { // Invalid SSID
@@ -24,7 +25,7 @@ TEST_CASE("WiFi STA: connect to AP: invalid credentials",
         StaNetwork network(StaNetwork::Params {
             .max_retry_count = 1,
             .ssid = "foo",
-            .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
+            .password = CONFIG_OCS_TEST_UNIT_WIFI_STA_PASSWORD,
         });
 
         TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
@@ -36,7 +37,7 @@ TEST_CASE("WiFi STA: connect to AP: invalid credentials",
 
         StaNetwork network(StaNetwork::Params {
             .max_retry_count = 1,
-            .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
+            .ssid = CONFIG_OCS_TEST_UNIT_WIFI_STA_SSID,
             .password = "bar",
         });
 
@@ -59,15 +60,14 @@ TEST_CASE("WiFi STA: connect to AP: invalid credentials",
     }
 }
 
-#ifdef CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
 TEST_CASE("WiFi STA: connect to AP: valid credentials",
           "[ocs_net], [sta_network| update]") {
     storage::FlashInitializer flash_initializer;
 
     StaNetwork network(StaNetwork::Params {
         .max_retry_count = 3,
-        .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
-        .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
+        .ssid = CONFIG_OCS_TEST_UNIT_WIFI_STA_SSID,
+        .password = CONFIG_OCS_TEST_UNIT_WIFI_STA_PASSWORD,
     });
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
@@ -76,11 +76,11 @@ TEST_CASE("WiFi STA: connect to AP: valid credentials",
     wifi_ap_record_t record;
     memset(&record, 0, sizeof(record));
     TEST_ASSERT_EQUAL(ESP_OK, esp_wifi_sta_get_ap_info(&record));
-    TEST_ASSERT_EQUAL_STRING(CONFIG_OCS_NETWORK_WIFI_STA_SSID, record.ssid);
+    TEST_ASSERT_EQUAL_STRING(CONFIG_OCS_TEST_UNIT_WIFI_STA_SSID, record.ssid);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.stop());
 }
-#endif // CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
+#endif // CONFIG_OCS_TEST_UNIT_WIFI_STA_ENABLED
 
 } // namespace net
 } // namespace ocs

@@ -1,5 +1,17 @@
-menu "OCS Unit Tests Configuration"
-    config OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
-        bool "Enable/Disable WiFi Unit Tests"
-        default n
+menu "OCS Tests Configuration"
+    menu "Unit Tests Configuration"
+        config OCS_TEST_UNIT_WIFI_STA_ENABLED
+            bool "Enable/Disable WiFi STA Unit Tests"
+            default n
+
+        config OCS_TEST_UNIT_WIFI_STA_SSID
+            string "WiFi STA SSID"
+            depends on OCS_TEST_UNIT_WIFI_STA_ENABLED
+            default "OCS-SSID"
+
+        config OCS_TEST_UNIT_WIFI_STA_PASSWORD
+            string "WiFi STA Password"
+            depends on OCS_TEST_UNIT_WIFI_STA_ENABLED
+            default "OCS-Password"
+    endmenu
 endmenu

@@ -57,7 +57,7 @@ TEST_CASE("Start HTTP server: WiFi invalid credentials", "[ocs_http], [server]")
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.stop());
 }
 
-#ifdef CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
+#ifdef CONFIG_OCS_TEST_UNIT_WIFI_STA_ENABLED
 TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
     const unsigned server_port = 80;
 
@@ -81,8 +81,8 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
 
     net::StaNetwork network(net::StaNetwork::Params {
         .max_retry_count = 1,
-        .ssid = CONFIG_OCS_NETWORK_WIFI_STA_SSID,
-        .password = CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD,
+        .ssid = CONFIG_OCS_TEST_UNIT_WIFI_STA_SSID,
+        .password = CONFIG_OCS_TEST_UNIT_WIFI_STA_PASSWORD,
     });
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.wait());
@@ -113,7 +113,7 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.stop());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.stop());
 }
-#endif // CONFIG_OCS_UNIT_TEST_NETWORK_WIFI_ENABLED
+#endif // CONFIG_OCS_TEST_UNIT_WIFI_STA_ENABLED
 
 } // namespace http
 } // namespace ocs

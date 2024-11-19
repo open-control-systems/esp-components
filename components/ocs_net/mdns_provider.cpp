@@ -53,7 +53,7 @@ status::StatusCode MdnsProvider::start() {
     ESP_ERROR_CHECK(mdns_hostname_set(params_.hostname.c_str()));
     ESP_ERROR_CHECK(mdns_instance_name_set(params_.instance_name.c_str()));
 
-    return status::StatusCode::OK;
+    return flush_();
 }
 
 status::StatusCode MdnsProvider::stop() {
@@ -61,34 +61,34 @@ status::StatusCode MdnsProvider::stop() {
     return status::StatusCode::OK;
 }
 
-status::StatusCode MdnsProvider::add_service(MdnsProvider::Service service,
-                                             MdnsProvider::Proto proto,
-                                             unsigned port) {
-    const auto err = mdns_service_add(nullptr, service_to_str(service),
-                                      proto_to_str(proto), port, nullptr, 0);
-    if (err != ESP_OK) {
-        ocs_loge(log_tag, "failed to add service: service=%s proto=%s port=%u",
-                 service_to_str(service), proto_to_str(proto), port);
-
-        return status::StatusCode::InvalidArg;
-    }
-
-    return status::StatusCode::OK;
+void MdnsProvider::add_service(MdnsProvider::Service service,
+                               MdnsProvider::Proto proto,
+                               unsigned port) {
+    services_[service][proto].port = port;
 }
 
 void MdnsProvider::add_txt_records(MdnsProvider::Service service,
                                    MdnsProvider::Proto proto,
                                    const TxtRecordList& records) {
-    auto& existing_records = services_[service][proto];
+    auto& existing_records = services_[service][proto].records;
     for (const auto& record : records) {
         existing_records.emplace_back(record);
     }
 }
 
-status::StatusCode MdnsProvider::flush_txt_records() {
-    for (const auto& [service, proto_to_records] : services_) {
-        for (const auto& [proto, records] : proto_to_records) {
-            for (const auto& record : records) {
+status::StatusCode MdnsProvider::flush_() {
+    for (const auto& [service, proto_to_nodes] : services_) {
+        for (const auto& [proto, node] : proto_to_nodes) {
+            const auto err = mdns_service_add(nullptr, service_to_str(service),
+                                              proto_to_str(proto), node.port, nullptr, 0);
+            if (err != ESP_OK) {
+                ocs_loge(log_tag, "failed to add service: service=%s proto=%s port=%u",
+                         service_to_str(service), proto_to_str(proto), node.port);
+
+                continue;
+            }
+
+            for (const auto& record : node.records) {
                 const auto err = mdns_service_txt_item_set(
                     service_to_str(service), proto_to_str(proto), record.first.c_str(),
                     record.second.c_str());
