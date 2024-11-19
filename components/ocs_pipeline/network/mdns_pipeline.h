@@ -15,7 +15,7 @@
 
 namespace ocs {
 namespace pipeline {
-namespace basic {
+namespace network {
 
 class MdnsPipeline : public core::NonCopyable<> {
 public:
@@ -32,6 +32,6 @@ private:
     std::unique_ptr<net::MdnsProvider> provider_;
 };
 
-} // namespace basic
+} // namespace network
 } // namespace pipeline
 } // namespace ocs

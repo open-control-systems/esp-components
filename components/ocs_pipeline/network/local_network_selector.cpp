@@ -15,41 +15,32 @@
 #include "ocs_core/log.h"
 #include "ocs_net/ap_network.h"
 #include "ocs_net/sta_network.h"
-#include "ocs_pipeline/basic/network_pipeline.h"
+#include "ocs_pipeline/network/local_network_selector.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
 namespace pipeline {
-namespace basic {
+namespace network {
 
 namespace {
 
-const char* log_tag = "network_pipeline";
+const char* log_tag = "local_network_selector";
 
 } // namespace
 
-NetworkPipeline::NetworkPipeline(storage::StorageBuilder& storage_builder,
-                                 const system::DeviceInfo& device_info) {
+LocalNetworkSelector::LocalNetworkSelector(storage::StorageBuilder& storage_builder,
+                                           const system::DeviceInfo& device_info) {
     storage_ = storage_builder.make("net_wifi");
     configASSERT(storage_);
 
     initialize_nework_(device_info);
 }
 
-status::StatusCode NetworkPipeline::start() {
-    const auto code = start_();
-    if (code != status::StatusCode::OK) {
-        stop_();
-    }
-
-    return code;
-}
-
-net::BasicNetwork& NetworkPipeline::get_network() {
+net::BasicNetwork& LocalNetworkSelector::get_network() {
     return *network_;
 }
 
-void NetworkPipeline::initialize_nework_(const system::DeviceInfo& device_info) {
+void LocalNetworkSelector::initialize_nework_(const system::DeviceInfo& device_info) {
     NetworkType network_type = NetworkType::Ap;
 
     auto code = read_network_type_(network_type);
@@ -76,7 +67,7 @@ void NetworkPipeline::initialize_nework_(const system::DeviceInfo& device_info) 
     configASSERT(network_);
 }
 
-status::StatusCode NetworkPipeline::read_network_type_(NetworkType& type) {
+status::StatusCode LocalNetworkSelector::read_network_type_(NetworkType& type) {
     unsigned network_type = 0;
 
     auto code = storage_->read("net_type", &network_type, sizeof(network_type));
@@ -93,7 +84,7 @@ status::StatusCode NetworkPipeline::read_network_type_(NetworkType& type) {
     return status::StatusCode::OK;
 }
 
-void NetworkPipeline::initialize_network_ap_(const system::DeviceInfo& device_info) {
+void LocalNetworkSelector::initialize_network_ap_(const system::DeviceInfo& device_info) {
     char ssid[max_ssid_size_];
     memset(ssid, 0, sizeof(ssid));
 
@@ -138,7 +129,7 @@ void NetworkPipeline::initialize_network_ap_(const system::DeviceInfo& device_in
     }));
 }
 
-void NetworkPipeline::initialize_network_sta_() {
+void LocalNetworkSelector::initialize_network_sta_() {
     char ssid[max_ssid_size_];
     memset(ssid, 0, sizeof(ssid));
 
@@ -166,32 +157,6 @@ void NetworkPipeline::initialize_network_sta_() {
     }));
 }
 
-status::StatusCode NetworkPipeline::start_() {
-    auto code = network_->start();
-    if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to start network: code=%s", status::code_to_str(code));
-
-        return code;
-    }
-
-    code = network_->wait(wait_start_interval_);
-    if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to wait for network: code=%s",
-                 status::code_to_str(code));
-
-        return code;
-    }
-
-    return status::StatusCode::OK;
-}
-
-void NetworkPipeline::stop_() {
-    const auto code = network_->stop();
-    if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to stop network: code=%s", status::code_to_str(code));
-    }
-}
-
-} // namespace basic
+} // namespace network
 } // namespace pipeline
 } // namespace ocs
