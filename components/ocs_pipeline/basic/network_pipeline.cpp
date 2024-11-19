@@ -7,11 +7,13 @@
  */
 
 #include <cstring>
+#include <string>
 
 #include "freertos/FreeRTOSConfig.h"
 
 #include "ocs_algo/storage_ops.h"
 #include "ocs_core/log.h"
+#include "ocs_net/ap_network.h"
 #include "ocs_net/sta_network.h"
 #include "ocs_pipeline/basic/network_pipeline.h"
 #include "ocs_status/code_to_str.h"
@@ -26,17 +28,12 @@ const char* log_tag = "network_pipeline";
 
 } // namespace
 
-NetworkPipeline::NetworkPipeline(storage::StorageBuilder& storage_builder) {
-    sta_storage_ = storage_builder.make("net_sta");
-    configASSERT(sta_storage_);
+NetworkPipeline::NetworkPipeline(storage::StorageBuilder& storage_builder,
+                                 system::DeviceID& device_id) {
+    storage_ = storage_builder.make("net_wifi");
+    configASSERT(storage_);
 
-    initialize_nework_();
-
-    mdns_provider_.reset(new (std::nothrow) net::MdnsProvider(net::MdnsProvider::Params {
-        .hostname = CONFIG_OCS_NETWORK_MDNS_HOSTNAME,
-        .instance_name = CONFIG_OCS_NETWORK_MDNS_INSTANCE_NAME,
-    }));
-    configASSERT(mdns_provider_);
+    initialize_nework_(device_id);
 }
 
 status::StatusCode NetworkPipeline::start() {
@@ -52,33 +49,112 @@ net::BasicNetwork& NetworkPipeline::get_network() {
     return *network_;
 }
 
-net::MdnsProvider& NetworkPipeline::get_mdns_provider() {
-    return *mdns_provider_;
+void NetworkPipeline::initialize_nework_(system::DeviceID& device_id) {
+    NetworkType network_type = NetworkType::Ap;
+
+    auto code = read_network_type_(network_type);
+    if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
+        ocs_loge(log_tag, "failed to read network type from storage: %s",
+                 status::code_to_str(code));
+    }
+
+    switch (network_type) {
+    case NetworkType::Ap:
+        initialize_network_ap_(device_id);
+        break;
+
+    case NetworkType::Sta:
+        initialize_network_sta_();
+        break;
+
+    default:
+        //! Should not happen.
+        configASSERT(false);
+        break;
+    }
+
+    configASSERT(network_);
 }
 
-void NetworkPipeline::initialize_nework_() {
+status::StatusCode NetworkPipeline::read_network_type_(NetworkType& type) {
+    unsigned network_type = 0;
+
+    auto code = storage_->read("net_type", &network_type, sizeof(network_type));
+    if (code != status::StatusCode::OK) {
+        return code;
+    }
+
+    if (network_type >= static_cast<unsigned>(NetworkType::Last)) {
+        return status::StatusCode::InvalidState;
+    }
+
+    type = static_cast<NetworkType>(network_type);
+
+    return status::StatusCode::OK;
+}
+
+void NetworkPipeline::initialize_network_ap_(system::DeviceID& device_id) {
     char ssid[max_ssid_size_];
     memset(ssid, 0, sizeof(ssid));
 
     auto code =
-        algo::StorageOps::prob_read(*sta_storage_, "net_sta_ssid", ssid, max_ssid_size_);
+        algo::StorageOps::prob_read(*storage_, "net_ap_ssid", ssid, max_ssid_size_);
     if (code != status::StatusCode::OK) {
-        ocs_logw(log_tag, "failed to read STA SSID from storage, use builtin: %s",
-                 status::code_to_str(code));
+        if (code != status::StatusCode::NoData) {
+            ocs_loge(log_tag, "failed to read WiFi AP SSID from storage: %s",
+                     status::code_to_str(code));
+        }
 
-        strncpy(ssid, CONFIG_OCS_NETWORK_WIFI_STA_SSID, sizeof(ssid));
+        std::string builtin_ssid = "ocs-ssid-";
+        builtin_ssid += device_id.get_id();
+
+        strncpy(ssid, builtin_ssid.c_str(), sizeof(ssid));
     }
 
     char password[max_password_size_];
     memset(password, 0, sizeof(password));
 
-    code = algo::StorageOps::prob_read(*sta_storage_, "net_sta_pswd", password,
+    code = algo::StorageOps::prob_read(*storage_, "net_ap_pswd", password,
                                        max_password_size_);
     if (code != status::StatusCode::OK) {
-        ocs_logw(log_tag, "failed to read STA password from storage, use builtin: %s",
-                 status::code_to_str(code));
+        if (code != status::StatusCode::NoData) {
+            ocs_loge(log_tag, "failed to read WiFi AP password from storage: %s",
+                     status::code_to_str(code));
+        }
 
-        strncpy(password, CONFIG_OCS_NETWORK_WIFI_STA_PASSWORD, sizeof(password));
+        std::string builtin_password = "ocs-password-";
+        builtin_password += std::string(device_id.get_id(), 7);
+
+        strncpy(password, builtin_password.c_str(), sizeof(password));
+    }
+
+    network_.reset(new (std::nothrow) net::ApNetwork(net::ApNetwork::Params {
+        .ssid = ssid,
+        .password = password,
+        .channel = CONFIG_OCS_NETWORK_WIFI_AP_CHANNEL,
+        .max_connection = CONFIG_OCS_NETWORK_WIFI_AP_MAX_CONN,
+    }));
+}
+
+void NetworkPipeline::initialize_network_sta_() {
+    char ssid[max_ssid_size_];
+    memset(ssid, 0, sizeof(ssid));
+
+    auto code =
+        algo::StorageOps::prob_read(*storage_, "net_sta_ssid", ssid, max_ssid_size_);
+    if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
+        ocs_loge(log_tag, "failed to read WiFi STA SSID from storage: %s",
+                 status::code_to_str(code));
+    }
+
+    char password[max_password_size_];
+    memset(password, 0, sizeof(password));
+
+    code = algo::StorageOps::prob_read(*storage_, "net_sta_pswd", password,
+                                       max_password_size_);
+    if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
+        ocs_loge(log_tag, "failed to read WiFi STA password from storage: %s",
+                 status::code_to_str(code));
     }
 
     network_.reset(new (std::nothrow) net::StaNetwork(net::StaNetwork::Params {
@@ -86,7 +162,6 @@ void NetworkPipeline::initialize_nework_() {
         .ssid = ssid,
         .password = password,
     }));
-    configASSERT(network_);
 }
 
 status::StatusCode NetworkPipeline::start_() {
@@ -97,24 +172,9 @@ status::StatusCode NetworkPipeline::start_() {
         return code;
     }
 
-    code = network_->wait();
+    code = network_->wait(wait_start_interval_);
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to wait for network: code=%s",
-                 status::code_to_str(code));
-
-        return code;
-    }
-
-    code = mdns_provider_->start();
-    if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to start mDNS: code=%s", status::code_to_str(code));
-
-        return code;
-    }
-
-    code = mdns_provider_->flush_txt_records();
-    if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to register mDNS txt records: code=%s",
                  status::code_to_str(code));
 
         return code;
@@ -124,14 +184,9 @@ status::StatusCode NetworkPipeline::start_() {
 }
 
 void NetworkPipeline::stop_() {
-    auto code = network_->stop();
+    const auto code = network_->stop();
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to stop network: code=%s", status::code_to_str(code));
-    }
-
-    code = mdns_provider_->stop();
-    if (code != status::StatusCode::OK) {
-        ocs_loge(log_tag, "failed to stop mDNS: code=%s", status::code_to_str(code));
     }
 }
 

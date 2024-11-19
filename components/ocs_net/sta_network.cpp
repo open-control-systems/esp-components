@@ -44,6 +44,7 @@ StaNetwork::StaNetwork(const Params& params)
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
     netif_ = make_netif_shared(esp_netif_create_default_wifi_sta());
+    configASSERT(netif_);
 
     wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_wifi_init(&cfg));
@@ -104,20 +105,21 @@ status::StatusCode StaNetwork::stop() {
     return status::StatusCode::OK;
 }
 
-status::StatusCode StaNetwork::wait() {
+status::StatusCode StaNetwork::wait(TickType_t wait) {
     const EventBits_t bits =
         xEventGroupWaitBits(event_group_.get(), EVENT_BIT_CONNECTED | EVENT_BIT_FAILED,
-                            pdFALSE, pdFALSE, portMAX_DELAY);
+                            pdFALSE, pdFALSE, wait);
 
     if (bits & EVENT_BIT_CONNECTED) {
-        ocs_logi(log_tag, "connected to AP: SSID=%s RSSI=%d",
-                 CONFIG_OCS_NETWORK_WIFI_STA_SSID, get_rssi());
+        ocs_logi(log_tag, "connected to AP: SSID=%s RSSI=%d", params_.ssid.c_str(),
+                 get_rssi());
+
         return status::StatusCode::OK;
     }
 
     if (bits & EVENT_BIT_FAILED) {
-        ocs_logi(log_tag, "failed to connect to AP: SSID=%s",
-                 CONFIG_OCS_NETWORK_WIFI_STA_SSID);
+        ocs_logi(log_tag, "failed to connect to AP: SSID=%s", params_.ssid.c_str());
+
         return status::StatusCode::Error;
     }
 

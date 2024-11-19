@@ -12,8 +12,10 @@
 
 #include "esp_wifi.h"
 
+#include "ocs_core/cond.h"
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_event_group.h"
+#include "ocs_core/static_mutex.h"
 #include "ocs_net/basic_network.h"
 #include "ocs_net/netif_builder.h"
 #include "ocs_status/code.h"
@@ -21,25 +23,28 @@
 namespace ocs {
 namespace net {
 
-//! Handle WiFi STA (station) network operations.
-class StaNetwork : public BasicNetwork, public core::NonCopyable<> {
+//! Handle WiFi AP (access-point) mode network operations.
+class ApNetwork : public BasicNetwork, public core::NonCopyable<> {
 public:
     struct Params {
-        //! Maximum number of attempts to establish a WiFi connection.
-        unsigned max_retry_count { 5 };
-
         //! WiFi SSID.
         std::string ssid;
 
         //! WiFi password.
         std::string password;
+
+        //! WiFi channel.
+        int channel { 0 };
+
+        //! Maximum number of simultaneous STA connection to the AP.
+        int max_connection { 0 };
     };
 
     //! Initialize.
-    explicit StaNetwork(const Params& params);
+    explicit ApNetwork(const Params& params);
 
     //! Destroy.
-    ~StaNetwork();
+    ~ApNetwork();
 
     //! Start the WiFi connection process.
     status::StatusCode start() override;
@@ -60,22 +65,20 @@ private:
                               void* event_data);
 
     void handle_wifi_event_(int32_t event_id, void* event_data);
-    void handle_wifi_event_sta_start_();
-    void handle_wifi_event_sta_disconnected_(void* event_data);
-
-    void handle_ip_event_(int32_t event_id, void* event_data);
-    void handle_ip_event_sta_got_ip_(void* event_data);
+    void handle_wifi_event_ap_sta_start_();
+    void handle_wifi_event_ap_sta_stop_();
+    void handle_wifi_event_ap_sta_connected_(void* event_data);
+    void handle_wifi_event_ap_sta_disconnected_(void* event_data);
 
     const Params params_;
 
     NetifSharedPtr netif_;
 
-    core::StaticEventGroup event_group_;
-
     esp_event_handler_instance_t instance_any_id_ { nullptr };
-    esp_event_handler_instance_t instance_got_ip_ { nullptr };
 
-    unsigned retry_count_ { 0 };
+    core::StaticMutex mu_;
+    core::Cond cond_;
+    status::StatusCode code_ { status::StatusCode::Last };
 };
 
 } // namespace net

@@ -32,6 +32,7 @@ public:
     //! @references
     //!  See common services: http://www.dns-sd.org/serviceTypes.html
     enum class Service {
+        //! HTTP mDNS service.
         Http,
     };
 
@@ -52,27 +53,31 @@ public:
     //! Initialize.
     explicit MdnsProvider(const Params& params);
 
-    //! Start mDNS service.
+    //! Start mDNS driver.
+    //!
+    //! @notes
+    //!  - Flush previously added services and txt records to the underlying mDNS driver.
     status::StatusCode start();
 
-    //! Stop mDNS service.
+    //! Stop mDNS driver.
     status::StatusCode stop();
 
     //! Add mDNS service.
-    status::StatusCode add_service(Service service, Proto proto, unsigned port);
+    void add_service(Service service, Proto proto, unsigned port);
 
     //! Add txt records for the mDNS service.
     void add_txt_records(Service service, Proto proto, const TxtRecordList& records);
 
-    //! Flush previously added txt records to the underlying mDNS driver.
-    //!
-    //! @remarks
-    //!  Records should be flashed only after the service is started.
-    status::StatusCode flush_txt_records();
-
 private:
-    using ProtoToRecords = std::unordered_map<Proto, TxtRecordList>;
-    using ServiceToProto = std::unordered_map<Service, ProtoToRecords>;
+    struct Node {
+        unsigned port { 0 };
+        TxtRecordList records;
+    };
+
+    using ProtoToNode = std::unordered_map<Proto, Node>;
+    using ServiceToProto = std::unordered_map<Service, ProtoToNode>;
+
+    status::StatusCode flush_();
 
     ServiceToProto services_;
 

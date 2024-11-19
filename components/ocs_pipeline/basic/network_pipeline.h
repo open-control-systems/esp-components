@@ -12,8 +12,8 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_net/basic_network.h"
-#include "ocs_net/mdns_provider.h"
 #include "ocs_storage/storage_builder.h"
+#include "ocs_system/device_id.h"
 
 namespace ocs {
 namespace pipeline {
@@ -25,7 +25,9 @@ public:
     //!
     //! @params
     //!  - @p storage_builder to create storages for network configuration.
-    explicit NetworkPipeline(storage::StorageBuilder& storage_builder);
+    //!  - @p device_id to create a unique access point SSID.
+    NetworkPipeline(storage::StorageBuilder& storage_builder,
+                    system::DeviceID& device_id);
 
     //! Start the pipeline.
     status::StatusCode start();
@@ -33,22 +35,35 @@ public:
     //! Return network instance.
     net::BasicNetwork& get_network();
 
-    //! Return mDNS instance.
-    net::MdnsProvider& get_mdns_provider();
-
 private:
-    void initialize_nework_();
+    enum class NetworkType {
+        //! WiFi access point mode.
+        Ap,
+
+        //! WiFi station mode.
+        Sta,
+
+        //! Last invalid type.
+        Last,
+    };
+
+    status::StatusCode read_network_type_(NetworkType& type);
+
+    void initialize_nework_(system::DeviceID& device_id);
+    void initialize_network_ap_(system::DeviceID& device_id);
+    void initialize_network_sta_();
 
     status::StatusCode start_();
     void stop_();
 
+    static const TickType_t wait_start_interval_ = pdMS_TO_TICKS(1000 * 60 * 10);
+
     static const unsigned max_ssid_size_ = 32;
     static const unsigned max_password_size_ = 64;
 
-    storage::StoragePtr sta_storage_;
+    storage::StoragePtr storage_;
 
     std::unique_ptr<net::BasicNetwork> network_;
-    std::unique_ptr<net::MdnsProvider> mdns_provider_;
 };
 
 } // namespace basic

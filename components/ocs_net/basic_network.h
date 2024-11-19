@@ -31,8 +31,8 @@ public:
     //! Stop the network connection process.
     virtual status::StatusCode stop() = 0;
 
-    //! Wait for the network connection to be established.
-    virtual status::StatusCode wait() = 0;
+    //! Wait for @p wait interval for the network connection to be established.
+    virtual status::StatusCode wait(TickType_t wait) = 0;
 
     //! Return received IP address.
     virtual std::optional<ip_addr_t> get_ip_addr() const = 0;
