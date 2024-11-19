@@ -69,6 +69,9 @@ SystemPipeline::SystemPipeline(SystemPipeline::Params params) {
 
     fanout_suspender_.reset(new (std::nothrow) system::FanoutSuspender());
     configASSERT(fanout_suspender_);
+
+    device_id_.reset(new (std::nothrow) system::DeviceID());
+    configASSERT(device_id_);
 }
 
 status::StatusCode SystemPipeline::start() {
@@ -107,6 +110,10 @@ system::FanoutRebootHandler& SystemPipeline::get_reboot_handler() {
 
 system::FanoutSuspender& SystemPipeline::get_suspender() {
     return *fanout_suspender_;
+}
+
+system::DeviceID& SystemPipeline::get_device_id() {
+    return *device_id_;
 }
 
 } // namespace basic
