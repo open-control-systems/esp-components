@@ -10,6 +10,7 @@ idf_component_register(
     REQUIRES
     "ocs_storage"
     "ocs_status"
+    "ocs_security"
 
     INCLUDE_DIRS
     ".."
