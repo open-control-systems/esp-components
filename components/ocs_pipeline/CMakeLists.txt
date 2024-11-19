@@ -24,9 +24,11 @@ idf_component_register(
     "jsonfmt/soil_analog_sensor_formatter.cpp"
 
     "basic/system_pipeline.cpp"
-    "basic/network_pipeline.cpp"
-    "basic/mdns_pipeline.cpp"
     "basic/system_counter_pipeline.cpp"
+
+    "network/network_pipeline.cpp"
+    "network/local_network_selector.cpp"
+    "network/mdns_pipeline.cpp"
 
     REQUIRES
     "ocs_io"

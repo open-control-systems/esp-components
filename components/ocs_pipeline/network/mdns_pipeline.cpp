@@ -8,11 +8,11 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_pipeline/basic/mdns_pipeline.h"
+#include "ocs_pipeline/network/mdns_pipeline.h"
 
 namespace ocs {
 namespace pipeline {
-namespace basic {
+namespace network {
 
 MdnsPipeline::MdnsPipeline() {
     provider_.reset(new (std::nothrow) net::MdnsProvider(net::MdnsProvider::Params {
@@ -30,6 +30,6 @@ net::MdnsProvider& MdnsPipeline::get_provider() {
     return *provider_;
 }
 
-} // namespace basic
+} // namespace network
 } // namespace pipeline
 } // namespace ocs

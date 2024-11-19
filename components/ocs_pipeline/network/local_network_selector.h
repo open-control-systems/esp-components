@@ -12,28 +12,30 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_net/basic_network.h"
+#include "ocs_pipeline/network/inetwork_selector.h"
 #include "ocs_storage/storage_builder.h"
 #include "ocs_system/device_info.h"
 
 namespace ocs {
 namespace pipeline {
-namespace basic {
+namespace network {
 
-class NetworkPipeline : public core::NonCopyable<> {
+//! Select between STA and AP WiFi network configuration.
+//!
+//! @notes
+//!  AP WiFi network is used by default.
+class LocalNetworkSelector : public INetworkSelector, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
     //! @params
     //!  - @p storage_builder to create storages for network configuration.
     //!  - @p device_info to create a unique access point SSID.
-    NetworkPipeline(storage::StorageBuilder& storage_builder,
-                    const system::DeviceInfo& device_info);
+    LocalNetworkSelector(storage::StorageBuilder& storage_builder,
+                         const system::DeviceInfo& device_info);
 
-    //! Start the pipeline.
-    status::StatusCode start();
-
-    //! Return network instance.
-    net::BasicNetwork& get_network();
+    //! Return the selected network.
+    net::BasicNetwork& get_network() override;
 
 private:
     enum class NetworkType {
@@ -53,11 +55,6 @@ private:
     void initialize_network_ap_(const system::DeviceInfo& device_info);
     void initialize_network_sta_();
 
-    status::StatusCode start_();
-    void stop_();
-
-    static const TickType_t wait_start_interval_ = pdMS_TO_TICKS(1000 * 60 * 10);
-
     static const unsigned max_ssid_size_ = 32;
     static const unsigned max_password_size_ = 64;
 
@@ -66,6 +63,6 @@ private:
     std::unique_ptr<net::BasicNetwork> network_;
 };
 
-} // namespace basic
+} // namespace network
 } // namespace pipeline
 } // namespace ocs
