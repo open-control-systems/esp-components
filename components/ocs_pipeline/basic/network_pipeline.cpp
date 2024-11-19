@@ -105,7 +105,8 @@ void NetworkPipeline::initialize_network_ap_(const system::DeviceInfo& device_in
                      status::code_to_str(code));
         }
 
-        std::string builtin_ssid = "ocs-ssid-";
+        std::string builtin_ssid = device_info.get_fw_name();
+        builtin_ssid += "-";
         builtin_ssid += device_info.get_device_id();
 
         strncpy(ssid, builtin_ssid.c_str(), sizeof(ssid));
@@ -122,7 +123,8 @@ void NetworkPipeline::initialize_network_ap_(const system::DeviceInfo& device_in
                      status::code_to_str(code));
         }
 
-        std::string builtin_password = "ocs-password-";
+        std::string builtin_password = device_info.get_fw_name();
+        builtin_password += "-";
         builtin_password += std::string(device_info.get_device_id(), 7);
 
         strncpy(password, builtin_password.c_str(), sizeof(password));
