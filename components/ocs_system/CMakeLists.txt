@@ -16,10 +16,12 @@ idf_component_register(
     "default_randomizer.cpp"
     "fanout_suspender.cpp"
     "suspender_guard.cpp"
+    "device_id.cpp"
 
     REQUIRES
     "esp_timer"
     "driver"
+    "ocs_security"
 
     INCLUDE_DIRS
     ".."

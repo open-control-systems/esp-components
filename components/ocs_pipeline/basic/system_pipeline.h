@@ -18,6 +18,7 @@
 #include "ocs_status/code.h"
 #include "ocs_storage/flash_initializer.h"
 #include "ocs_storage/storage_builder.h"
+#include "ocs_system/device_id.h"
 #include "ocs_system/fanout_reboot_handler.h"
 #include "ocs_system/fanout_suspender.h"
 #include "ocs_system/irebooter.h"
@@ -51,6 +52,7 @@ public:
     scheduler::ITask& get_reboot_task();
     system::FanoutRebootHandler& get_reboot_handler();
     system::FanoutSuspender& get_suspender();
+    system::DeviceID& get_device_id();
 
 private:
     std::unique_ptr<storage::FlashInitializer> flash_initializer_;
@@ -70,6 +72,8 @@ private:
     std::unique_ptr<scheduler::ITask> reboot_task_async_;
 
     std::unique_ptr<system::FanoutSuspender> fanout_suspender_;
+
+    std::unique_ptr<system::DeviceID> device_id_;
 };
 
 } // namespace basic
