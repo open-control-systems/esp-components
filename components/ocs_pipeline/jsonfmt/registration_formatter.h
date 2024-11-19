@@ -9,12 +9,12 @@
 #pragma once
 
 #include <memory>
-#include <string>
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/fanout_formatter.h"
 #include "ocs_fmt/json/iformatter.h"
 #include "ocs_pipeline/jsonfmt/version_formatter.h"
+#include "ocs_system/device_info.h"
 
 namespace ocs {
 namespace pipeline {
@@ -22,13 +22,8 @@ namespace jsonfmt {
 
 class RegistrationFormatter : public fmt::json::IFormatter, public core::NonCopyable<> {
 public:
-    struct Params {
-        std::string fw_version;
-        std::string fw_name;
-    };
-
     //! Initialize.
-    explicit RegistrationFormatter(Params params);
+    explicit RegistrationFormatter(const system::DeviceInfo& device_info);
 
     //! Format the underlying data into @p json.
     status::StatusCode format(cJSON* json) override;

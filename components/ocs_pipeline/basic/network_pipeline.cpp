@@ -29,11 +29,11 @@ const char* log_tag = "network_pipeline";
 } // namespace
 
 NetworkPipeline::NetworkPipeline(storage::StorageBuilder& storage_builder,
-                                 system::DeviceID& device_id) {
+                                 const system::DeviceInfo& device_info) {
     storage_ = storage_builder.make("net_wifi");
     configASSERT(storage_);
 
-    initialize_nework_(device_id);
+    initialize_nework_(device_info);
 }
 
 status::StatusCode NetworkPipeline::start() {
@@ -49,7 +49,7 @@ net::BasicNetwork& NetworkPipeline::get_network() {
     return *network_;
 }
 
-void NetworkPipeline::initialize_nework_(system::DeviceID& device_id) {
+void NetworkPipeline::initialize_nework_(const system::DeviceInfo& device_info) {
     NetworkType network_type = NetworkType::Ap;
 
     auto code = read_network_type_(network_type);
@@ -60,7 +60,7 @@ void NetworkPipeline::initialize_nework_(system::DeviceID& device_id) {
 
     switch (network_type) {
     case NetworkType::Ap:
-        initialize_network_ap_(device_id);
+        initialize_network_ap_(device_info);
         break;
 
     case NetworkType::Sta:
@@ -93,7 +93,7 @@ status::StatusCode NetworkPipeline::read_network_type_(NetworkType& type) {
     return status::StatusCode::OK;
 }
 
-void NetworkPipeline::initialize_network_ap_(system::DeviceID& device_id) {
+void NetworkPipeline::initialize_network_ap_(const system::DeviceInfo& device_info) {
     char ssid[max_ssid_size_];
     memset(ssid, 0, sizeof(ssid));
 
@@ -106,7 +106,7 @@ void NetworkPipeline::initialize_network_ap_(system::DeviceID& device_id) {
         }
 
         std::string builtin_ssid = "ocs-ssid-";
-        builtin_ssid += device_id.get_id();
+        builtin_ssid += device_info.get_device_id();
 
         strncpy(ssid, builtin_ssid.c_str(), sizeof(ssid));
     }
@@ -123,7 +123,7 @@ void NetworkPipeline::initialize_network_ap_(system::DeviceID& device_id) {
         }
 
         std::string builtin_password = "ocs-password-";
-        builtin_password += std::string(device_id.get_id(), 7);
+        builtin_password += std::string(device_info.get_device_id(), 7);
 
         strncpy(password, builtin_password.c_str(), sizeof(password));
     }

@@ -70,8 +70,9 @@ SystemPipeline::SystemPipeline(SystemPipeline::Params params) {
     fanout_suspender_.reset(new (std::nothrow) system::FanoutSuspender());
     configASSERT(fanout_suspender_);
 
-    device_id_.reset(new (std::nothrow) system::DeviceID());
-    configASSERT(device_id_);
+    device_info_.reset(new (std::nothrow) system::DeviceInfo(CONFIG_OCS_CORE_FW_NAME,
+                                                             CONFIG_OCS_CORE_FW_VERSION));
+    configASSERT(device_info_);
 }
 
 status::StatusCode SystemPipeline::start() {
@@ -112,8 +113,8 @@ system::FanoutSuspender& SystemPipeline::get_suspender() {
     return *fanout_suspender_;
 }
 
-system::DeviceID& SystemPipeline::get_device_id() {
-    return *device_id_;
+const system::DeviceInfo& SystemPipeline::get_device_info() const {
+    return *device_info_;
 }
 
 } // namespace basic
