@@ -32,7 +32,7 @@ public:
                  storage::StorageBuilder& storage_builder,
                  scheduler::ITaskScheduler& task_scheduler,
                  system::FanoutRebootHandler& reboot_handler,
-                 RegistrationFormatter::Params registration_params);
+                 const system::DeviceInfo& device_info);
 
     fmt::json::FanoutFormatter& get_telemetry_formatter();
     fmt::json::FanoutFormatter& get_registration_formatter();

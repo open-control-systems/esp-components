@@ -17,6 +17,7 @@ idf_component_register(
     "fanout_suspender.cpp"
     "suspender_guard.cpp"
     "device_id.cpp"
+    "device_info.cpp"
 
     REQUIRES
     "esp_timer"

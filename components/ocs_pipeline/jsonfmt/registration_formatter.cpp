@@ -22,7 +22,7 @@ const char* log_tag = "registration_json_formatter";
 
 } // namespace
 
-RegistrationFormatter::RegistrationFormatter(RegistrationFormatter::Params params) {
+RegistrationFormatter::RegistrationFormatter(const system::DeviceInfo& device_info) {
     fanout_formatter_.reset(new (std::nothrow) fmt::json::FanoutFormatter());
     configASSERT(fanout_formatter_);
 
@@ -30,14 +30,15 @@ RegistrationFormatter::RegistrationFormatter(RegistrationFormatter::Params param
     configASSERT(version_formatter_);
 
     core::Version version;
-    if (!version.parse(params.fw_version.c_str())) {
-        ocs_loge(log_tag, "failed to parse FW version: %s", params.fw_version.c_str());
-
-        params.fw_version = "none";
+    if (version.parse(device_info.get_fw_version())) {
+        version_formatter_->add("fw_version", device_info.get_fw_version());
+    } else {
+        ocs_loge(log_tag, "failed to parse FW version: %s", device_info.get_fw_version());
+        version_formatter_->add("fw_version", "<none>");
     }
 
-    version_formatter_->add("fw_version", params.fw_version.c_str());
-    version_formatter_->add("fw_name", params.fw_name.c_str());
+    version_formatter_->add("fw_name", device_info.get_fw_name());
+    version_formatter_->add("device_id", device_info.get_device_id());
 
     fanout_formatter_->add(*version_formatter_);
 }

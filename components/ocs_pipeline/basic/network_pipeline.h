@@ -13,7 +13,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_net/basic_network.h"
 #include "ocs_storage/storage_builder.h"
-#include "ocs_system/device_id.h"
+#include "ocs_system/device_info.h"
 
 namespace ocs {
 namespace pipeline {
@@ -25,9 +25,9 @@ public:
     //!
     //! @params
     //!  - @p storage_builder to create storages for network configuration.
-    //!  - @p device_id to create a unique access point SSID.
+    //!  - @p device_info to create a unique access point SSID.
     NetworkPipeline(storage::StorageBuilder& storage_builder,
-                    system::DeviceID& device_id);
+                    const system::DeviceInfo& device_info);
 
     //! Start the pipeline.
     status::StatusCode start();
@@ -49,8 +49,8 @@ private:
 
     status::StatusCode read_network_type_(NetworkType& type);
 
-    void initialize_nework_(system::DeviceID& device_id);
-    void initialize_network_ap_(system::DeviceID& device_id);
+    void initialize_nework_(const system::DeviceInfo& device_info);
+    void initialize_network_ap_(const system::DeviceInfo& device_info);
     void initialize_network_sta_();
 
     status::StatusCode start_();

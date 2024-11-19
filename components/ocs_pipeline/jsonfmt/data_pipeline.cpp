@@ -18,12 +18,11 @@ DataPipeline::DataPipeline(core::IClock& clock,
                            storage::StorageBuilder& storage_builder,
                            scheduler::ITaskScheduler& task_scheduler,
                            system::FanoutRebootHandler& reboot_handler,
-                           RegistrationFormatter::Params registration_params) {
+                           const system::DeviceInfo& device_info) {
     telemetry_formatter_.reset(new (std::nothrow) TelemetryFormatter());
     configASSERT(telemetry_formatter_);
 
-    registration_formatter_.reset(new (std::nothrow)
-                                      RegistrationFormatter(registration_params));
+    registration_formatter_.reset(new (std::nothrow) RegistrationFormatter(device_info));
     configASSERT(registration_formatter_);
 
     system_counter_storage_ = storage_builder.make("system_counter");
