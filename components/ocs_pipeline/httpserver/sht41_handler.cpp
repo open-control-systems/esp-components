@@ -14,7 +14,7 @@ namespace httpserver {
 
 SHT41Handler::SHT41Handler(scheduler::AsyncFuncScheduler& func_scheduler,
                            http::Server& http_server,
-                           net::MdnsProvider& mdns_provider,
+                           net::IMdnsDriver& mdns_driver,
                            sensor::sht41::Sensor& sensor)
     : func_scheduler_(func_scheduler)
     , sensor_(sensor) {
@@ -29,18 +29,15 @@ SHT41Handler::SHT41Handler(scheduler::AsyncFuncScheduler& func_scheduler,
         });
     });
 
-    mdns_provider.add_txt_records(net::MdnsProvider::Service::Http,
-                                  net::MdnsProvider::Proto::Tcp,
-                                  net::MdnsProvider::TxtRecordList {
-                                      {
-                                          "sensor_sht41_reset",
-                                          "/sensor/sht41/reset",
-                                      },
-                                      {
-                                          "sensor_sht41_heat",
-                                          "/sensor/sht41/heat",
-                                      },
-                                  });
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp,
+                                            "sensor_sht41_reset", "/sensor/sht41/reset")
+                 == status::StatusCode::OK);
+
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp,
+                                            "sensor_sht41_heat", "/sensor/sht41/heat")
+                 == status::StatusCode::OK);
 }
 
 status::StatusCode

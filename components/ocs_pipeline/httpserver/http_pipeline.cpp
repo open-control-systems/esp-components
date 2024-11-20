@@ -23,14 +23,13 @@ const char* log_tag = "http_pipeline";
 HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
                            system::FanoutSuspender& suspender,
                            net::FanoutNetworkHandler& network_handler,
-                           net::MdnsProvider& mdns_provider,
+                           net::IMdnsDriver& mdns_driver,
                            fmt::json::IFormatter& telemetry_formatter,
                            fmt::json::FanoutFormatter& registration_formatter,
                            Params params)
-    : mdns_provider_(mdns_provider) {
-    mdns_provider_.add_service(net::MdnsProvider::Service::Http,
-                               net::MdnsProvider::Proto::Tcp,
-                               CONFIG_OCS_HTTP_SERVER_PORT);
+    : mdns_driver_(mdns_driver) {
+    mdns_driver.add_service(net::IMdnsDriver::Service::Http, net::IMdnsDriver::Proto::Tcp,
+                            CONFIG_OCS_HTTP_SERVER_PORT);
 
     network_handler.add(*this);
 
@@ -43,22 +42,22 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     configASSERT(suspender.add(*this, "http_pipeline") == status::StatusCode::OK);
 
     telemetry_handler_.reset(new (std::nothrow) DataHandler(
-        *http_server_, mdns_provider_, telemetry_formatter, "/telemetry",
+        *http_server_, mdns_driver, telemetry_formatter, "/telemetry",
         "http_telemetry_handler", params.telemetry.buffer_size));
     configASSERT(telemetry_handler_);
 
     registration_handler_.reset(new (std::nothrow) DataHandler(
-        *http_server_, mdns_provider_, registration_formatter, "/registration",
+        *http_server_, mdns_driver, registration_formatter, "/registration",
         "http_registration_handler", params.registration.buffer_size));
     configASSERT(registration_handler_);
 
     system_handler_.reset(new (std::nothrow)
-                              SystemHandler(*http_server_, mdns_provider_, reboot_task));
+                              SystemHandler(*http_server_, mdns_driver, reboot_task));
     configASSERT(system_handler_);
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
     system_state_handler_.reset(
-        new (std::nothrow) SystemStateHandler(*http_server_, mdns_provider_, 1024 * 2));
+        new (std::nothrow) SystemStateHandler(*http_server_, mdns_driver, 1024 * 2));
     configASSERT(system_state_handler_);
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
 }
@@ -81,11 +80,11 @@ void HttpPipeline::handle_disconnect() {
 }
 
 status::StatusCode HttpPipeline::handle_suspend() {
-    return mdns_provider_.stop();
+    return mdns_driver_.stop();
 }
 
 status::StatusCode HttpPipeline::handle_resume() {
-    return mdns_provider_.start();
+    return mdns_driver_.start();
 }
 
 http::Server& HttpPipeline::get_server() {

@@ -8,25 +8,30 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
+#include "ocs_net/default_mdns_driver.h"
 #include "ocs_net/mdns_pipeline.h"
+#include "ocs_net/mdns_store.h"
 
 namespace ocs {
 namespace net {
 
 MdnsPipeline::MdnsPipeline() {
-    provider_.reset(new (std::nothrow) MdnsProvider(MdnsProvider::Params {
+    driver_.reset(new (std::nothrow) DefaultMdnsDriver(DefaultMdnsDriver::Params {
         .hostname = CONFIG_OCS_NETWORK_MDNS_HOSTNAME,
         .instance_name = CONFIG_OCS_NETWORK_MDNS_INSTANCE_NAME,
     }));
-    configASSERT(provider_);
+    configASSERT(driver_);
+
+    store_.reset(new (std::nothrow) MdnsStore(*driver_));
+    configASSERT(store_);
 }
 
 status::StatusCode MdnsPipeline::start() {
-    return provider_->start();
+    return store_->start();
 }
 
-MdnsProvider& MdnsPipeline::get_provider() {
-    return *provider_;
+IMdnsDriver& MdnsPipeline::get_driver() {
+    return *store_;
 }
 
 } // namespace net

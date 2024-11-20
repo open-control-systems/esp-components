@@ -110,7 +110,7 @@ status::StatusCode find_rom_code(onewire::Bus& bus,
 } // namespace
 
 DS18B20Handler::DS18B20Handler(http::Server& server,
-                               net::MdnsProvider& provider,
+                               net::IMdnsDriver& mdns_driver,
                                system::ISuspender& suspender,
                                sensor::ds18b20::Store& store)
     : suspender_(suspender)
@@ -136,26 +136,28 @@ DS18B20Handler::DS18B20Handler(http::Server& server,
             });
     });
 
-    provider.add_txt_records(net::MdnsProvider::Service::Http,
-                             net::MdnsProvider::Proto::Tcp,
-                             net::MdnsProvider::TxtRecordList {
-                                 {
-                                     "sensor_ds18b20_scan",
-                                     "/sensor/ds18b20/scan",
-                                 },
-                                 {
-                                     "sensor_ds18b20_read_configuration",
-                                     "/sensor/ds18b20/read_configuration",
-                                 },
-                                 {
-                                     "sensor_ds18b20_write_configuration",
-                                     "/sensor/ds18b20/write_configuration",
-                                 },
-                                 {
-                                     "sensor_ds18b20_erase_configuration",
-                                     "/sensor/ds18b20/erase_configuration",
-                                 },
-                             });
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp,
+                                            "sensor_ds18b20_scan", "/sensor/ds18b20/scan")
+                 == status::StatusCode::OK);
+
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp,
+                                            "sensor_ds18b20_read_configuration",
+                                            "/sensor/ds18b20/read_configuration")
+                 == status::StatusCode::OK);
+
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp,
+                                            "sensor_ds18b20_write_configuration",
+                                            "/sensor/ds18b20/write_configuration")
+                 == status::StatusCode::OK);
+
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp,
+                                            "sensor_ds18b20_erase_configuration",
+                                            "/sensor/ds18b20/erase_configuration")
+                 == status::StatusCode::OK);
 }
 
 status::StatusCode DS18B20Handler::handle_scan_(httpd_req_t* req) {

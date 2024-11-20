@@ -13,7 +13,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/cjson_builder.h"
 #include "ocs_http/server.h"
-#include "ocs_net/mdns_provider.h"
+#include "ocs_net/imdns_driver.h"
 #include "ocs_sensor/ds18b20/store.h"
 #include "ocs_system/isuspender.h"
 
@@ -27,11 +27,11 @@ public:
     //!
     //! @params
     //!  - @p server to register endpoints.
-    //!  - @p provider to register mDNS txt records.
+    //!  - @p mdns_driver to register mDNS txt records.
     //!  - @p suspender to suspend the system during sensors operations.
     //!  - @p store to perform operations on sensors.
     DS18B20Handler(http::Server& server,
-                   net::MdnsProvider& prover,
+                   net::IMdnsDriver& mdns_driver,
                    system::ISuspender& suspender,
                    sensor::ds18b20::Store& store);
 

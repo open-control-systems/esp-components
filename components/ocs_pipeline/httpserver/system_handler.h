@@ -10,7 +10,7 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_http/server.h"
-#include "ocs_net/mdns_provider.h"
+#include "ocs_net/imdns_driver.h"
 #include "ocs_scheduler/itask.h"
 
 namespace ocs {
@@ -23,10 +23,10 @@ public:
     //!
     //! @params
     //!  - @p server to register HTTP endpoints.
-    //!  - @p provider to register mDNS txt records.
+    //!  - @p mdns_driver to register mDNS txt records.
     //!  - @p reboot_task to initiate the reboot process.
     SystemHandler(http::Server& server,
-                  net::MdnsProvider& provider,
+                  net::IMdnsDriver& mdns_driver,
                   scheduler::ITask& reboot_task);
 };
 

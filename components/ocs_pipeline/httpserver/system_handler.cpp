@@ -22,7 +22,7 @@ const char* log_tag = "http_system_handler";
 } // namespace
 
 SystemHandler::SystemHandler(http::Server& server,
-                             net::MdnsProvider& provider,
+                             net::IMdnsDriver& mdns_driver,
                              scheduler::ITask& reboot_task) {
     server.add_GET("/system/reboot", [&reboot_task](httpd_req_t* req) {
         const auto err = httpd_resp_send(req, "Rebooting...", HTTPD_RESP_USE_STRLEN);
@@ -34,14 +34,11 @@ SystemHandler::SystemHandler(http::Server& server,
 
         return reboot_task.run();
     });
-    provider.add_txt_records(net::MdnsProvider::Service::Http,
-                             net::MdnsProvider::Proto::Tcp,
-                             net::MdnsProvider::TxtRecordList {
-                                 {
-                                     "system_reboot",
-                                     "/system/reboot",
-                                 },
-                             });
+
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp, "system_reboot",
+                                            "/system/reboot")
+                 == status::StatusCode::OK);
 }
 
 } // namespace httpserver
