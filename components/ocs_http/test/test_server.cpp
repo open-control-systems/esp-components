@@ -95,10 +95,9 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.wait());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, server.start());
 
-    const auto ip_addr = network.get_ip_addr();
-    TEST_ASSERT_TRUE(ip_addr);
+    const auto info = network.get_info();
 
-    net::ip_addr_to_str ip_addr_str(*ip_addr);
+    net::ip_addr_to_str ip_addr_str(info.ip_addr);
 
     ClientReader reader(ClientReader::Params {
         .host = ip_addr_str.c_str(),

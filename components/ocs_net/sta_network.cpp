@@ -86,6 +86,14 @@ StaNetwork::~StaNetwork() {
     configASSERT(esp_netif_deinit() == ESP_ERR_NOT_SUPPORTED);
 }
 
+IStaNetwork::Info StaNetwork::get_info() {
+    return IStaNetwork::Info {
+        .ssid = params_.ssid,
+        .rssi = get_rssi(),
+        .ip_addr = get_ip_addr_(),
+    };
+}
+
 status::StatusCode StaNetwork::start() {
     const auto err = esp_wifi_start();
     if (err != ESP_OK) {
@@ -128,25 +136,6 @@ status::StatusCode StaNetwork::wait(TickType_t wait) {
     configASSERT(false);
 }
 
-std::optional<ip_addr_t> StaNetwork::get_ip_addr() const {
-    const EventBits_t bits = xEventGroupGetBits(event_group_.get());
-    if (!(bits & EVENT_BIT_CONNECTED)) {
-        return std::nullopt;
-    }
-
-    esp_netif_ip_info_t ip_info;
-    memset(&ip_info, 0, sizeof(ip_info));
-
-    const auto err = esp_netif_get_ip_info(netif_.get(), &ip_info);
-    if (err != ESP_OK) {
-        ocs_loge(log_tag, "esp_netif_get_ip_info(): %s", esp_err_to_name(err));
-        return std::nullopt;
-    }
-
-    const ip_addr_t addr = IPADDR4_INIT(ip_info.ip.addr);
-    return addr;
-}
-
 void StaNetwork::handle_event_(void* event_arg,
                                esp_event_base_t event_base,
                                int32_t event_id,
@@ -163,6 +152,24 @@ void StaNetwork::handle_event_(void* event_arg,
     } else {
         ocs_loge(log_tag, "unsupported event: event_id=%ld", event_id);
     }
+}
+
+ip_addr_t StaNetwork::get_ip_addr_() const {
+    const EventBits_t bits = xEventGroupGetBits(event_group_.get());
+    if (!(bits & EVENT_BIT_CONNECTED)) {
+        return IPADDR4_INIT(0);
+    }
+
+    esp_netif_ip_info_t ip_info;
+    memset(&ip_info, 0, sizeof(ip_info));
+
+    const auto err = esp_netif_get_ip_info(netif_.get(), &ip_info);
+    if (err != ESP_OK) {
+        ocs_loge(log_tag, "esp_netif_get_ip_info(): %s", esp_err_to_name(err));
+        return IPADDR4_INIT(0);
+    }
+
+    return IPADDR4_INIT(ip_info.ip.addr);
 }
 
 void StaNetwork::handle_wifi_event_(int32_t event_id, void* event_data) {

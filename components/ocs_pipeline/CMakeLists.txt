@@ -8,7 +8,8 @@ idf_component_register(
     "httpserver/system_state_handler.cpp"
 
     "jsonfmt/data_pipeline.cpp"
-    "jsonfmt/network_formatter.cpp"
+    "jsonfmt/ap_network_formatter.cpp"
+    "jsonfmt/sta_network_formatter.cpp"
     "jsonfmt/system_formatter.cpp"
     "jsonfmt/counter_formatter.cpp"
     "jsonfmt/telemetry_formatter.cpp"
@@ -28,6 +29,7 @@ idf_component_register(
 
     "network/mdns_pipeline.cpp"
     "network/local_network_pipeline.cpp"
+    "network/local_network_json_pipeline.cpp"
 
     REQUIRES
     "ocs_io"

@@ -16,7 +16,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_event_group.h"
 #include "ocs_core/static_mutex.h"
-#include "ocs_net/basic_network.h"
+#include "ocs_net/iap_network.h"
 #include "ocs_net/inetwork_handler.h"
 #include "ocs_net/netif_builder.h"
 #include "ocs_status/code.h"
@@ -25,7 +25,7 @@ namespace ocs {
 namespace net {
 
 //! Handle WiFi AP (access-point) mode network operations.
-class ApNetwork : public BasicNetwork, public core::NonCopyable<> {
+class ApNetwork : public IApNetwork, public core::NonCopyable<> {
 public:
     struct Params {
         //! WiFi SSID.
@@ -35,10 +35,10 @@ public:
         std::string password;
 
         //! WiFi channel.
-        int channel { 0 };
+        uint8_t channel { 0 };
 
-        //! Maximum number of simultaneous STA connection to the AP.
-        int max_connection { 0 };
+        //! Maximum number of simultaneous STA connections to the AP.
+        uint8_t max_connection { 0 };
     };
 
     //! Initialize.
@@ -50,17 +50,17 @@ public:
     //! Destroy.
     ~ApNetwork();
 
+    //! Return various network characteristics.
+    IApNetwork::Info get_info() override;
+
     //! Start the WiFi connection process.
-    status::StatusCode start() override;
+    status::StatusCode start();
 
     //! Stop the WiFi connection process.
-    status::StatusCode stop() override;
+    status::StatusCode stop();
 
     //! Wait for the WiFi connection to be established.
-    status::StatusCode wait(TickType_t wait = portMAX_DELAY) override;
-
-    //! Return received IP address.
-    std::optional<ip_addr_t> get_ip_addr() const override;
+    status::StatusCode wait(TickType_t wait = portMAX_DELAY);
 
 private:
     static void handle_event_(void* event_arg,
@@ -85,6 +85,7 @@ private:
     core::StaticMutex mu_;
     core::Cond cond_;
     status::StatusCode code_ { status::StatusCode::Last };
+    uint8_t connection_count_ { 0 };
 };
 
 } // namespace net

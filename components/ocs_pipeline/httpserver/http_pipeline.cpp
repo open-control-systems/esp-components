@@ -8,7 +8,6 @@
 
 #include "ocs_pipeline/httpserver/http_pipeline.h"
 #include "ocs_core/log.h"
-#include "ocs_pipeline/jsonfmt/network_formatter.h"
 #include "ocs_status/code_to_str.h"
 
 namespace ocs {
@@ -24,7 +23,6 @@ const char* log_tag = "http_pipeline";
 HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
                            system::FanoutSuspender& suspender,
                            net::FanoutNetworkHandler& network_handler,
-                           net::BasicNetwork& network,
                            net::MdnsProvider& mdns_provider,
                            fmt::json::IFormatter& telemetry_formatter,
                            fmt::json::FanoutFormatter& registration_formatter,
@@ -57,11 +55,6 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     system_handler_.reset(new (std::nothrow)
                               SystemHandler(*http_server_, mdns_provider_, reboot_task));
     configASSERT(system_handler_);
-
-    network_formatter_.reset(new (std::nothrow) jsonfmt::NetworkFormatter(network));
-    configASSERT(network_formatter_);
-
-    registration_formatter.add(*network_formatter_);
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
     system_state_handler_.reset(
