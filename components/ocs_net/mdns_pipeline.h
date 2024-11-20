@@ -14,8 +14,7 @@
 #include "ocs_net/mdns_provider.h"
 
 namespace ocs {
-namespace pipeline {
-namespace network {
+namespace net {
 
 class MdnsPipeline : public core::NonCopyable<> {
 public:
@@ -26,12 +25,11 @@ public:
     status::StatusCode start();
 
     //! Get the underlying mDNS provider.
-    net::MdnsProvider& get_provider();
+    MdnsProvider& get_provider();
 
 private:
-    std::unique_ptr<net::MdnsProvider> provider_;
+    std::unique_ptr<MdnsProvider> provider_;
 };
 
-} // namespace network
-} // namespace pipeline
+} // namespace net
 } // namespace ocs

@@ -27,7 +27,6 @@ idf_component_register(
     "basic/system_pipeline.cpp"
     "basic/system_counter_pipeline.cpp"
 
-    "network/mdns_pipeline.cpp"
     "network/local_network_pipeline.cpp"
     "network/local_network_json_pipeline.cpp"
 
