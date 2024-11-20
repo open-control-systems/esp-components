@@ -10,6 +10,7 @@
 
 #include "unity.h"
 
+#include "ocs_net/fanout_network_handler.h"
 #include "ocs_net/sta_network.h"
 #include "ocs_storage/flash_initializer.h"
 
@@ -21,12 +22,14 @@ TEST_CASE("WiFi STA: connect to AP: invalid credentials",
           "[ocs_net], [sta_network| update]") {
     { // Invalid SSID
         storage::FlashInitializer flash_initializer;
+        FanoutNetworkHandler handler;
 
-        StaNetwork network(StaNetwork::Params {
-            .max_retry_count = 1,
-            .ssid = "foo",
-            .password = CONFIG_OCS_TEST_UNIT_WIFI_STA_PASSWORD,
-        });
+        StaNetwork network(handler,
+                           StaNetwork::Params {
+                               .max_retry_count = 1,
+                               .ssid = "foo",
+                               .password = CONFIG_OCS_TEST_UNIT_WIFI_STA_PASSWORD,
+                           });
 
         TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
         TEST_ASSERT_EQUAL(status::StatusCode::Error, network.wait());
@@ -34,12 +37,14 @@ TEST_CASE("WiFi STA: connect to AP: invalid credentials",
     }
     { // Invalid password
         storage::FlashInitializer flash_initializer;
+        FanoutNetworkHandler handler;
 
-        StaNetwork network(StaNetwork::Params {
-            .max_retry_count = 1,
-            .ssid = CONFIG_OCS_TEST_UNIT_WIFI_STA_SSID,
-            .password = "bar",
-        });
+        StaNetwork network(handler,
+                           StaNetwork::Params {
+                               .max_retry_count = 1,
+                               .ssid = CONFIG_OCS_TEST_UNIT_WIFI_STA_SSID,
+                               .password = "bar",
+                           });
 
         TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
         TEST_ASSERT_EQUAL(status::StatusCode::Error, network.wait());
@@ -47,12 +52,14 @@ TEST_CASE("WiFi STA: connect to AP: invalid credentials",
     }
     { // Invalid SSID and password
         storage::FlashInitializer flash_initializer;
+        FanoutNetworkHandler handler;
 
-        StaNetwork network(StaNetwork::Params {
-            .max_retry_count = 1,
-            .ssid = "foo",
-            .password = "bar",
-        });
+        StaNetwork network(handler,
+                           StaNetwork::Params {
+                               .max_retry_count = 1,
+                               .ssid = "foo",
+                               .password = "bar",
+                           });
 
         TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
         TEST_ASSERT_EQUAL(status::StatusCode::Error, network.wait());
@@ -63,12 +70,14 @@ TEST_CASE("WiFi STA: connect to AP: invalid credentials",
 TEST_CASE("WiFi STA: connect to AP: valid credentials",
           "[ocs_net], [sta_network| update]") {
     storage::FlashInitializer flash_initializer;
+    FanoutNetworkHandler handler;
 
-    StaNetwork network(StaNetwork::Params {
-        .max_retry_count = 3,
-        .ssid = CONFIG_OCS_TEST_UNIT_WIFI_STA_SSID,
-        .password = CONFIG_OCS_TEST_UNIT_WIFI_STA_PASSWORD,
-    });
+    StaNetwork network(handler,
+                       StaNetwork::Params {
+                           .max_retry_count = 3,
+                           .ssid = CONFIG_OCS_TEST_UNIT_WIFI_STA_SSID,
+                           .password = CONFIG_OCS_TEST_UNIT_WIFI_STA_PASSWORD,
+                       });
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, network.wait());

@@ -5,8 +5,8 @@ idf_component_register(
     "mdns_provider.cpp"
     "netif_builder.cpp"
     "ip_addr_to_str.cpp"
-    "basic_network.cpp"
     "rssi_to_signal_strength.cpp"
+    "fanout_network_handler.cpp"
 
     REQUIRES
     "esp_netif"

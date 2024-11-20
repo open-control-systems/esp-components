@@ -38,8 +38,9 @@ int8_t get_rssi() {
 
 } // namespace
 
-StaNetwork::StaNetwork(const Params& params)
-    : params_(params) {
+StaNetwork::StaNetwork(INetworkHandler& handler, const Params& params)
+    : params_(params)
+    , handler_(handler) {
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
@@ -212,7 +213,7 @@ void StaNetwork::handle_wifi_event_sta_disconnected_(void* event_data) {
         xEventGroupSetBits(event_group_.get(), EVENT_BIT_FAILED);
     }
 
-    handle_disconnect_();
+    handler_.handle_disconnect();
 }
 
 void StaNetwork::handle_ip_event_(int32_t event_id, void* event_data) {
@@ -233,7 +234,7 @@ void StaNetwork::handle_ip_event_sta_got_ip_(void* event_data) {
     retry_count_ = 0;
     xEventGroupSetBits(event_group_.get(), EVENT_BIT_CONNECTED);
 
-    handle_connect_();
+    handler_.handle_connect();
 }
 
 } // namespace net

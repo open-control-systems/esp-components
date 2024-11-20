@@ -9,6 +9,7 @@
 #include "unity.h"
 
 #include "ocs_net/ap_network.h"
+#include "ocs_net/fanout_network_handler.h"
 #include "ocs_net/mdns_provider.h"
 #include "ocs_storage/flash_initializer.h"
 
@@ -17,11 +18,13 @@ namespace net {
 
 TEST_CASE("mDNS start/stop", "[ocs_net], [mdns_provider]") {
     storage::FlashInitializer flash_initializer;
+    FanoutNetworkHandler handler;
 
-    ApNetwork network(ApNetwork::Params {
-        .ssid = "test-ssid",
-        .password = "test-password",
-    });
+    ApNetwork network(handler,
+                      ApNetwork::Params {
+                          .ssid = "test-ssid",
+                          .password = "test-password",
+                      });
 
     MdnsProvider provider(MdnsProvider::Params {
         .hostname = "host",

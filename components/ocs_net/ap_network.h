@@ -17,6 +17,7 @@
 #include "ocs_core/static_event_group.h"
 #include "ocs_core/static_mutex.h"
 #include "ocs_net/basic_network.h"
+#include "ocs_net/inetwork_handler.h"
 #include "ocs_net/netif_builder.h"
 #include "ocs_status/code.h"
 
@@ -41,7 +42,10 @@ public:
     };
 
     //! Initialize.
-    explicit ApNetwork(const Params& params);
+    //!
+    //! @params
+    //!  - @p handler to notify about network status changes.
+    ApNetwork(INetworkHandler& handler, const Params& params);
 
     //! Destroy.
     ~ApNetwork();
@@ -71,6 +75,8 @@ private:
     void handle_wifi_event_ap_sta_disconnected_(void* event_data);
 
     const Params params_;
+
+    INetworkHandler& handler_;
 
     NetifSharedPtr netif_;
 

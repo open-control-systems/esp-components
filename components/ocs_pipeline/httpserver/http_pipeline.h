@@ -12,6 +12,7 @@
 #include "ocs_fmt/json/fanout_formatter.h"
 #include "ocs_http/server.h"
 #include "ocs_net/basic_network.h"
+#include "ocs_net/fanout_network_handler.h"
 #include "ocs_net/mdns_provider.h"
 #include "ocs_pipeline/httpserver/data_handler.h"
 #include "ocs_pipeline/httpserver/system_handler.h"
@@ -44,6 +45,7 @@ public:
     //! Initialize.
     HttpPipeline(scheduler::ITask& reboot_task,
                  system::FanoutSuspender& suspender,
+                 net::FanoutNetworkHandler& network_handler,
                  net::BasicNetwork& network,
                  net::MdnsProvider& mdns_provider,
                  fmt::json::IFormatter& telemetry_formatter,

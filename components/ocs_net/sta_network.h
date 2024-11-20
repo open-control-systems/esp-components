@@ -15,6 +15,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_event_group.h"
 #include "ocs_net/basic_network.h"
+#include "ocs_net/inetwork_handler.h"
 #include "ocs_net/netif_builder.h"
 #include "ocs_status/code.h"
 
@@ -36,7 +37,10 @@ public:
     };
 
     //! Initialize.
-    explicit StaNetwork(const Params& params);
+    //!
+    //! @params
+    //!  - @p handler to notify about network status changes.
+    StaNetwork(INetworkHandler& handler, const Params& params);
 
     //! Destroy.
     ~StaNetwork();
@@ -67,6 +71,8 @@ private:
     void handle_ip_event_sta_got_ip_(void* event_data);
 
     const Params params_;
+
+    INetworkHandler& handler_;
 
     NetifSharedPtr netif_;
 

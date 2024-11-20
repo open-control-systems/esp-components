@@ -26,9 +26,8 @@ idf_component_register(
     "basic/system_pipeline.cpp"
     "basic/system_counter_pipeline.cpp"
 
-    "network/network_pipeline.cpp"
-    "network/local_network_selector.cpp"
     "network/mdns_pipeline.cpp"
+    "network/local_network_pipeline.cpp"
 
     REQUIRES
     "ocs_io"
