@@ -25,8 +25,9 @@ const char* log_tag = "ap_network";
 
 } // namespace
 
-ApNetwork::ApNetwork(const Params& params)
+ApNetwork::ApNetwork(INetworkHandler& handler, const Params& params)
     : params_(params)
+    , handler_(handler)
     , cond_(mu_) {
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
@@ -155,7 +156,7 @@ void ApNetwork::handle_wifi_event_ap_sta_start_() {
                  status::code_to_str(code));
     }
 
-    handle_connect_();
+    handler_.handle_connect();
 }
 
 void ApNetwork::handle_wifi_event_ap_sta_stop_() {
@@ -167,7 +168,7 @@ void ApNetwork::handle_wifi_event_ap_sta_stop_() {
                  status::code_to_str(code));
     }
 
-    handle_disconnect_();
+    handler_.handle_disconnect();
 }
 
 void ApNetwork::handle_wifi_event_ap_sta_connected_(void* event_data) {

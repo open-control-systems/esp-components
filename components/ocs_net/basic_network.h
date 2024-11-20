@@ -9,7 +9,6 @@
 #pragma once
 
 #include <optional>
-#include <vector>
 
 #include "lwip/ip_addr.h"
 
@@ -36,18 +35,6 @@ public:
 
     //! Return received IP address.
     virtual std::optional<ip_addr_t> get_ip_addr() const = 0;
-
-    //! Add handler to be notified about the network connection status.
-    //!
-    //! @remarks
-    //!  All handlers should be added before the network is started.
-    void add(INetworkHandler& handler);
-
-protected:
-    void handle_connect_();
-    void handle_disconnect_();
-
-    std::vector<INetworkHandler*> handlers_;
 };
 
 } // namespace net

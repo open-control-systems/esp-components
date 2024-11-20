@@ -23,6 +23,7 @@ const char* log_tag = "http_pipeline";
 
 HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
                            system::FanoutSuspender& suspender,
+                           net::FanoutNetworkHandler& network_handler,
                            net::BasicNetwork& network,
                            net::MdnsProvider& mdns_provider,
                            fmt::json::IFormatter& telemetry_formatter,
@@ -33,7 +34,7 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
                                net::MdnsProvider::Proto::Tcp,
                                CONFIG_OCS_HTTP_SERVER_PORT);
 
-    network.add(*this);
+    network_handler.add(*this);
 
     http_server_.reset(new (std::nothrow) http::Server(http::Server::Params {
         .server_port = CONFIG_OCS_HTTP_SERVER_PORT,

@@ -6,25 +6,25 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_net/basic_network.h"
+#include "ocs_net/fanout_network_handler.h"
 
 namespace ocs {
 namespace net {
 
-void BasicNetwork::add(INetworkHandler& handler) {
-    handlers_.emplace_back(&handler);
-}
-
-void BasicNetwork::handle_connect_() {
+void FanoutNetworkHandler::handle_connect() {
     for (auto& handler : handlers_) {
         handler->handle_connect();
     }
 }
 
-void BasicNetwork::handle_disconnect_() {
+void FanoutNetworkHandler::handle_disconnect() {
     for (auto& handler : handlers_) {
         handler->handle_disconnect();
     }
+}
+
+void FanoutNetworkHandler::add(INetworkHandler& handler) {
+    handlers_.push_back(&handler);
 }
 
 } // namespace net
