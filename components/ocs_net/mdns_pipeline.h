@@ -11,7 +11,7 @@
 #include <memory>
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_net/mdns_provider.h"
+#include "ocs_net/imdns_driver.h"
 
 namespace ocs {
 namespace net {
@@ -21,14 +21,15 @@ public:
     //! Initialize.
     explicit MdnsPipeline();
 
-    //! Start pipeline.
+    //! Start the pipeline.
     status::StatusCode start();
 
-    //! Get the underlying mDNS provider.
-    MdnsProvider& get_provider();
+    //! Get the underlying mDNS driver.
+    IMdnsDriver& get_driver();
 
 private:
-    std::unique_ptr<MdnsProvider> provider_;
+    std::unique_ptr<IMdnsDriver> driver_;
+    std::unique_ptr<IMdnsDriver> store_;
 };
 
 } // namespace net

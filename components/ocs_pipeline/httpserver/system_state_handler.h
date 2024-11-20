@@ -13,7 +13,7 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/dynamic_formatter.h"
 #include "ocs_http/server.h"
-#include "ocs_net/mdns_provider.h"
+#include "ocs_net/imdns_driver.h"
 
 namespace ocs {
 namespace pipeline {
@@ -25,10 +25,10 @@ public:
     //!
     //! @params
     //!  - @p server to register endpoint to receive system statistics.
-    //!  - @p provider to register mDNS txt records.
+    //!  - @p mdns_driver to register mDNS txt records.
     //!  - @p response_size - system state response size, in bytes.
     SystemStateHandler(http::Server& server,
-                       net::MdnsProvider& provider,
+                       net::IMdnsDriver& mdns_driver,
                        unsigned response_size);
 
 private:

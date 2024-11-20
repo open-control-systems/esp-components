@@ -2,7 +2,9 @@ idf_component_register(
     SRCS
     "sta_network.cpp"
     "ap_network.cpp"
-    "mdns_provider.cpp"
+    "mdns_store.cpp"
+    "default_mdns_driver.cpp"
+    "mdns_to_str.cpp"
     "mdns_pipeline.cpp"
     "netif_builder.cpp"
     "ip_addr_to_str.cpp"

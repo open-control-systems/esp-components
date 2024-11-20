@@ -12,7 +12,7 @@
 #include "ocs_fmt/json/fanout_formatter.h"
 #include "ocs_http/server.h"
 #include "ocs_net/fanout_network_handler.h"
-#include "ocs_net/mdns_provider.h"
+#include "ocs_net/imdns_driver.h"
 #include "ocs_pipeline/httpserver/data_handler.h"
 #include "ocs_pipeline/httpserver/system_handler.h"
 #include "ocs_scheduler/itask.h"
@@ -45,7 +45,7 @@ public:
     HttpPipeline(scheduler::ITask& reboot_task,
                  system::FanoutSuspender& suspender,
                  net::FanoutNetworkHandler& network_handler,
-                 net::MdnsProvider& mdns_provider,
+                 net::IMdnsDriver& mdns_driver,
                  fmt::json::IFormatter& telemetry_formatter,
                  fmt::json::FanoutFormatter& registration_formatter,
                  Params params);
@@ -66,7 +66,7 @@ public:
     http::Server& get_server();
 
 private:
-    net::MdnsProvider& mdns_provider_;
+    net::IMdnsDriver& mdns_driver_;
 
     std::unique_ptr<http::Server> http_server_;
     std::unique_ptr<DataHandler> telemetry_handler_;

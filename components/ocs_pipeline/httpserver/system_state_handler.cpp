@@ -15,7 +15,7 @@ namespace pipeline {
 namespace httpserver {
 
 SystemStateHandler::SystemStateHandler(http::Server& server,
-                                       net::MdnsProvider& provider,
+                                       net::IMdnsDriver& mdns_driver,
                                        unsigned response_size) {
     state_json_formatter_.reset(new (std::nothrow) jsonfmt::SystemStateFormatter());
     configASSERT(state_json_formatter_);
@@ -48,14 +48,10 @@ SystemStateHandler::SystemStateHandler(http::Server& server,
         return status::StatusCode::OK;
     });
 
-    provider.add_txt_records(net::MdnsProvider::Service::Http,
-                             net::MdnsProvider::Proto::Tcp,
-                             net::MdnsProvider::TxtRecordList {
-                                 {
-                                     "system_report",
-                                     "/system/report",
-                                 },
-                             });
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp, "system_report",
+                                            "/system/report")
+                 == status::StatusCode::OK);
 }
 
 } // namespace httpserver
