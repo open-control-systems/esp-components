@@ -11,7 +11,6 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_fmt/json/fanout_formatter.h"
 #include "ocs_http/server.h"
-#include "ocs_net/basic_network.h"
 #include "ocs_net/fanout_network_handler.h"
 #include "ocs_net/mdns_provider.h"
 #include "ocs_pipeline/httpserver/data_handler.h"
@@ -46,7 +45,6 @@ public:
     HttpPipeline(scheduler::ITask& reboot_task,
                  system::FanoutSuspender& suspender,
                  net::FanoutNetworkHandler& network_handler,
-                 net::BasicNetwork& network,
                  net::MdnsProvider& mdns_provider,
                  fmt::json::IFormatter& telemetry_formatter,
                  fmt::json::FanoutFormatter& registration_formatter,
@@ -74,7 +72,6 @@ private:
     std::unique_ptr<DataHandler> telemetry_handler_;
     std::unique_ptr<DataHandler> registration_handler_;
     std::unique_ptr<SystemHandler> system_handler_;
-    std::unique_ptr<fmt::json::IFormatter> network_formatter_;
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
     std::unique_ptr<SystemStateHandler> system_state_handler_;

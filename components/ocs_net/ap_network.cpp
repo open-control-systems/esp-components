@@ -72,6 +72,16 @@ ApNetwork::~ApNetwork() {
     configASSERT(esp_netif_deinit() == ESP_ERR_NOT_SUPPORTED);
 }
 
+IApNetwork::Info ApNetwork::get_info() {
+    core::LockGuard lock(mu_);
+
+    return IApNetwork::Info {
+        .channel = params_.channel,
+        .cur_connection = connection_count_,
+        .max_connection = params_.max_connection,
+    };
+}
+
 status::StatusCode ApNetwork::start() {
     const auto err = esp_wifi_start();
     if (err != ESP_OK) {
@@ -102,10 +112,6 @@ status::StatusCode ApNetwork::wait(TickType_t wait) {
     }
 
     return code_;
-}
-
-std::optional<ip_addr_t> ApNetwork::get_ip_addr() const {
-    return std::nullopt;
 }
 
 void ApNetwork::handle_event_(void* event_arg,
@@ -172,6 +178,9 @@ void ApNetwork::handle_wifi_event_ap_sta_stop_() {
 }
 
 void ApNetwork::handle_wifi_event_ap_sta_connected_(void* event_data) {
+    core::LockGuard lock(mu_);
+    ++connection_count_;
+
     wifi_event_ap_staconnected_t event =
         *static_cast<wifi_event_ap_staconnected_t*>(event_data);
 
@@ -180,6 +189,9 @@ void ApNetwork::handle_wifi_event_ap_sta_connected_(void* event_data) {
 }
 
 void ApNetwork::handle_wifi_event_ap_sta_disconnected_(void* event_data) {
+    core::LockGuard lock(mu_);
+    --connection_count_;
+
     wifi_event_ap_staconnected_t event =
         *static_cast<wifi_event_ap_staconnected_t*>(event_data);
 

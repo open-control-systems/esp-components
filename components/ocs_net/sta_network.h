@@ -14,8 +14,8 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/static_event_group.h"
-#include "ocs_net/basic_network.h"
 #include "ocs_net/inetwork_handler.h"
+#include "ocs_net/ista_network.h"
 #include "ocs_net/netif_builder.h"
 #include "ocs_status/code.h"
 
@@ -23,7 +23,7 @@ namespace ocs {
 namespace net {
 
 //! Handle WiFi STA (station) network operations.
-class StaNetwork : public BasicNetwork, public core::NonCopyable<> {
+class StaNetwork : public IStaNetwork, public core::NonCopyable<> {
 public:
     struct Params {
         //! Maximum number of attempts to establish a WiFi connection.
@@ -45,23 +45,25 @@ public:
     //! Destroy.
     ~StaNetwork();
 
+    //! Return various network characteristics.
+    IStaNetwork::Info get_info() override;
+
     //! Start the WiFi connection process.
-    status::StatusCode start() override;
+    status::StatusCode start();
 
     //! Stop the WiFi connection process.
-    status::StatusCode stop() override;
+    status::StatusCode stop();
 
     //! Wait for the WiFi connection to be established.
-    status::StatusCode wait(TickType_t wait = portMAX_DELAY) override;
-
-    //! Return received IP address.
-    std::optional<ip_addr_t> get_ip_addr() const override;
+    status::StatusCode wait(TickType_t wait = portMAX_DELAY);
 
 private:
     static void handle_event_(void* event_arg,
                               esp_event_base_t event_base,
                               int32_t event_id,
                               void* event_data);
+
+    ip_addr_t get_ip_addr_() const;
 
     void handle_wifi_event_(int32_t event_id, void* event_data);
     void handle_wifi_event_sta_start_();
