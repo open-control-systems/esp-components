@@ -48,7 +48,7 @@ private:
 
     static const TickType_t wait_start_interval_ = pdMS_TO_TICKS(1000 * 60 * 10);
 
-    storage::StoragePtr storage_;
+    storage::StorageBuilder::IStoragePtr storage_;
 
     std::unique_ptr<net::FanoutNetworkHandler> handler_;
     std::unique_ptr<net::ApNetwork> network_;

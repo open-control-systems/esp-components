@@ -44,7 +44,7 @@ public:
     Sensor& get_sensor();
 
 private:
-    storage::StoragePtr storage_;
+    storage::StorageBuilder::IStoragePtr storage_;
     io::i2c::IStore::ITransceiverPtr transceiver_;
     std::unique_ptr<Sensor> sensor_;
 };

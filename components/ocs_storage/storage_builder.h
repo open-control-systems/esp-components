@@ -18,15 +18,15 @@
 namespace ocs {
 namespace storage {
 
-using StoragePtr = std::unique_ptr<IStorage>;
-
 class StorageBuilder : public core::NonCopyable<> {
 public:
+    using IStoragePtr = std::unique_ptr<IStorage>;
+
     //! Create a storage with a unique @ id.
     //!
     //! @return
     //!  nullptr if storage with @p id already exists.
-    StoragePtr make(const char* id);
+    IStoragePtr make(const char* id);
 
 private:
     std::set<std::string> ids_;

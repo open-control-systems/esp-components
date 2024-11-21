@@ -52,7 +52,7 @@ private:
     const std::string block_id_;
     const std::string storage_id_;
 
-    storage::StoragePtr storage_;
+    storage::StorageBuilder::IStoragePtr storage_;
 
     std::unique_ptr<FsmBlock> block_;
 };
