@@ -12,13 +12,13 @@
 namespace ocs {
 namespace storage {
 
-StoragePtr StorageBuilder::make(const char* id) {
+StorageBuilder::IStoragePtr StorageBuilder::make(const char* id) {
     auto [it, ok] = ids_.insert(id);
     if (!ok) {
         return nullptr;
     }
 
-    return StoragePtr(new (std::nothrow) NvsStorage(id));
+    return StorageBuilder::IStoragePtr(new (std::nothrow) NvsStorage(id));
 }
 
 } // namespace storage
