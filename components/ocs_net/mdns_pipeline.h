@@ -19,7 +19,7 @@ namespace net {
 class MdnsPipeline : public core::NonCopyable<> {
 public:
     //! Initialize.
-    explicit MdnsPipeline();
+    MdnsPipeline(const char* hostname, const char* instance_name);
 
     //! Start the pipeline.
     status::StatusCode start();

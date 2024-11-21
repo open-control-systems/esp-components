@@ -23,14 +23,4 @@ menu "OCS Network Configuration"
                     Maximum number of the STA connects to AP.
         endmenu
     endmenu
-
-    menu "mDNS Configuration"
-            config OCS_NETWORK_MDNS_HOSTNAME
-                string "mDNS Hostname"
-                default "ocs-mdns-hostname"
-
-            config OCS_NETWORK_MDNS_INSTANCE_NAME
-                string "mDNS Instance Name"
-                default "ocs-mdns-instance-name"
-    endmenu
 endmenu

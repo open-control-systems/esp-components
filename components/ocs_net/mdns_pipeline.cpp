@@ -15,11 +15,8 @@
 namespace ocs {
 namespace net {
 
-MdnsPipeline::MdnsPipeline() {
-    driver_.reset(new (std::nothrow) DefaultMdnsDriver(DefaultMdnsDriver::Params {
-        .hostname = CONFIG_OCS_NETWORK_MDNS_HOSTNAME,
-        .instance_name = CONFIG_OCS_NETWORK_MDNS_INSTANCE_NAME,
-    }));
+MdnsPipeline::MdnsPipeline(const char* hostname, const char* instance_name) {
+    driver_.reset(new (std::nothrow) DefaultMdnsDriver(hostname, instance_name));
     configASSERT(driver_);
 
     store_.reset(new (std::nothrow) MdnsStore(*driver_));

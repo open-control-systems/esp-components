@@ -26,10 +26,7 @@ TEST_CASE("Default mDNS driver: start/stop", "[ocs_net], [default_mdns_driver]")
                           .password = "test-password",
                       });
 
-    DefaultMdnsDriver mdns_driver(DefaultMdnsDriver::Params {
-        .hostname = "host",
-        .instance_name = "instance",
-    });
+    DefaultMdnsDriver mdns_driver("host", "instance");
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, mdns_driver.start());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, mdns_driver.stop());
