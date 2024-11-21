@@ -22,6 +22,7 @@
 namespace ocs {
 namespace onewire {
 
+//! Dallas Semiconductor sensor serial number, LSB byte order.
 using SerialNumber = uint8_t[DS_SENSOR_SERIAL_NUMBER_LEN];
 
 struct OCS_ATTR_PACKED RomCode {
