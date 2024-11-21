@@ -18,6 +18,7 @@ idf_component_register(
 
     "sht41/sensor.cpp"
     "sht41/sensor_pipeline.cpp"
+    "sht41/serial_number_to_str.cpp"
 
     "bme280/sensor.cpp"
     "bme280/spi_sensor_pipeline.cpp"

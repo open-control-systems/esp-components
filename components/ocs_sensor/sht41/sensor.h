@@ -15,6 +15,7 @@
 #include "ocs_core/spmc_node.h"
 #include "ocs_io/i2c/itransceiver.h"
 #include "ocs_scheduler/itask.h"
+#include "ocs_sensor/sht41/serial_number.h"
 #include "ocs_storage/istorage.h"
 
 namespace ocs {
@@ -127,7 +128,7 @@ private:
 
     TickType_t heating_delay_ { 0 };
     unsigned heating_count_ { 0 };
-    uint32_t serial_number_ { 0 };
+    SerialNumber serial_number_ { 0 };
 
     core::SpmcNode<Data> data_;
 };

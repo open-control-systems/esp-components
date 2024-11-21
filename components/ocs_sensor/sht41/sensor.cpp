@@ -16,6 +16,7 @@
 #include "ocs_algo/math_ops.h"
 #include "ocs_core/log.h"
 #include "ocs_sensor/sht41/sensor.h"
+#include "ocs_sensor/sht41/serial_number_to_str.h"
 #include "ocs_status/code_to_str.h"
 #include "ocs_status/macros.h"
 
@@ -59,9 +60,10 @@ Sensor::Sensor(io::i2c::ITransceiver& transceiver,
     }
 
     ocs_logi(log_tag,
-             "serial_number=0x%8lX measure_command=%s "
+             "serial_number=%s measure_command=%s "
              "heating_command=%s heating_delay=%lu(ms) heating_count=%u",
-             serial_number_, command_to_str_(params_.measure_command),
+             serial_number_to_str(serial_number_).c_str(),
+             command_to_str_(params_.measure_command),
              command_to_str_(params.heating_command), pdTICKS_TO_MS(heating_delay_),
              heating_count_);
 }
@@ -210,7 +212,6 @@ status::StatusCode Sensor::read_serial_number_() {
     OCS_STATUS_RETURN_ON_ERROR(
         transceiver_.receive(buf, sizeof(buf), params_.bus_wait_interval));
 
-    const uint16_t hi = algo::BitOps::pack_u8(buf[0], buf[1]);
     const uint8_t hi_checksum = buf[2];
     const uint8_t hi_checksum_calculated = calculate_crc(buf[0], buf[1]);
     if (hi_checksum != hi_checksum_calculated) {
@@ -222,7 +223,6 @@ status::StatusCode Sensor::read_serial_number_() {
         return status::StatusCode::InvalidState;
     }
 
-    const uint16_t lo = algo::BitOps::pack_u8(buf[3], buf[4]);
     const uint8_t lo_checksum = buf[5];
     const uint8_t lo_checksum_calculated = calculate_crc(buf[3], buf[4]);
     if (lo_checksum != lo_checksum_calculated) {
@@ -234,7 +234,7 @@ status::StatusCode Sensor::read_serial_number_() {
         return status::StatusCode::InvalidState;
     }
 
-    serial_number_ = algo::BitOps::pack_u16(hi, lo);
+    memcpy(serial_number_, buf, sizeof(serial_number_));
 
     return status::StatusCode::OK;
 }
