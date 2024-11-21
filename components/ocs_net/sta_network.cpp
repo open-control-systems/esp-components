@@ -61,11 +61,9 @@ StaNetwork::StaNetwork(INetworkHandler& handler, const Params& params)
 
     strncpy(reinterpret_cast<char*>(wifi_config.sta.ssid), params_.ssid.c_str(),
             sizeof(wifi_config.sta.ssid));
-    wifi_config.sta.ssid[sizeof(wifi_config.sta.ssid) - 1] = 0;
 
     strncpy(reinterpret_cast<char*>(wifi_config.sta.password), params_.password.c_str(),
             sizeof(wifi_config.sta.password));
-    wifi_config.sta.password[sizeof(wifi_config.sta.password) - 1] = 0;
 
     ESP_ERROR_CHECK(esp_wifi_set_mode(WIFI_MODE_STA));
     ESP_ERROR_CHECK(esp_wifi_set_config(WIFI_IF_STA, &wifi_config));
