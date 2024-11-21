@@ -8,6 +8,8 @@
 
 #pragma once
 
+#include <cstddef>
+
 #include "ocs_status/code.h"
 
 namespace ocs {
@@ -19,7 +21,7 @@ public:
     virtual ~IStorage() = default;
 
     //! Read the size of the value for @p key.
-    virtual status::StatusCode probe(const char* key, unsigned& size) = 0;
+    virtual status::StatusCode probe(const char* key, size_t& size) = 0;
 
     //! Read a key-value pair.
     //!
@@ -27,7 +29,7 @@ public:
     //!  - @p key - name of value to read, 15 characters is a maximum length;
     //!  - @p value - value to read;
     //!  - @p size  - size of the value to read, in bytes.
-    virtual status::StatusCode read(const char* key, void* value, unsigned size) = 0;
+    virtual status::StatusCode read(const char* key, void* value, size_t size) = 0;
 
     //! Write a key-value pair.
     //!
@@ -35,8 +37,7 @@ public:
     //!  - @p key - name of value to write, 15 characters is a maximum length;
     //!  - @p value - value to write;
     //!  - @p size  - size of the value to write, in bytes.
-    virtual status::StatusCode
-    write(const char* key, const void* value, unsigned size) = 0;
+    virtual status::StatusCode write(const char* key, const void* value, size_t size) = 0;
 
     //! Erase a key-value pair with the given key name.
     //!
