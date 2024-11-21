@@ -28,7 +28,7 @@ NvsStorage::NvsStorage(const char* ns) {
     strncpy(ns_, ns, std::min(bufsize_, strlen(ns)));
 }
 
-status::StatusCode NvsStorage::probe(const char* key, unsigned& size) {
+status::StatusCode NvsStorage::probe(const char* key, size_t& size) {
     configASSERT(key);
 
     auto [handle, code] = open_(NVS_READONLY);
