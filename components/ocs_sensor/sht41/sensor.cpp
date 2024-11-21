@@ -43,20 +43,20 @@ Sensor::Sensor(io::i2c::ITransceiver& transceiver,
     configASSERT(params_.send_wait_interval);
     configASSERT(params_.bus_wait_interval);
 
+    reset();
+
+    heating_delay_ = estimate_heating_delay_(params.heating_command);
+    configASSERT(heating_delay_);
+
     if (const auto code = read_heating_count_(); code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to read sensor heating count from storage: code=%s",
                  status::code_to_str(code));
     }
 
-    reset();
-
     if (const auto code = read_serial_number_(); code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to read sensor serial number: code=%s",
                  status::code_to_str(code));
     }
-
-    heating_delay_ = estimate_heating_delay_(params.heating_command);
-    configASSERT(heating_delay_);
 
     ocs_logi(log_tag,
              "serial_number=0x%8lX measure_command=%s "
