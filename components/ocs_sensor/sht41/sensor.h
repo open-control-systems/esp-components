@@ -125,11 +125,11 @@ private:
     io::i2c::ITransceiver& transceiver_;
     storage::IStorage& storage_;
 
-    uint32_t serial_number_ { 0 };
     TickType_t heating_delay_ { 0 };
+    unsigned heating_count_ { 0 };
+    uint32_t serial_number_ { 0 };
 
     core::SpmcNode<Data> data_;
-    unsigned heating_count_ { 0 };
 };
 
 } // namespace sht41
