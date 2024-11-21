@@ -70,8 +70,9 @@ SystemPipeline::SystemPipeline(SystemPipeline::Params params) {
     fanout_suspender_.reset(new (std::nothrow) system::FanoutSuspender());
     configASSERT(fanout_suspender_);
 
-    device_info_.reset(new (std::nothrow) system::DeviceInfo(CONFIG_OCS_CORE_FW_NAME,
-                                                             CONFIG_OCS_CORE_FW_VERSION));
+    device_info_.reset(new (std::nothrow) system::DeviceInfo(
+        CONFIG_OCS_CORE_FW_NAME, CONFIG_OCS_CORE_FW_VERSION,
+        CONFIG_OCS_CORE_FW_DESCRIPTION));
     configASSERT(device_info_);
 }
 

@@ -11,13 +11,20 @@
 namespace ocs {
 namespace system {
 
-DeviceInfo::DeviceInfo(const char* fw_name, const char* fw_version)
+DeviceInfo::DeviceInfo(const char* fw_name,
+                       const char* fw_version,
+                       const char* fw_description)
     : fw_name_(fw_name)
-    , fw_version_(fw_version) {
+    , fw_version_(fw_version)
+    , fw_description_(fw_description) {
 }
 
 const char* DeviceInfo::get_fw_name() const {
     return fw_name_.c_str();
+}
+
+const char* DeviceInfo::get_fw_description() const {
+    return fw_description_.c_str();
 }
 
 const char* DeviceInfo::get_fw_version() const {
