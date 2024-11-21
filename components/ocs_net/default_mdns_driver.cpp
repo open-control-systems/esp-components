@@ -21,8 +21,9 @@ const char* log_tag = "default_mdns_driver";
 
 } // namespace
 
-DefaultMdnsDriver::DefaultMdnsDriver(DefaultMdnsDriver::Params params)
-    : params_(params) {
+DefaultMdnsDriver::DefaultMdnsDriver(const char* hostname, const char* instance_name)
+    : hostname_(hostname)
+    , instance_name_(instance_name) {
 }
 
 status::StatusCode DefaultMdnsDriver::start() {
@@ -33,14 +34,14 @@ status::StatusCode DefaultMdnsDriver::start() {
         return status::StatusCode::Error;
     }
 
-    err = mdns_hostname_set(params_.hostname.c_str());
+    err = mdns_hostname_set(hostname_.c_str());
     if (err != ESP_OK) {
         ocs_loge(log_tag, "mdns_hostname_set(): %s", esp_err_to_name(err));
 
         return status::StatusCode::Error;
     }
 
-    err = mdns_instance_name_set(params_.instance_name.c_str());
+    err = mdns_instance_name_set(instance_name_.c_str());
     if (err != ESP_OK) {
         ocs_loge(log_tag, "mdns_instance_name_set(): %s", esp_err_to_name(err));
 

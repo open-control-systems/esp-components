@@ -18,13 +18,8 @@ namespace net {
 
 class DefaultMdnsDriver : public IMdnsDriver, public core::NonCopyable<> {
 public:
-    struct Params {
-        std::string hostname;
-        std::string instance_name;
-    };
-
     //! Initialize.
-    explicit DefaultMdnsDriver(Params params);
+    DefaultMdnsDriver(const char* hostname, const char* instance_name);
 
     //! Start mDNS driver.
     status::StatusCode start() override;
@@ -42,7 +37,8 @@ public:
                                       const char* value) override;
 
 private:
-    const Params params_;
+    std::string hostname_;
+    std::string instance_name_;
 };
 
 } // namespace net
