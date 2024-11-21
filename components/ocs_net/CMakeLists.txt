@@ -4,6 +4,7 @@ idf_component_register(
     "ap_network.cpp"
     "mdns_store.cpp"
     "default_mdns_driver.cpp"
+    "noop_mdns_driver.cpp"
     "mdns_to_str.cpp"
     "mdns_pipeline.cpp"
     "netif_builder.cpp"
