@@ -60,26 +60,17 @@ void LocalNetworkPipeline::initialize_network_(const system::DeviceInfo& device_
     char ssid[max_ssid_size_];
     memset(ssid, 0, sizeof(ssid));
 
-    auto code =
-        algo::StorageOps::prob_read(*storage_, "net_ap_ssid", ssid, max_ssid_size_);
-    if (code != status::StatusCode::OK) {
-        if (code != status::StatusCode::NoData) {
-            ocs_loge(log_tag, "failed to read WiFi AP SSID from storage: %s",
-                     status::code_to_str(code));
-        }
+    std::string builtin_ssid = device_info.get_fw_name();
+    builtin_ssid += "-";
+    builtin_ssid += device_info.get_device_id();
 
-        std::string builtin_ssid = device_info.get_fw_name();
-        builtin_ssid += "-";
-        builtin_ssid += device_info.get_device_id();
-
-        strncpy(ssid, builtin_ssid.c_str(), sizeof(ssid));
-    }
+    strncpy(ssid, builtin_ssid.c_str(), sizeof(ssid));
 
     char password[max_password_size_];
     memset(password, 0, sizeof(password));
 
-    code = algo::StorageOps::prob_read(*storage_, "net_ap_pswd", password,
-                                       max_password_size_);
+    const auto code = algo::StorageOps::prob_read(*storage_, "net_ap_pswd", password,
+                                                  max_password_size_);
     if (code != status::StatusCode::OK) {
         if (code != status::StatusCode::NoData) {
             ocs_loge(log_tag, "failed to read WiFi AP password from storage: %s",
