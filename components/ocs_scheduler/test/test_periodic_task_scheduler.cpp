@@ -37,24 +37,24 @@ TEST_CASE("Periodic task scheduler: add task",
     TEST_ASSERT_EQUAL(status::StatusCode::OK,
                       task_scheduler.add(task, task_id, interval));
 
-    TEST_ASSERT_FALSE(task.was_run_called());
+    TEST_ASSERT_EQUAL(0, task.run_call_count());
 
     // The first run is always allowed.
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
-    TEST_ASSERT_TRUE(task.was_run_called());
+    TEST_ASSERT_EQUAL(1, task.run_call_count());
     task.reset(status::StatusCode::OK);
 
     clock.value += (interval - 1);
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
-    TEST_ASSERT_FALSE(task.was_run_called());
+    TEST_ASSERT_EQUAL(0, task.run_call_count());
 
     clock.value += 1;
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
-    TEST_ASSERT_TRUE(task.was_run_called());
+    TEST_ASSERT_EQUAL(1, task.run_call_count());
     task.reset(status::StatusCode::OK);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
-    TEST_ASSERT_FALSE(task.was_run_called());
+    TEST_ASSERT_EQUAL(0, task.run_call_count());
 }
 
 TEST_CASE("Periodic task scheduler: add same task twice",
@@ -106,7 +106,7 @@ TEST_CASE("Periodic task scheduler: add multiple tasks",
     // The first run is always allowed.
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
     for (const auto& task : tasks) {
-        TEST_ASSERT_TRUE(task->was_run_called());
+        TEST_ASSERT_EQUAL(1, task->run_call_count());
     }
     for (auto& task : tasks) {
         task->reset(status::StatusCode::OK);
@@ -114,14 +114,14 @@ TEST_CASE("Periodic task scheduler: add multiple tasks",
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
     for (const auto& task : tasks) {
-        TEST_ASSERT_FALSE(task->was_run_called());
+        TEST_ASSERT_EQUAL(0, task->run_call_count());
     }
 
     clock.value += interval;
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
     for (const auto& task : tasks) {
-        TEST_ASSERT_TRUE(task->was_run_called());
+        TEST_ASSERT_EQUAL(1, task->run_call_count());
     }
     for (auto& task : tasks) {
         task->reset(status::StatusCode::OK);
@@ -129,7 +129,7 @@ TEST_CASE("Periodic task scheduler: add multiple tasks",
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
     for (const auto& task : tasks) {
-        TEST_ASSERT_FALSE(task->was_run_called());
+        TEST_ASSERT_EQUAL(0, task->run_call_count());
     }
 }
 
@@ -154,15 +154,15 @@ TEST_CASE("Periodic task scheduler: max number of tasks overflow",
                       task_scheduler.add(task2, "task_2", interval));
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
-    TEST_ASSERT_TRUE(task1.was_run_called());
-    TEST_ASSERT_FALSE(task2.was_run_called());
+    TEST_ASSERT_EQUAL(1, task1.run_call_count());
+    TEST_ASSERT_EQUAL(0, task2.run_call_count());
 
     task1.reset(status::StatusCode::OK);
     task2.reset(status::StatusCode::OK);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, task_scheduler.run());
-    TEST_ASSERT_FALSE(task1.was_run_called());
-    TEST_ASSERT_FALSE(task2.was_run_called());
+    TEST_ASSERT_EQUAL(0, task1.run_call_count());
+    TEST_ASSERT_EQUAL(0, task2.run_call_count());
 }
 
 } // namespace scheduler

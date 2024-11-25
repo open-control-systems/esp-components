@@ -25,8 +25,8 @@ TEST_CASE("Task fanout: run all tasks successfully", "[ocs_scheduler], [fanout_t
     fanout.add(task2);
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, fanout.run());
-    TEST_ASSERT_TRUE(task1.was_run_called());
-    TEST_ASSERT_TRUE(task2.was_run_called());
+    TEST_ASSERT_EQUAL(1, task1.run_call_count());
+    TEST_ASSERT_EQUAL(1, task2.run_call_count());
 }
 
 TEST_CASE("Task fanout: run fails on first task", "[ocs_scheduler], [fanout_task]") {
@@ -39,8 +39,8 @@ TEST_CASE("Task fanout: run fails on first task", "[ocs_scheduler], [fanout_task
     fanout.add(task2);
 
     TEST_ASSERT_EQUAL(status::StatusCode::Error, fanout.run());
-    TEST_ASSERT_TRUE(task1.was_run_called());
-    TEST_ASSERT_FALSE(task2.was_run_called());
+    TEST_ASSERT_EQUAL(1, task1.run_call_count());
+    TEST_ASSERT_EQUAL(0, task2.run_call_count());
 }
 
 TEST_CASE("Task fanout: run fails on second task", "[ocs_scheduler], [fanout_task]") {
@@ -53,8 +53,8 @@ TEST_CASE("Task fanout: run fails on second task", "[ocs_scheduler], [fanout_tas
     fanout.add(task2);
 
     TEST_ASSERT_EQUAL(status::StatusCode::Error, fanout.run());
-    TEST_ASSERT_TRUE(task1.was_run_called());
-    TEST_ASSERT_TRUE(task2.was_run_called());
+    TEST_ASSERT_EQUAL(1, task1.run_call_count());
+    TEST_ASSERT_EQUAL(1, task2.run_call_count());
 }
 
 TEST_CASE("Task fanout: no tasks added", "[ocs_scheduler], [fanout_task]") {

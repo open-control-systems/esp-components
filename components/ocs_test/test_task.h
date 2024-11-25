@@ -23,6 +23,7 @@ public:
     status::StatusCode run() override;
 
     bool was_run_called() const;
+    unsigned run_call_count() const;
 
     //! Reset to initial state.
     void reset(status::StatusCode code);
@@ -36,6 +37,7 @@ private:
 
     status::StatusCode code_ { status::StatusCode::OK };
     bool run_called_ { false };
+    unsigned run_call_count_ { 0 };
 };
 
 } // namespace test
