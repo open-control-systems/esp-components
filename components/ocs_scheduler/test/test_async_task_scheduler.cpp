@@ -48,7 +48,7 @@ TEST_CASE("Async task scheduler: wait for events",
     TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.run());
     TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.stop());
 
-    TEST_ASSERT_TRUE(task.was_run_called());
+    TEST_ASSERT_EQUAL(2, task.run_call_count());
 }
 
 TEST_CASE("Async task scheduler: register same task multiple times",
@@ -93,6 +93,11 @@ TEST_CASE("Async task scheduler: register maximum tasks",
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.start());
 
+    // Reset tasks as they are run at startup.
+    for (auto& task : tasks) {
+        task->reset(status::StatusCode::OK);
+    }
+
     for (auto& task : tasks) {
         wait_task(scheduler, *task);
     }
@@ -130,6 +135,11 @@ TEST_CASE("Async task scheduler: register maximum tasks: some failed",
     }
 
     TEST_ASSERT_EQUAL(status::StatusCode::OK, scheduler.start());
+
+    // Reset tasks as they are run at startup.
+    for (auto& task : tasks) {
+        task->reset(status::StatusCode::OK);
+    }
 
     for (auto& task : tasks) {
         wait_task(scheduler, *task);
