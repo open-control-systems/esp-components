@@ -69,7 +69,8 @@ status::StatusCode AsyncTaskScheduler::start() {
     for (auto& node : nodes_) {
         const auto code = node->start();
         if (code != status::StatusCode::OK) {
-            ocs_loge(log_tag_.c_str(), "failed to start node: id=%s code=%s", node->id(),
+            ocs_logw(log_tag_.c_str(),
+                     "failed to start node on scheduler start: id=%s code=%s", node->id(),
                      status::code_to_str(code));
         }
     }
