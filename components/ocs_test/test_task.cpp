@@ -22,6 +22,8 @@ status::StatusCode TestTask::run() {
     core::LockGuard lock(mu_);
 
     run_called_ = true;
+    ++run_call_count_;
+
     cond_.broadcast();
 
     return code_;
@@ -33,11 +35,18 @@ bool TestTask::was_run_called() const {
     return run_called_;
 }
 
+unsigned TestTask::run_call_count() const {
+    core::LockGuard lock(mu_);
+
+    return run_call_count_;
+}
+
 void TestTask::reset(status::StatusCode code) {
     core::LockGuard lock(mu_);
 
     code_ = code;
     run_called_ = false;
+    run_call_count_ = 0;
 }
 
 status::StatusCode TestTask::wait(TickType_t wait) {
