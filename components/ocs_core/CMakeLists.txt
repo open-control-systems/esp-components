@@ -16,6 +16,7 @@ idf_component_register(
     "future.cpp"
     "rate_limiter.cpp"
     "operation_guard.cpp"
+    "file_stream_reader.cpp"
 
     REQUIRES
     "json"
