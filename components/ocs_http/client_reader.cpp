@@ -33,9 +33,6 @@ ClientReader::ClientReader(const Params& params)
     config_.user_data = this;
 
     client_ = make_client_shared(config_);
-
-    buf_.reset(new (std::nothrow) char[params_.bufsize]);
-    configASSERT(buf_);
 }
 
 esp_http_client_handle_t ClientReader::client() const {
@@ -55,8 +52,8 @@ status::StatusCode ClientReader::wait(TickType_t wait) {
 unsigned ClientReader::read(char* buf, unsigned size) {
     core::LockGuard lock(mu_);
 
-    const unsigned len = std::min(size, strlen(buf_.get()));
-    memcpy(buf, buf_.get(), len);
+    const unsigned len = std::min(size, buf_.size());
+    memcpy(buf, buf_.data(), len);
 
     return len;
 }
@@ -108,8 +105,11 @@ esp_err_t ClientReader::handle_event_(esp_http_client_event_t* event) {
 void ClientReader::handle_event_on_data_(esp_http_client_event_t* event) {
     core::LockGuard lock(mu_);
 
-    memcpy(buf_.get(), event->data,
-           std::min(event->data_len, static_cast<int>(params_.bufsize)));
+    const char* ptr = static_cast<const char*>(event->data);
+
+    for (unsigned n = 0; n < event->data_len; ++n) {
+        buf_.push_back(ptr[n]);
+    }
 }
 
 void ClientReader::handle_event_on_finish_() {
