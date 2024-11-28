@@ -6,6 +6,7 @@ idf_component_register(
     "httpserver/data_handler.cpp"
     "httpserver/system_handler.cpp"
     "httpserver/system_state_handler.cpp"
+    "httpserver/web_gui_pipeline.cpp"
 
     "jsonfmt/data_pipeline.cpp"
     "jsonfmt/ap_network_formatter.cpp"
@@ -31,6 +32,8 @@ idf_component_register(
     "network/local_network_json_pipeline.cpp"
 
     REQUIRES
+    "spiffs"
+
     "ocs_io"
     "ocs_net"
     "ocs_http"
