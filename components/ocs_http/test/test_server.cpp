@@ -71,7 +71,7 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
     });
 
     const char* path = "/foo";
-    const char* want_response = "hellow world";
+    const char* want_response = "hello world";
 
     server.add_GET(path, [want_response](httpd_req_t* req) {
         const auto err = httpd_resp_send(req, want_response, HTTPD_RESP_USE_STRLEN);
@@ -102,7 +102,6 @@ TEST_CASE("Start HTTP server: WiFi valid credentials", "[ocs_http], [server]") {
     ClientReader reader(ClientReader::Params {
         .host = ip_addr_str.c_str(),
         .path = path,
-        .bufsize = 128,
     });
     TEST_ASSERT_EQUAL(ESP_OK, esp_http_client_perform(reader.client()));
     TEST_ASSERT_EQUAL(200, esp_http_client_get_status_code(reader.client()));

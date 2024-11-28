@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include <memory>
+#include <vector>
 
 #include "esp_http_client.h"
 
@@ -28,9 +28,6 @@ public:
 
         //! HTTP Path, if not set, default is `/`.
         std::string path;
-
-        //! Underlying buffer size for reading the response.
-        unsigned bufsize { 128 };
     };
 
     //! Initialize.
@@ -63,7 +60,7 @@ private:
     core::Cond cond_;
 
     bool data_received_ { false };
-    std::unique_ptr<char[]> buf_;
+    std::vector<char> buf_;
 };
 
 } // namespace http
