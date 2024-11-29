@@ -47,7 +47,7 @@ Server::~Server() {
 }
 
 void Server::add_GET(const char* path, Server::HandlerFunc func) {
-    uris_get_[path] = func;
+    endpoints_get_.push_back(std::make_pair(path, func));
 }
 
 status::StatusCode Server::start() {
@@ -61,7 +61,7 @@ status::StatusCode Server::start() {
 }
 
 status::StatusCode Server::register_uris_() {
-    for (auto& [path, handler] : uris_get_) {
+    for (const auto& [path, _] : endpoints_get_) {
         httpd_uri_t uri;
         memset(&uri, 0, sizeof(uri));
 
@@ -93,8 +93,11 @@ esp_err_t Server::handle_request_(httpd_req_t* req) {
 }
 
 void Server::handle_request_get_(httpd_req_t* req) {
-    const auto handler = uris_get_.find(algo::UriOps::parse_path(req->uri));
-    if (handler == uris_get_.end()) {
+    const auto endpoint = std::find_if(endpoints_get_.begin(), endpoints_get_.end(),
+                                       [&req, this](const auto& endpoint) {
+                                           return endpoint.first == req->uri;
+                                       });
+    if (endpoint == endpoints_get_.end()) {
         ocs_loge(log_tag, "unknown URI: %s", req->uri);
 
         const auto ret = httpd_resp_send_err(
@@ -108,7 +111,7 @@ void Server::handle_request_get_(httpd_req_t* req) {
         return;
     }
 
-    const auto code = handler->second(req);
+    const auto code = endpoint->second(req);
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to handle request: URI=%s code=%s", req->uri,
                  status::code_to_str(code));
