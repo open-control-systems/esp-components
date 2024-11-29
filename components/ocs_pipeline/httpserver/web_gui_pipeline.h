@@ -13,7 +13,6 @@
 #include "ocs_core/noncopyable.h"
 #include "ocs_core/stream_transceiver.h"
 #include "ocs_http/server.h"
-#include "ocs_net/imdns_driver.h"
 
 namespace ocs {
 namespace pipeline {
@@ -25,8 +24,7 @@ public:
     //!
     //! @params
     //!  - @p server to register endpoints to serve the Web GUI files.
-    //!  - @p mdns_driver to register mDNS txt records.
-    WebGuiPipeline(http::Server& server, net::IMdnsDriver& mdns_driver);
+    explicit WebGuiPipeline(http::Server& server);
 
 private:
     void initialize_fs_();

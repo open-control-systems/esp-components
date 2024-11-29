@@ -12,7 +12,6 @@
 
 #include "ocs_core/noncopyable.h"
 #include "ocs_http/server.h"
-#include "ocs_net/imdns_driver.h"
 #include "ocs_scheduler/async_func_scheduler.h"
 #include "ocs_sensor/sht41/sensor.h"
 
@@ -25,7 +24,6 @@ public:
     //! Initialize.
     SHT41Handler(scheduler::AsyncFuncScheduler& func_scheduler,
                  http::Server& http_server,
-                 net::IMdnsDriver& mdns_driver,
                  sensor::sht41::Sensor& sensor);
 
 private:

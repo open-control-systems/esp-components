@@ -58,7 +58,7 @@ const char* log_tag = "web_gui_pipeline";
 
 } // namespace
 
-WebGuiPipeline::WebGuiPipeline(http::Server& server, net::IMdnsDriver& mdns_driver) {
+WebGuiPipeline::WebGuiPipeline(http::Server& server) {
     buffer_.resize(buffer_size_);
 
     initialize_fs_();
@@ -72,11 +72,6 @@ WebGuiPipeline::WebGuiPipeline(http::Server& server, net::IMdnsDriver& mdns_driv
     server.add_GET("/assets/index.js", [this](httpd_req_t* req) {
         return handle_file_(req);
     });
-
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp, "web_gui_root",
-                                            "/")
-                 == status::StatusCode::OK);
 }
 
 void WebGuiPipeline::initialize_fs_() {
