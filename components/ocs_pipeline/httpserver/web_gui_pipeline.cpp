@@ -66,10 +66,7 @@ WebGuiPipeline::WebGuiPipeline(http::Server& server) {
     server.add_GET("/", [this](httpd_req_t* req) {
         return handle_file_(req);
     });
-    server.add_GET("/assets/index.css", [this](httpd_req_t* req) {
-        return handle_file_(req);
-    });
-    server.add_GET("/assets/index.js", [this](httpd_req_t* req) {
+    server.add_GET("/assets/*", [this](httpd_req_t* req) {
         return handle_file_(req);
     });
 }
