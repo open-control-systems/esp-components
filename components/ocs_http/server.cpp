@@ -38,6 +38,7 @@ Server::Server(const Params& params) {
     config_ = HTTPD_DEFAULT_CONFIG();
     config_.server_port = params.server_port;
     config_.max_uri_handlers = params.max_uri_handlers;
+    config_.uri_match_fn = httpd_uri_match_wildcard;
 }
 
 Server::~Server() {
@@ -93,10 +94,15 @@ esp_err_t Server::handle_request_(httpd_req_t* req) {
 }
 
 void Server::handle_request_get_(httpd_req_t* req) {
-    const auto endpoint = std::find_if(endpoints_get_.begin(), endpoints_get_.end(),
-                                       [&req, this](const auto& endpoint) {
-                                           return endpoint.first == req->uri;
-                                       });
+    const auto endpoint = std::find_if(
+        endpoints_get_.begin(), endpoints_get_.end(), [&req, this](const auto& endpoint) {
+            if (config_.uri_match_fn) {
+                return config_.uri_match_fn(endpoint.first.c_str(), req->uri,
+                                            strlen(req->uri));
+            }
+
+            return endpoint.first == req->uri;
+        });
     if (endpoint == endpoints_get_.end()) {
         ocs_loge(log_tag, "unknown URI: %s", req->uri);
 
