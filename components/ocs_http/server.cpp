@@ -47,14 +47,7 @@ Server::~Server() {
 }
 
 void Server::add_GET(const char* path, Server::HandlerFunc func) {
-    auto& handler = uris_get_[path];
-    memset(&handler.uri, 0, sizeof(handler.uri));
-
-    handler.uri.method = HTTP_GET;
-    handler.uri.handler = handle_request_;
-    handler.uri.user_ctx = this;
-
-    handler.func = func;
+    uris_get_[path] = func;
 }
 
 status::StatusCode Server::start() {
@@ -69,8 +62,15 @@ status::StatusCode Server::start() {
 
 status::StatusCode Server::register_uris_() {
     for (auto& [path, handler] : uris_get_) {
-        handler.uri.uri = path.c_str();
-        ESP_ERROR_CHECK(httpd_register_uri_handler(handle_, &handler.uri));
+        httpd_uri_t uri;
+        memset(&uri, 0, sizeof(uri));
+
+        uri.method = HTTP_GET;
+        uri.handler = handle_request_;
+        uri.user_ctx = this;
+        uri.uri = path.c_str();
+
+        ESP_ERROR_CHECK(httpd_register_uri_handler(handle_, &uri));
     }
 
     return status::StatusCode::OK;
@@ -108,7 +108,7 @@ void Server::handle_request_get_(httpd_req_t* req) {
         return;
     }
 
-    const auto code = handler->second.func(req);
+    const auto code = handler->second(req);
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to handle request: URI=%s code=%s", req->uri,
                  status::code_to_str(code));

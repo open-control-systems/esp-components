@@ -53,13 +53,8 @@ public:
     void add_GET(const char* path, HandlerFunc func);
 
 private:
-    struct Handler {
-        httpd_uri_t uri {};
-        HandlerFunc func { nullptr };
-    };
-
     using URIMap =
-        std::unordered_map<std::string, Handler, algo::StringHash, algo::StringEqual>;
+        std::unordered_map<std::string, HandlerFunc, algo::StringHash, algo::StringEqual>;
 
     static esp_err_t handle_request_(httpd_req_t* req);
 
