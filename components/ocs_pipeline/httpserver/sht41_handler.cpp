@@ -18,25 +18,25 @@ SHT41Handler::SHT41Handler(scheduler::AsyncFuncScheduler& func_scheduler,
                            sensor::sht41::Sensor& sensor)
     : func_scheduler_(func_scheduler)
     , sensor_(sensor) {
-    http_server.add_GET("/sensor/sht41/reset", [this](httpd_req_t* req) {
+    http_server.add_GET("/api/v1/sensor/sht41/reset", [this](httpd_req_t* req) {
         return handle_operation_(req, [](sensor::sht41::Sensor& sensor) {
             return sensor.reset();
         });
     });
-    http_server.add_GET("/sensor/sht41/heat", [this](httpd_req_t* req) {
+    http_server.add_GET("/api/v1/sensor/sht41/heat", [this](httpd_req_t* req) {
         return handle_operation_(req, [](sensor::sht41::Sensor& sensor) {
             return sensor.heat();
         });
     });
 
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp,
-                                            "sensor_sht41_reset", "/sensor/sht41/reset")
+    configASSERT(mdns_driver.add_txt_record(
+                     net::IMdnsDriver::Service::Http, net::IMdnsDriver::Proto::Tcp,
+                     "api_v1_sensor_sht41_reset", "/api/v1/sensor/sht41/reset")
                  == status::StatusCode::OK);
 
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp,
-                                            "sensor_sht41_heat", "/sensor/sht41/heat")
+    configASSERT(mdns_driver.add_txt_record(
+                     net::IMdnsDriver::Service::Http, net::IMdnsDriver::Proto::Tcp,
+                     "api_v1_sensor_sht41_heat", "/api/v1/sensor/sht41/heat")
                  == status::StatusCode::OK);
 }
 

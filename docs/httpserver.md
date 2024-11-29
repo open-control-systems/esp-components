@@ -5,7 +5,7 @@ All examples below are run from the terminal and use the [httpie](https://httpie
 **Receive telemetry data**
 
 ```bash
-http "bonsai-firmware.local/telemetry"
+http "bonsai-firmware.local/api/v1/telemetry"
 ```
 
 The response may be formatted differently depending on how the firmware has been configured:
@@ -87,7 +87,7 @@ The response may be formatted differently depending on how the firmware has been
 **Receive registration data**
 
 ```bash
-http "bonsai-firmware.local/registration"
+http "bonsai-firmware.local/api/v1/registration"
 ```
 
 ```json
@@ -105,7 +105,7 @@ http "bonsai-firmware.local/registration"
 **Receive system report**
 
 ```bash
-http "bonsai-firmware.local/system/report"
+http "bonsai-firmware.local/api/v1/system/report"
 ```
 
 ```json
@@ -147,7 +147,7 @@ http "bonsai-firmware.local/system/report"
 
 **Reboot system**
 
-http "bonsai-firmware.local/system/reboot"
+http "bonsai-firmware.local/api/v1/system/reboot"
 
 ```txt
 Rebooting...
