@@ -1,6 +1,6 @@
 ## Introduction
 
-`control-components` is a C++ library to simplify and speed up the development of embedded and IoT systems.
+`control-components` is the firmware platform with basic building blocks for embedded and IoT development. It provides the high-level abstractions for any kind of embedded and IoT application: state machines, task schedulers, resource management, various system counters, analog and digital sensors, and many other things that the embedded developer has to implement from scratch for each new embedded system. The firmware is written in `C++17` with some features from `C++20`.
 
 ## Installation Instructions
 
