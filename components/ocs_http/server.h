@@ -10,11 +10,10 @@
 
 #include <functional>
 #include <string>
-#include <unordered_map>
+#include <vector>
 
 #include "esp_http_server.h"
 
-#include "ocs_algo/container_ops.h"
 #include "ocs_core/noncopyable.h"
 #include "ocs_status/code.h"
 
@@ -53,8 +52,8 @@ public:
     void add_GET(const char* path, HandlerFunc func);
 
 private:
-    using URIMap =
-        std::unordered_map<std::string, HandlerFunc, algo::StringHash, algo::StringEqual>;
+    using Endpoint = std::pair<std::string, HandlerFunc>;
+    using EndpointList = std::vector<Endpoint>;
 
     static esp_err_t handle_request_(httpd_req_t* req);
 
@@ -65,7 +64,7 @@ private:
     httpd_handle_t handle_ { nullptr };
     httpd_config_t config_;
 
-    URIMap uris_get_;
+    EndpointList endpoints_get_;
 };
 
 } // namespace http
