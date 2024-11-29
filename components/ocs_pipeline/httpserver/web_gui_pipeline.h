@@ -28,7 +28,8 @@ public:
 
 private:
     void initialize_fs_();
-    status::StatusCode handle_file_(httpd_req_t* req);
+    status::StatusCode handle_root_(httpd_req_t* req);
+    status::StatusCode handle_file_(httpd_req_t* req, const char* filename);
 
     static const constexpr char* mount_point_ = "/web_gui";
     static const size_t buffer_size_ = 1024;

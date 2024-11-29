@@ -64,10 +64,13 @@ WebGuiPipeline::WebGuiPipeline(http::Server& server) {
     initialize_fs_();
 
     server.add_GET("/", [this](httpd_req_t* req) {
-        return handle_file_(req);
+        return handle_root_(req);
+    });
+    server.add_GET("/dashboard", [this](httpd_req_t* req) {
+        return handle_file_(req, "/index.html");
     });
     server.add_GET("/assets/*", [this](httpd_req_t* req) {
-        return handle_file_(req);
+        return handle_file_(req, req->uri);
     });
 }
 
@@ -109,17 +112,38 @@ void WebGuiPipeline::initialize_fs_() {
     valid_ = true;
 }
 
-status::StatusCode WebGuiPipeline::handle_file_(httpd_req_t* req) {
+status::StatusCode WebGuiPipeline::handle_root_(httpd_req_t* req) {
+    auto err = httpd_resp_set_status(req, "301 Moved Permanently");
+    if (err != ESP_OK) {
+        ocs_loge(log_tag, "httpd_resp_set_status(): %s", esp_err_to_name(err));
+
+        return status::StatusCode::Error;
+    }
+
+    err = httpd_resp_set_hdr(req, "Location", "/dashboard");
+    if (err != ESP_OK) {
+        ocs_loge(log_tag, "httpd_resp_set_hdr(): %s", esp_err_to_name(err));
+
+        return status::StatusCode::Error;
+    }
+
+    err = httpd_resp_send(req, nullptr, 0);
+    if (err != ESP_OK) {
+        ocs_loge(log_tag, "httpd_resp_set_hdr(): %s", esp_err_to_name(err));
+
+        return status::StatusCode::Error;
+    }
+
+    return status::StatusCode::OK;
+}
+
+status::StatusCode WebGuiPipeline::handle_file_(httpd_req_t* req, const char* filename) {
     if (!valid_) {
         return status::StatusCode::InvalidState;
     }
 
     std::string file_path = mount_point_;
-    if (req->uri[strlen(req->uri) - 1] == '/') {
-        file_path += "/index.html";
-    } else {
-        file_path += req->uri;
-    }
+    file_path += filename;
 
     auto err = httpd_resp_set_type(req, parse_content_type(file_path.c_str()));
     if (err != ESP_OK) {
