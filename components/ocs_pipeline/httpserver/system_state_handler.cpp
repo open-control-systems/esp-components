@@ -23,7 +23,7 @@ SystemStateHandler::SystemStateHandler(http::Server& server,
     json_formatter_.reset(new (std::nothrow) fmt::json::DynamicFormatter(response_size));
     configASSERT(json_formatter_);
 
-    server.add_GET("/system/report", [this](httpd_req_t* req) {
+    server.add_GET("/api/v1/system/report", [this](httpd_req_t* req) {
         auto json = fmt::json::CjsonUniqueBuilder::make_object();
         if (!json) {
             return status::StatusCode::NoMem;
@@ -48,9 +48,9 @@ SystemStateHandler::SystemStateHandler(http::Server& server,
         return status::StatusCode::OK;
     });
 
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp, "system_report",
-                                            "/system/report")
+    configASSERT(mdns_driver.add_txt_record(
+                     net::IMdnsDriver::Service::Http, net::IMdnsDriver::Proto::Tcp,
+                     "api_v1_system_report", "/api/v1/system/report")
                  == status::StatusCode::OK);
 }
 

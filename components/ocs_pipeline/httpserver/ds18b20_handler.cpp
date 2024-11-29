@@ -115,48 +115,50 @@ DS18B20Handler::DS18B20Handler(http::Server& server,
                                sensor::ds18b20::Store& store)
     : suspender_(suspender)
     , store_(store) {
-    server.add_GET("/sensor/ds18b20/scan", [this](httpd_req_t* req) {
+    server.add_GET("/api/v1/sensor/ds18b20/scan", [this](httpd_req_t* req) {
         return handle_scan_(req);
     });
-    server.add_GET("/sensor/ds18b20/read_configuration", [this](httpd_req_t* req) {
+    server.add_GET("/api/v1/sensor/ds18b20/read_configuration", [this](httpd_req_t* req) {
         return handle_configuration_(
             req, read_wait_interval_, read_response_buffer_size_,
             [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
                 return read_configuration_(json, sensor);
             });
     });
-    server.add_GET("/sensor/ds18b20/write_configuration", [this](httpd_req_t* req) {
-        return handle_write_configuration_(req);
-    });
-    server.add_GET("/sensor/ds18b20/erase_configuration", [this](httpd_req_t* req) {
-        return handle_configuration_(
-            req, erase_wait_interval_, erase_response_buffer_size_,
-            [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
-                return erase_configuration_(json, sensor);
-            });
-    });
+    server.add_GET("/api/v1/sensor/ds18b20/write_configuration",
+                   [this](httpd_req_t* req) {
+                       return handle_write_configuration_(req);
+                   });
+    server.add_GET("/api/v1/sensor/ds18b20/erase_configuration",
+                   [this](httpd_req_t* req) {
+                       return handle_configuration_(
+                           req, erase_wait_interval_, erase_response_buffer_size_,
+                           [this](cJSON* json, sensor::ds18b20::Sensor& sensor) {
+                               return erase_configuration_(json, sensor);
+                           });
+                   });
 
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp,
-                                            "sensor_ds18b20_scan", "/sensor/ds18b20/scan")
+    configASSERT(mdns_driver.add_txt_record(
+                     net::IMdnsDriver::Service::Http, net::IMdnsDriver::Proto::Tcp,
+                     "api_v1_sensor_ds18b20_scan", "/api/v1/sensor/ds18b20/scan")
                  == status::StatusCode::OK);
 
     configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
                                             net::IMdnsDriver::Proto::Tcp,
-                                            "sensor_ds18b20_read_configuration",
-                                            "/sensor/ds18b20/read_configuration")
+                                            "api_v1_sensor_ds18b20_read_configuration",
+                                            "/api/v1/sensor/ds18b20/read_configuration")
                  == status::StatusCode::OK);
 
     configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
                                             net::IMdnsDriver::Proto::Tcp,
-                                            "sensor_ds18b20_write_configuration",
-                                            "/sensor/ds18b20/write_configuration")
+                                            "api_v1_sensor_ds18b20_write_configuration",
+                                            "/api/v1/sensor/ds18b20/write_configuration")
                  == status::StatusCode::OK);
 
     configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
                                             net::IMdnsDriver::Proto::Tcp,
-                                            "sensor_ds18b20_erase_configuration",
-                                            "/sensor/ds18b20/erase_configuration")
+                                            "api_v1_sensor_ds18b20_erase_configuration",
+                                            "/api/v1/sensor/ds18b20/erase_configuration")
                  == status::StatusCode::OK);
 }
 

@@ -27,8 +27,8 @@
 ```
 ## HTTP API
 
-- `bonsai-firmware.local/sensor/sht41/reset` - reset the sensor.
-- `bonsai-firmware.local/sensor/sht41/heat` - activate internal heater, use with caution, the heater is designed for a maximum duty cycle of 10%, meaning the total heater-on-time should not be longer than 10% of the sensor’s lifetime.
+- `bonsai-firmware.local/api/v1/sensor/sht41/reset` - reset the sensor.
+- `bonsai-firmware.local/api/v1/sensor/sht41/heat` - activate internal heater, use with caution, the heater is designed for a maximum duty cycle of 10%, meaning the total heater-on-time should not be longer than 10% of the sensor’s lifetime.
 
 ## Firmware Configuration Options
 

@@ -42,12 +42,12 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     configASSERT(suspender.add(*this, "http_pipeline") == status::StatusCode::OK);
 
     telemetry_handler_.reset(new (std::nothrow) DataHandler(
-        *http_server_, mdns_driver, telemetry_formatter, "/telemetry",
+        *http_server_, mdns_driver, telemetry_formatter, "/api/v1/telemetry",
         "http_telemetry_handler", params.telemetry.buffer_size));
     configASSERT(telemetry_handler_);
 
     registration_handler_.reset(new (std::nothrow) DataHandler(
-        *http_server_, mdns_driver, registration_formatter, "/registration",
+        *http_server_, mdns_driver, registration_formatter, "/api/v1/registration",
         "http_registration_handler", params.registration.buffer_size));
     configASSERT(registration_handler_);
 
