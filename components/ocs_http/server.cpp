@@ -94,15 +94,18 @@ esp_err_t Server::handle_request_(httpd_req_t* req) {
 }
 
 void Server::handle_request_get_(httpd_req_t* req) {
-    const auto endpoint = std::find_if(
-        endpoints_get_.begin(), endpoints_get_.end(), [&req, this](const auto& endpoint) {
-            if (config_.uri_match_fn) {
-                return config_.uri_match_fn(endpoint.first.c_str(), req->uri,
-                                            strlen(req->uri));
-            }
+    const auto path = algo::UriOps::parse_path(req->uri);
 
-            return endpoint.first == req->uri;
-        });
+    const auto endpoint =
+        std::find_if(endpoints_get_.begin(), endpoints_get_.end(),
+                     [&path, this](const auto& endpoint) {
+                         if (config_.uri_match_fn) {
+                             return config_.uri_match_fn(endpoint.first.c_str(),
+                                                         path.data(), path.size());
+                         }
+
+                         return endpoint.first == path;
+                     });
     if (endpoint == endpoints_get_.end()) {
         ocs_loge(log_tag, "unknown URI: %s", req->uri);
 
