@@ -110,7 +110,6 @@ status::StatusCode find_rom_code(onewire::Bus& bus,
 } // namespace
 
 DS18B20Handler::DS18B20Handler(http::Server& server,
-                               net::IMdnsDriver& mdns_driver,
                                system::ISuspender& suspender,
                                sensor::ds18b20::Store& store)
     : suspender_(suspender)
@@ -137,29 +136,6 @@ DS18B20Handler::DS18B20Handler(http::Server& server,
                                return erase_configuration_(json, sensor);
                            });
                    });
-
-    configASSERT(mdns_driver.add_txt_record(
-                     net::IMdnsDriver::Service::Http, net::IMdnsDriver::Proto::Tcp,
-                     "api_v1_sensor_ds18b20_scan", "/api/v1/sensor/ds18b20/scan")
-                 == status::StatusCode::OK);
-
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp,
-                                            "api_v1_sensor_ds18b20_read_configuration",
-                                            "/api/v1/sensor/ds18b20/read_configuration")
-                 == status::StatusCode::OK);
-
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp,
-                                            "api_v1_sensor_ds18b20_write_configuration",
-                                            "/api/v1/sensor/ds18b20/write_configuration")
-                 == status::StatusCode::OK);
-
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp,
-                                            "api_v1_sensor_ds18b20_erase_configuration",
-                                            "/api/v1/sensor/ds18b20/erase_configuration")
-                 == status::StatusCode::OK);
 }
 
 status::StatusCode DS18B20Handler::handle_scan_(httpd_req_t* req) {

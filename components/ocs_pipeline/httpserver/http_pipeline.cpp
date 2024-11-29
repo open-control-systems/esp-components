@@ -31,6 +31,15 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     mdns_driver.add_service(net::IMdnsDriver::Service::Http, net::IMdnsDriver::Proto::Tcp,
                             CONFIG_OCS_HTTP_SERVER_PORT);
 
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp, "api_base_path",
+                                            "/api/")
+                 == status::StatusCode::OK);
+    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
+                                            net::IMdnsDriver::Proto::Tcp, "api_versions",
+                                            "v1")
+                 == status::StatusCode::OK);
+
     network_handler.add(*this);
 
     http_server_.reset(new (std::nothrow) http::Server(http::Server::Params {
@@ -42,22 +51,21 @@ HttpPipeline::HttpPipeline(scheduler::ITask& reboot_task,
     configASSERT(suspender.add(*this, "http_pipeline") == status::StatusCode::OK);
 
     telemetry_handler_.reset(new (std::nothrow) DataHandler(
-        *http_server_, mdns_driver, telemetry_formatter, "/api/v1/telemetry",
-        "http_telemetry_handler", params.telemetry.buffer_size));
+        *http_server_, telemetry_formatter, "/api/v1/telemetry", "http_telemetry_handler",
+        params.telemetry.buffer_size));
     configASSERT(telemetry_handler_);
 
     registration_handler_.reset(new (std::nothrow) DataHandler(
-        *http_server_, mdns_driver, registration_formatter, "/api/v1/registration",
+        *http_server_, registration_formatter, "/api/v1/registration",
         "http_registration_handler", params.registration.buffer_size));
     configASSERT(registration_handler_);
 
-    system_handler_.reset(new (std::nothrow)
-                              SystemHandler(*http_server_, mdns_driver, reboot_task));
+    system_handler_.reset(new (std::nothrow) SystemHandler(*http_server_, reboot_task));
     configASSERT(system_handler_);
 
 #ifdef CONFIG_FREERTOS_USE_TRACE_FACILITY
-    system_state_handler_.reset(
-        new (std::nothrow) SystemStateHandler(*http_server_, mdns_driver, 1024 * 2));
+    system_state_handler_.reset(new (std::nothrow)
+                                    SystemStateHandler(*http_server_, 1024 * 2));
     configASSERT(system_state_handler_);
 #endif // CONFIG_FREERTOS_USE_TRACE_FACILITY
 }

@@ -15,7 +15,6 @@ namespace pipeline {
 namespace httpserver {
 
 DataHandler::DataHandler(http::Server& server,
-                         net::IMdnsDriver& mdns_driver,
                          fmt::json::IFormatter& formatter,
                          const char* path,
                          const char* id,
@@ -50,10 +49,6 @@ DataHandler::DataHandler(http::Server& server,
 
         return status::StatusCode::OK;
     });
-
-    configASSERT(mdns_driver.add_txt_record(net::IMdnsDriver::Service::Http,
-                                            net::IMdnsDriver::Proto::Tcp, id, path)
-                 == status::StatusCode::OK);
 }
 
 } // namespace httpserver

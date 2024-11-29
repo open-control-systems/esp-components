@@ -21,9 +21,7 @@ const char* log_tag = "http_system_handler";
 
 } // namespace
 
-SystemHandler::SystemHandler(http::Server& server,
-                             net::IMdnsDriver& mdns_driver,
-                             scheduler::ITask& reboot_task) {
+SystemHandler::SystemHandler(http::Server& server, scheduler::ITask& reboot_task) {
     server.add_GET("/api/v1/system/reboot", [&reboot_task](httpd_req_t* req) {
         const auto err = httpd_resp_send(req, "Rebooting...", HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
@@ -34,11 +32,6 @@ SystemHandler::SystemHandler(http::Server& server,
 
         return reboot_task.run();
     });
-
-    configASSERT(mdns_driver.add_txt_record(
-                     net::IMdnsDriver::Service::Http, net::IMdnsDriver::Proto::Tcp,
-                     "api_v1_system_reboot", "/api/v1/system/reboot")
-                 == status::StatusCode::OK);
 }
 
 } // namespace httpserver
