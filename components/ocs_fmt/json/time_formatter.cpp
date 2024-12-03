@@ -14,12 +14,20 @@ namespace ocs {
 namespace fmt {
 namespace json {
 
+TimeFormatter::TimeFormatter(time_t start_point)
+    : start_point_(start_point) {
+}
+
 status::StatusCode TimeFormatter::format(cJSON* json) {
     CjsonObjectFormatter formatter(json);
 
-    const auto timestamp = algo::TimeOps::get_time();
+    auto timestamp = algo::TimeOps::get_time();
     if (!timestamp) {
         return status::StatusCode::Error;
+    }
+
+    if (*timestamp < start_point_) {
+        *timestamp = -1;
     }
 
     if (!formatter.add_number_cs("timestamp", *timestamp)) {
