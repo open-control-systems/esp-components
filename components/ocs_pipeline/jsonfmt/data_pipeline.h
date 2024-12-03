@@ -39,6 +39,8 @@ public:
     diagnostic::BasicCounterHolder& get_counter_holder();
 
 private:
+    std::unique_ptr<fmt::json::IFormatter> time_formatter_;
+
     std::unique_ptr<TelemetryFormatter> telemetry_formatter_;
     std::unique_ptr<RegistrationFormatter> registration_formatter_;
 
