@@ -37,8 +37,12 @@ SystemStateHandler::SystemStateHandler(http::Server& server, unsigned response_s
             return code;
         }
 
-        const auto err =
-            httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
+        auto err = httpd_resp_set_type(req, HTTPD_TYPE_JSON);
+        if (err != ESP_OK) {
+            return status::StatusCode::Error;
+        }
+
+        err = httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
             return status::StatusCode::Error;
         }

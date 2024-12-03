@@ -469,7 +469,12 @@ DS18B20Handler::send_response_(unsigned buffer_size, cJSON* json, httpd_req_t* r
         return code;
     }
 
-    const auto err = httpd_resp_send(req, json_formatter.c_str(), HTTPD_RESP_USE_STRLEN);
+    auto err = httpd_resp_set_type(req, HTTPD_TYPE_JSON);
+    if (err != ESP_OK) {
+        return status::StatusCode::Error;
+    }
+
+    err = httpd_resp_send(req, json_formatter.c_str(), HTTPD_RESP_USE_STRLEN);
     if (err != ESP_OK) {
         return status::StatusCode::Error;
     }
