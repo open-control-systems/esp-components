@@ -8,7 +8,7 @@
 
 #include "unity.h"
 
-#include "ocs_diagnostic/live_counter.h"
+#include "ocs_diagnostic/mem_persistent_counter.h"
 #include "ocs_test/test_counter.h"
 #include "ocs_test/test_storage.h"
 
@@ -21,7 +21,8 @@ using TestStorage = test::TestStorage<diagnostic::ICounter::Value>;
 
 } // namespace
 
-TEST_CASE("Live counter: erase on initialization", "[ocs_diagnostic], [live_counter]") {
+TEST_CASE("Memory persistent counter: erase on initialization",
+          "[ocs_diagnostic], [mem_persistent_counter]") {
     const unsigned counter_value = 7;
 
     test::TestCounter counter("foo");
@@ -35,10 +36,10 @@ TEST_CASE("Live counter: erase on initialization", "[ocs_diagnostic], [live_coun
     TEST_ASSERT_TRUE(persisted_value != counter_value);
     TEST_ASSERT_TRUE(storage.get(counter.id()));
 
-    LiveCounter live_counter(storage, counter);
+    MemPersistentCounter persistent_counter(storage, counter);
 
     TEST_ASSERT_FALSE(storage.get(counter.id()));
-    TEST_ASSERT_EQUAL(persisted_value + counter_value, live_counter.get());
+    TEST_ASSERT_EQUAL(persisted_value + counter_value, persistent_counter.get());
 }
 
 } // namespace diagnostic

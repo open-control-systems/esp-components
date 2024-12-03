@@ -9,21 +9,22 @@
 #pragma once
 
 #include "ocs_core/noncopyable.h"
-#include "ocs_diagnostic/persistent_counter.h"
+#include "ocs_diagnostic/basic_persistent_counter.h"
 
 namespace ocs {
 namespace diagnostic {
 
-//! Monitor the counter value while the system is in operation, taking into account the
-//! reboot events. If a power cut is happened, the persisted value is lost.
-class LiveCounter : public PersistentCounter, public core::NonCopyable<> {
+class AccPersistentCounter : public BasicPersistentCounter, public core::NonCopyable<> {
 public:
     //! Initialize.
     //!
     //! @params
     //!  - @p storage to persist counter values when reboot is happened.
     //!  - @p counter to handle actual counting value.
-    LiveCounter(storage::IStorage& storage, ICounter& counter);
+    AccPersistentCounter(storage::IStorage& storage, ICounter& counter);
+
+    //! Returns the accumulated counter value, considering the previous persistent value.
+    Value get() const override;
 };
 
 } // namespace diagnostic

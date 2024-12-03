@@ -6,7 +6,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include "ocs_diagnostic/live_counter.h"
+#include "ocs_diagnostic/mem_persistent_counter.h"
 #include "ocs_core/log.h"
 #include "ocs_status/code_to_str.h"
 
@@ -15,17 +15,21 @@ namespace diagnostic {
 
 namespace {
 
-const char* log_tag = "live_counter";
+const char* log_tag = "mem_persistent_counter";
 
 } // namespace
 
-LiveCounter::LiveCounter(storage::IStorage& storage, ICounter& counter)
-    : PersistentCounter(storage, counter) {
+MemPersistentCounter::MemPersistentCounter(storage::IStorage& storage, ICounter& counter)
+    : BasicPersistentCounter(storage, counter) {
     const auto code = storage.erase(id());
     if (code != status::StatusCode::OK && code != status::StatusCode::NoData) {
         ocs_loge(log_tag, "failed to erase counter value: id=%s code=%s", id(),
                  status::code_to_str(code));
     }
+}
+
+ICounter::Value MemPersistentCounter::get() const {
+    return value_ + counter_.get();
 }
 
 } // namespace diagnostic

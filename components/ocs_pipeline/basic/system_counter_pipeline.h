@@ -13,7 +13,7 @@
 #include "ocs_core/iclock.h"
 #include "ocs_core/noncopyable.h"
 #include "ocs_diagnostic/basic_counter_holder.h"
-#include "ocs_diagnostic/persistent_counter.h"
+#include "ocs_diagnostic/basic_persistent_counter.h"
 #include "ocs_scheduler/itask_scheduler.h"
 #include "ocs_storage/istorage.h"
 #include "ocs_system/fanout_reboot_handler.h"
@@ -34,10 +34,10 @@ public:
 
 private:
     std::unique_ptr<diagnostic::ICounter> uptime_counter_;
-    std::unique_ptr<diagnostic::PersistentCounter> uptime_persistent_counter_;
+    std::unique_ptr<diagnostic::BasicPersistentCounter> uptime_persistent_counter_;
 
     std::unique_ptr<diagnostic::ICounter> lifetime_counter_;
-    std::unique_ptr<diagnostic::PersistentCounter> lifetime_persistent_counter_;
+    std::unique_ptr<diagnostic::BasicPersistentCounter> lifetime_persistent_counter_;
 };
 
 } // namespace basic
