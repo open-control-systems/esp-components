@@ -27,7 +27,7 @@ public:
     //!
     //! @remarks
     //!  If a power cut is happened, the persisted value is lost.
-    Value get() const;
+    Value get() const override;
 };
 
 } // namespace diagnostic
