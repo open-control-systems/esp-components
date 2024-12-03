@@ -8,7 +8,6 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_fmt/json/time_formatter.h"
 #include "ocs_pipeline/jsonfmt/data_pipeline.h"
 
 namespace ocs {
@@ -20,16 +19,11 @@ DataPipeline::DataPipeline(core::IClock& clock,
                            scheduler::ITaskScheduler& task_scheduler,
                            system::FanoutRebootHandler& reboot_handler,
                            const system::DeviceInfo& device_info) {
-    time_formatter_.reset(new (std::nothrow) fmt::json::TimeFormatter());
-    configASSERT(time_formatter_);
-
     telemetry_formatter_.reset(new (std::nothrow) TelemetryFormatter());
     configASSERT(telemetry_formatter_);
-    telemetry_formatter_->get_fanout_formatter().add(*time_formatter_);
 
     registration_formatter_.reset(new (std::nothrow) RegistrationFormatter(device_info));
     configASSERT(registration_formatter_);
-    registration_formatter_->get_fanout_formatter().add(*time_formatter_);
 
     system_counter_storage_ = storage_builder.make("system_counter");
     configASSERT(system_counter_storage_);

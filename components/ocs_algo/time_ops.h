@@ -12,6 +12,7 @@
 #include <optional>
 
 #include "ocs_core/time.h"
+#include "ocs_status/code.h"
 
 namespace ocs {
 namespace algo {
@@ -44,8 +45,15 @@ struct TimeOps {
         return true;
     }
 
-    //! Return UNIX time.
+    //! Return system time.
     static std::optional<time_t> get_time();
+
+    //! Parse system time from @p str.
+    static std::optional<time_t> parse_time(const char* str);
+
+    //! Set the system time from @p str, making sure that the set time is greater
+    //! than @p start_point.
+    static status::StatusCode set_time(const char* str, time_t start_point);
 };
 
 } // namespace algo

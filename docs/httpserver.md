@@ -153,6 +153,22 @@ http "bonsai-firmware.local/api/v1/system/reboot"
 Rebooting...
 ```
 
+**Get system time**
+
+http "bonsai-firmware.local/api/v1/system/time"
+
+```txt
+1733233869
+```
+
+**Set system time**
+
+http "bonsai-firmware.local/api/v1/system/time?value=1733233869"
+
+```txt
+OK
+```
+
 **Sensors APIs**
 
 - [DS18B20](sensors/ds18b20.md#HTTP-API)
