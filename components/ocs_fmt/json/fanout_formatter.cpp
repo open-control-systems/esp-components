@@ -21,7 +21,7 @@ status::StatusCode FanoutFormatter::format(cJSON* json) {
     }
 
     return status::StatusCode::OK;
-} // namespace status::StatusCodeFanoutFormatter::format(cJSON*json)
+}
 
 void FanoutFormatter::add(IFormatter& formatter) {
     formatters_.emplace_back(&formatter);
