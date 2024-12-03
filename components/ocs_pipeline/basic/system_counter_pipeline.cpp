@@ -8,7 +8,8 @@
 
 #include "freertos/FreeRTOSConfig.h"
 
-#include "ocs_diagnostic/live_counter.h"
+#include "ocs_diagnostic/acc_persistent_counter.h"
+#include "ocs_diagnostic/mem_persistent_counter.h"
 #include "ocs_diagnostic/time_counter.h"
 #include "ocs_pipeline/basic/system_counter_pipeline.h"
 #include "ocs_storage/nvs_storage.h"
@@ -28,7 +29,7 @@ SystemCounterPipeline::SystemCounterPipeline(
     configASSERT(uptime_counter_);
 
     uptime_persistent_counter_.reset(
-        new (std::nothrow) diagnostic::LiveCounter(storage, *uptime_counter_));
+        new (std::nothrow) diagnostic::MemPersistentCounter(storage, *uptime_counter_));
     configASSERT(uptime_persistent_counter_);
 
     reboot_handler.add(*uptime_persistent_counter_);
@@ -39,7 +40,7 @@ SystemCounterPipeline::SystemCounterPipeline(
     configASSERT(lifetime_counter_);
 
     lifetime_persistent_counter_.reset(
-        new (std::nothrow) diagnostic::PersistentCounter(storage, *lifetime_counter_));
+        new (std::nothrow) diagnostic::AccPersistentCounter(storage, *lifetime_counter_));
     configASSERT(lifetime_persistent_counter_);
 
     configASSERT(task_scheduler.add(*lifetime_persistent_counter_,
