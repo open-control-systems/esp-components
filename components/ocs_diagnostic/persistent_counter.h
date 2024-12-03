@@ -47,13 +47,9 @@ public:
     //! Save counter value in a persistent storage.
     status::StatusCode run() override;
 
-    //! Persist the counter value.
-    status::StatusCode save();
-
-    //! Invalidate the current counter state.
-    status::StatusCode invalidate();
-
 private:
+    status::StatusCode save_();
+
     storage::IStorage& storage_;
     ICounter& counter_;
 
