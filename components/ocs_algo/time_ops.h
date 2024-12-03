@@ -8,6 +8,9 @@
 
 #pragma once
 
+#include <ctime>
+#include <optional>
+
 #include "ocs_core/time.h"
 
 namespace ocs {
@@ -40,6 +43,9 @@ struct TimeOps {
 
         return true;
     }
+
+    //! Return UNIX time.
+    static std::optional<time_t> get_time();
 };
 
 } // namespace algo

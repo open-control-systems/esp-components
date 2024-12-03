@@ -6,35 +6,23 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#include <cerrno>
-#include <cstring>
-#include <ctime>
-
-#include "ocs_core/log.h"
-#include "ocs_fmt/json/cjson_object_formatter.h"
 #include "ocs_fmt/json/time_formatter.h"
+#include "ocs_algo/time_ops.h"
+#include "ocs_fmt/json/cjson_object_formatter.h"
 
 namespace ocs {
 namespace fmt {
 namespace json {
 
-namespace {
-
-const char* log_tag = "time_formatter";
-
-} // namespace
-
 status::StatusCode TimeFormatter::format(cJSON* json) {
     CjsonObjectFormatter formatter(json);
 
-    const time_t timestamp = time(nullptr);
-    if (timestamp == -1) {
-        ocs_loge(log_tag, "time(): %s", std::strerror(errno));
-
+    const auto timestamp = algo::TimeOps::get_time();
+    if (!timestamp) {
         return status::StatusCode::Error;
     }
 
-    if (!formatter.add_number_cs("timestamp", timestamp)) {
+    if (!formatter.add_number_cs("timestamp", *timestamp)) {
         return status::StatusCode::NoMem;
     }
 
