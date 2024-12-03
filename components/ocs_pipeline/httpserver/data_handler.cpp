@@ -40,8 +40,12 @@ DataHandler::DataHandler(http::Server& server,
             return code;
         }
 
-        const auto err =
-            httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
+        auto err = httpd_resp_set_type(req, HTTPD_TYPE_JSON);
+        if (err != ESP_OK) {
+            return status::StatusCode::Error;
+        }
+
+        err = httpd_resp_send(req, json_formatter_->c_str(), HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
             ocs_loge(id, "httpd_resp_send(): %s", esp_err_to_name(err));
             return status::StatusCode::Error;

@@ -23,7 +23,12 @@ const char* log_tag = "http_system_handler";
 
 SystemHandler::SystemHandler(http::Server& server, scheduler::ITask& reboot_task) {
     server.add_GET("/api/v1/system/reboot", [&reboot_task](httpd_req_t* req) {
-        const auto err = httpd_resp_send(req, "Rebooting...", HTTPD_RESP_USE_STRLEN);
+        auto err = httpd_resp_set_type(req, HTTPD_TYPE_TEXT);
+        if (err != ESP_OK) {
+            return status::StatusCode::Error;
+        }
+
+        err = httpd_resp_send(req, "Rebooting...", HTTPD_RESP_USE_STRLEN);
         if (err != ESP_OK) {
             return status::StatusCode::Error;
         }
