@@ -38,7 +38,7 @@ ICounter::Value PersistentCounter::get() const {
 }
 
 void PersistentCounter::handle_reboot() {
-    const auto code = save();
+    const auto code = save_();
     if (code != status::StatusCode::OK) {
         ocs_loge(log_tag, "failed to persist counter value on reboot: id=%s code=%s",
                  counter_.id(), status::code_to_str(code));
@@ -46,17 +46,12 @@ void PersistentCounter::handle_reboot() {
 }
 
 status::StatusCode PersistentCounter::run() {
-    return save();
+    return save_();
 }
 
-status::StatusCode PersistentCounter::save() {
+status::StatusCode PersistentCounter::save_() {
     const auto value = get();
     return storage_.write(counter_.id(), &value, sizeof(value));
-}
-
-status::StatusCode PersistentCounter::invalidate() {
-    value_ = 0;
-    return storage_.erase(id());
 }
 
 } // namespace diagnostic
